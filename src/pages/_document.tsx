@@ -6,6 +6,8 @@ import Document, {
   DocumentContext,
 } from 'next/document';
 // import { Config } from '@/config';
+// import { Config } from '@/config';
+// import { Config } from '@/config';
 
 export default class CustomDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {
