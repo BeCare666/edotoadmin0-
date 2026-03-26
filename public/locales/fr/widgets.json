@@ -1,0 +1,16 @@
+{
+  "sticker-card-title-rev": "Revenu total",
+  "sticker-card-subtitle-rev": "(Derniers 30 jours)",
+  "sticker-card-title-order": "Commandes totales",
+  "sticker-card-title-vendor": "Vendeur",
+  "sticker-card-subtitle-order": "(Derniers 30 jours)",
+  "sticker-card-title-customer": "Nouveau client",
+  "sticker-card-subtitle-customer": "(Derniers 30 jours)",
+  "sticker-card-title-today-rev": "Revenu du jour",
+  "sticker-card-subtitle-last-1-days": "Aujourd'hui (Dernières 24 heures)",
+  "sticker-card-subtitle-last-7-days": "Hebdomadaire (Derniers 7 jours)",
+  "sticker-card-subtitle-last-30-days": "Mensuel (Derniers 30 jours)",
+  "sticker-card-subtitle-last-365-days": "Annuel (Derniers 365 jours)",
+  "sticker-card-title-total-shops": "Total des marketplaces",
+  "sticker-card-title-today-refunds": "Remboursements du jour"
+}

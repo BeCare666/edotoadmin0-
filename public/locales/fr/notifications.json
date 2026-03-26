@@ -1,0 +1,74 @@
+{
+    "order": {
+        "confirmed": {
+            "title": "Commande confirmée",
+            "message": "Votre commande {{orderId}} a été confirmée avec succès."
+        },
+        "new": {
+            "title": "Nouvelle commande reçue",
+            "message": "Vous avez reçu une nouvelle commande {{orderId}}."
+        },
+        "shipped": {
+            "title": "Commande expédiée",
+            "message": "Votre commande {{orderId}} a été expédiée."
+        },
+        "delivered": {
+            "title": "Commande livrée",
+            "message": "Votre commande {{orderId}} a été livrée."
+        },
+        "cancelled": {
+            "title": "Commande annulée",
+            "message": "Votre commande {{orderId}} a été annulée."
+        },
+        "cancelled.seller": {
+            "title": "Commande annulée",
+            "message": "La commande {{orderId}} a été annulée par le client."
+        }
+    },
+    "payment": {
+        "failed": {
+            "title": "Paiement échoué",
+            "message": "Le paiement pour la commande {{orderId}} a échoué."
+        },
+        "refunded": {
+            "title": "Paiement remboursé",
+            "message": "Le paiement pour la commande {{orderId}} a été remboursé."
+        }
+    },
+    "product": {
+        "backinstock": {
+            "title": "Produit de retour en stock",
+            "message": "Le produit {{productName}} est de nouveau disponible."
+        },
+        "review": {
+            "title": "Nouveau avis",
+            "message": "Un nouvel avis a été publié pour le produit {{productName}}."
+        }
+    },
+    "promotion": {
+        "new": {
+            "title": "Nouvelle promotion disponible",
+            "message": "Profitez de la promotion : {{promo}}"
+        }
+    },
+    "reminder": {
+        "cart": {
+            "abandoned": {
+                "title": "Panier abandonné",
+                "message": "Vous avez {{count}} article(s) dans votre panier en attente."
+            }
+        }
+    },
+    "system": {
+        "VENDOR_CREATED_TITLE": "Nouvelle boutique créée",
+        "VENDOR_CREATED_MESSAGE": "Votre boutique {{shop_name}} a été créée avec succès.",
+        "SHOP_APPROVED_TITLE": "marketplace approuvée",
+        "SHOP_APPROVED_MESSAGE": "Votre marketplace {{shop_name}} a été approuvée.",
+        "SHOP_DISAPPROVED_TITLE": "marketplace désapprouvée",
+        "SHOP_DISAPPROVED_MESSAGE": "Votre marketplace {{shop_name}} a été désapprouvée.",
+        "welcome": {
+            "title": "Bienvenue",
+            "message": "Vous avez été ajouté à la boutique {{shopName}}."
+        }
+    }
+}

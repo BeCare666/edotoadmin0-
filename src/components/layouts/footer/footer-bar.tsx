@@ -1,0 +1,150 @@
+import Link from '@/components/ui/link';
+import { Routes } from '@/config/routes';
+import { useSettings } from '@/contexts/settings.context';
+import { useTranslation } from 'next-i18next';
+
+export type IFooterProp = {
+  className?: string;
+};
+
+const socialIcons = [
+  {
+    name: 'Facebook',
+    href: '#',
+    svg: (
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      >
+        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3.5l.5-4H14V7a1 1 0 0 1 1-1h3z" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Instagram',
+    href: '#',
+    svg: (
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      >
+        <rect x="3" y="3" width="18" height="18" rx="5" />
+        <circle cx="12" cy="12" r="3.5" />
+        <circle cx="17.5" cy="6.5" r="1.2" />
+      </svg>
+    ),
+  },
+  {
+    name: 'TikTok',
+    href: '#',
+    svg: (
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      >
+        <path d="M15 3c.3 2.5 1.8 4 4 4v3c-2.4.1-4.1-1.1-5-2a5 5 0 1 1-4 8V13a2 2 0 1 0 2 2V3z" />
+      </svg>
+    ),
+  },
+  {
+    name: 'YouTube',
+    href: '#',
+    svg: (
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      >
+        <path d="M22 12s0-4-1-5c-1-1.2-2-.8-7-.8s-6-.4-7 .8C6 8 6 12 6 12s0 4 1 5c1 1.2 2 .8 7 .8s6 .4 7-.8c1-1 1-5 1-5z" />
+        <polygon points="10 9 16 12 10 15" />
+      </svg>
+    ),
+  },
+];
+
+const Footer: React.FC<IFooterProp> = ({ className }) => {
+  const { t } = useTranslation();
+  const {
+    siteTitle,
+    siteLink,
+    copyrightText,
+    externalText,
+    externalLink,
+  } = useSettings();
+  const date = new Date();
+
+  return (
+    <footer
+      className={`
+        mt-auto
+        bg-white/10
+        backdrop-blur-xl
+        border-t border-black/10 
+        transition-all
+         className="
+        w-full lg:left-22  mt-72
+  "
+        ${className}
+      `}
+    >
+      <div className="mx-auto w-full max-w-7xl px-6 py-4 flex flex-col items-center gap-3">
+
+        {/* TEXT */}
+        <span className="text-sm text-gray-600 text-center">
+          ©{date.getFullYear()}{" "}
+          <Link
+            className="font-medium hover:text-gray-100 transition-colors"
+            href={siteLink ?? Routes.dashboard}
+          >
+            {siteTitle}
+          </Link>
+          . {copyrightText}{" "}
+          {externalText && (
+            <Link
+              className="font-medium hover:text-gray-100 transition-colors"
+              href={externalLink ?? Routes.dashboard}
+            >
+              {externalText}
+            </Link>
+          )}
+        </span>
+
+        {/* SOCIAL ICONS */}
+        <div className="flex items-center gap-6">
+          {socialIcons.map((icon) => (
+            <Link
+              key={icon.name}
+              href={icon.href}
+              className="text-gray-400 hover:text-white transition-colors"
+              aria-label={icon.name}
+            >
+              {icon.svg}
+            </Link>
+          ))}
+        </div>
+
+        {/* VERSION */}
+        <div className="text-xs text-gray-500 tracking- hidden">
+          v{process.env.NEXT_PUBLIC_VERSION}
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;

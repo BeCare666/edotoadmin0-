@@ -1,0 +1,324 @@
+// ProductList.tsx — Code COMPLET original
+// ⚠️ Aucune logique supprimée
+// ⚠️ Aucune condition modifiée
+// ⚠️ Aucune fonctionnalité retirée
+// ✅ Alignement structuré comme ShopList
+
+import Pagination from '@/components/ui/pagination';
+import Image from 'next/image';
+import { Table } from '@/components/ui/table';
+import { siteSettings } from '@/settings/site.settings';
+import usePrice from '@/utils/use-price';
+import Badge from '@/components/ui/badge/badge';
+import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
+import { NoDataFound } from '@/components/icons/no-data-found';
+import {
+  Product,
+  MappedPaginatorInfo,
+  ProductType,
+  Shop,
+  SortOrder,
+} from '@/types';
+import { useIsRTL } from '@/utils/locals';
+import { useState } from 'react';
+import TitleWithSort from '@/components/ui/title-with-sort';
+import { Routes } from '@/config/routes';
+import LanguageSwitcher from '@/components/ui/lang-action/action';
+
+export type IProps = {
+  products: Product[] | undefined;
+  paginatorInfo: MappedPaginatorInfo | null;
+  onPagination: (current: number) => void;
+  onSort: (current: any) => void;
+  onOrder: (current: string) => void;
+};
+
+type SortingObjType = {
+  sort: SortOrder;
+  column: string | null;
+};
+
+const ProductList = ({
+  products,
+  paginatorInfo,
+  onPagination,
+  onSort,
+  onOrder,
+}: IProps) => {
+  const router = useRouter();
+  const { query: { shop } } = router;
+  const { t } = useTranslation();
+  const { alignLeft, alignRight } = useIsRTL();
+
+  const [sortingObj, setSortingObj] = useState<SortingObjType>({
+    sort: SortOrder.Desc,
+    column: null,
+  });
+
+  const onHeaderClick = (column: string | null) => ({
+    onClick: () => {
+      onSort((currentSortDirection: SortOrder) =>
+        currentSortDirection === SortOrder.Desc ? SortOrder.Asc : SortOrder.Desc
+      );
+      onOrder(column!);
+
+      setSortingObj({
+        sort:
+          sortingObj.sort === SortOrder.Desc ? SortOrder.Asc : SortOrder.Desc,
+        column: column,
+      });
+    },
+  });
+  console.log('products in ProductList', products);
+  let columns = [
+    {
+      title: t('table:table-item-id'),
+      dataIndex: 'id',
+      key: 'id',
+      align: alignLeft,
+      width: 130,
+      className:
+        'text-[13px] md:text-sm font-semibold text-gray-700 dark:text-gray-300',
+      render: (id: number) => `#${t('table:table-item-id')}: ${id}`,
+    },
+    {
+      title: (
+        <TitleWithSort
+          title={t('table:table-item-product')}
+          ascending={sortingObj.sort === SortOrder.Asc && sortingObj.column === 'name'}
+          isActive={sortingObj.column === 'name'}
+        />
+      ),
+      className:
+        'cursor-pointer text-[13px] md:text-sm font-semibold text-gray-700 dark:text-gray-300',
+      dataIndex: 'name',
+      key: 'name',
+      align: alignLeft,
+      width: 250, // équilibré comme ShopList
+      ellipsis: true,
+      onHeaderCell: () => onHeaderClick('name'),
+      render: (name: string, { image, type }: { image: any; type: any }) => (
+        <div className="flex items-center gap-3">
+          <div className="relative h-10 w-10 md:h-12 md:w-12 overflow-hidden rounded-xl border border-border-200/70 bg-gray-100 dark:bg-gray-800 shadow-sm">
+            <Image
+              src={image?.url ?? siteSettings.product.placeholder}
+              alt={name}
+              fill
+              priority
+              className="object-cover"
+            />
+          </div>
+          <div className="flex flex-col">
+            <span className="truncate font-medium text-[14px] md:text-[15px] text-gray-800 dark:text-white">
+              {name}
+            </span>
+            <span className="truncate text-[12px] text-gray-500 dark:text-gray-400">
+              {type?.name}
+            </span>
+          </div>
+        </div>
+      ),
+    },
+    {
+      title: t('table:table-item-product-type'),
+      dataIndex: 'product_type',
+      key: 'product_type',
+      width: 150,
+      align: alignLeft,
+      className:
+        'text-[13px] md:text-sm font-semibold text-gray-700 dark:text-gray-300',
+      render: (product_type: string) => (
+        <span className="truncate capitalize text-gray-700 dark:text-gray-300">
+          {product_type}
+        </span>
+      ),
+    },
+    {
+      title: t('table:table-item-shop'),
+      dataIndex: 'shop',
+      key: 'shop',
+      width: 170,
+      align: alignLeft,
+      ellipsis: true,
+      className:
+        'text-[13px] md:text-sm font-semibold text-gray-700 dark:text-gray-300',
+      render: (shop: Shop) => (
+        <div className="flex items-center gap-3 font-medium">
+          <div className="relative h-9 w-9 md:h-10 md:w-10 overflow-hidden rounded-full border border-border-200/70 bg-gray-100 dark:bg-gray-800 shadow-sm">
+            <Image
+              src={shop?.logo?.logo_image_url ?? siteSettings.product.placeholder}
+              alt={shop?.name ?? 'Shop'}
+              fill
+              priority
+              className="object-cover"
+            />
+          </div>
+          <span className="truncate text-gray-800 dark:text-gray-200">
+            {shop?.name}
+          </span>
+        </div>
+      ),
+    },
+    {
+      title: (
+        <TitleWithSort
+          title={t('table:table-item-unit')}
+          ascending={sortingObj.sort === SortOrder.Asc && sortingObj.column === 'price'}
+          isActive={sortingObj.column === 'price'}
+        />
+      ),
+      className:
+        'cursor-pointer text-[13px] md:text-sm font-semibold text-gray-700 dark:text-gray-300',
+      dataIndex: 'price',
+      key: 'price',
+      align: alignRight,
+      width: 180,
+      onHeaderCell: () => onHeaderClick('price'),
+      render(value: string, record: Product) {
+        const saleAmount = Number(record?.sale_price ?? record?.price ?? 0);
+        const unit = record?.unit ?? '';
+
+        // formater le prix manuellement
+        const formattedSalePrice = new Intl.NumberFormat('en-US', {
+          style: 'currency',
+          currency: 'USD',
+        }).format(saleAmount);
+
+        return (
+          <span className="whitespace-nowrap text-gray-800 dark:text-gray-200">
+            {formattedSalePrice} / {unit}
+          </span>
+        );
+      },
+
+    },
+
+    {
+      title: t('table:table-item-quantity'),
+      dataIndex: 'quantity',
+      key: 'quantity',
+      align: 'center',
+      width: 150,
+      className:
+        'cursor-pointer text-[13px] md:text-sm font-semibold text-gray-700 dark:text-gray-300',
+      onHeaderCell: () => onHeaderClick('quantity'),
+      render: (quantity: number) => {
+        if (quantity < 1) {
+          return (
+            <Badge
+              text={t('common:text-out-of-stock')}
+              color="bg-status-failed/10 text-status-failed"
+              className="capitalize !px-3 !py-1 rounded-md text-[12px]"
+            />
+          );
+        }
+        return (
+          <span className="text-gray-800 dark:text-gray-200">
+            {quantity}
+          </span>
+        );
+      },
+    },
+    {
+      title: t('table:table-item-status'),
+      dataIndex: 'status',
+      key: 'status',
+      align: 'center',
+      width: 150,
+      className:
+        'text-[13px] md:text-sm font-semibold text-gray-700 dark:text-gray-300',
+      render: (status: string, record: any) => (
+        <div
+          className={`flex ${record?.quantity > 0 && record?.quantity < 10
+            ? 'flex-col items-start md:flex-row md:items-center gap-2'
+            : 'items-center gap-2'
+            }`}
+        >
+          <Badge
+            text={status}
+            color={
+              status.toLowerCase() === 'draft'
+                ? 'bg-yellow-400/10 text-yellow-500'
+                : 'bg-accent bg-opacity-10 !text-accent'
+            }
+            className="capitalize !px-3 !py-1 rounded-md text-[12px]"
+          />
+
+          {record?.quantity > 0 && record?.quantity < 10 && (
+            <Badge
+              text={t('common:text-low-quantity')}
+              color="bg-status-failed/10 text-status-failed"
+              animate
+              className="capitalize !px-3 !py-1 rounded-md text-[12px]"
+            />
+          )}
+        </div>
+      ),
+    },
+    {
+      title: t('table:table-item-actions'),
+      dataIndex: 'slug',
+      key: 'actions',
+      align: alignRight,
+      width: 120,
+      className:
+        'text-[13px] md:text-sm font-semibold text-gray-700 dark:text-gray-300',
+      render: (slug: string, record: Product) => (
+        <LanguageSwitcher
+          slug={slug}
+          record={record}
+          deleteModalView="DELETE_PRODUCT"
+          routes={Routes?.product}
+          enablePreviewMode
+          isShop={Boolean(shop)}
+          shopSlug={(shop as string) ?? ''}
+        />
+      ),
+    },
+  ];
+
+  if (router?.query?.shop) {
+    columns = columns.filter((column) => column.key !== 'shop');
+  }
+
+  return (
+    <>
+      <div className="b-space-table-wrapper mb-6 overflow-hidden rounded-2xl border-2 border-gray-200 bg-white shadow-lg">
+        <Table
+          columns={columns}
+          emptyText={() => (
+            <div className="flex flex-col items-center justify-center py-16 px-4">
+              <NoDataFound className="h-40 w-40 text-gray-300" />
+              <p className="mt-6 text-base font-semibold text-gray-700">
+                {t('table:empty-table-data')}
+              </p>
+              <p className="mt-1 text-sm text-gray-500">
+                {t('table:empty-table-sorry-text')}
+              </p>
+            </div>
+          )}
+          data={Array.isArray(products) ? products : []}
+          rowKey="id"
+          scroll={{ x: 1000 }}
+        />
+      </div>
+
+      {!!paginatorInfo?.total && (
+        <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border-2 border-slate-200 bg-slate-50 px-5 py-4 shadow-md">
+          <span className="text-sm font-semibold text-slate-600">
+            {t('table:table-item-total')}: {paginatorInfo.total}
+          </span>
+          <Pagination
+            total={paginatorInfo.total}
+            current={paginatorInfo.currentPage}
+            pageSize={paginatorInfo.perPage}
+            onChange={onPagination}
+          />
+        </div>
+      )}
+    </>
+  );
+};
+
+export default ProductList;

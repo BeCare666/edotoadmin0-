@@ -1,0 +1,289 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ===============================
+     PREMIUM E-COMMERCE COLOR SYSTEM
+     =============================== */
+
+  :root,
+  [data-theme='light'] {
+    /* Accent — premium commerce blue */
+    --color-accent: 37, 99, 235;
+    --color-accent-hover: 29, 78, 216;
+    --color-accent-300: 191, 219, 254;
+    --color-accent-400: 147, 197, 253;
+    --color-accent-500: 96, 165, 250;
+    --color-accent-600: 37, 99, 235;
+    --color-accent-700: 29, 78, 216;
+
+    /* Surfaces */
+    --color-light: 255, 255, 255;
+    --color-dark: 17, 24, 39;
+    --color-muted-black: 22, 22, 26;
+
+    /* Text hierarchy — premium rose */
+    --text-base: 118, 75, 94;
+    --text-base-dark: 88, 48, 65;
+    --text-muted: 194, 143, 159;
+    --text-muted-light: 237, 200, 215;
+    --text-sub-heading: 141, 81, 104;
+    --text-heading: 99, 39, 60;
+    --text-bolder: 72, 27, 42;
+
+    /* Borders — premium rose */
+    --color-border-50: 255, 244, 248;
+    --color-border-100: 255, 228, 235;
+    --color-border-200: 252, 206, 220;
+    --color-border-base: 245, 182, 200;
+    --color-border-400: 223, 128, 154;
+
+    /* Neutral rose scale */
+    --color-gray-50: 255, 244, 248;
+    --color-gray-100: 255, 228, 235;
+    --color-gray-200: 252, 206, 220;
+    --color-gray-300: 245, 182, 200;
+    --color-gray-400: 223, 128, 154;
+    --color-gray-500: 199, 86, 119;
+    --color-gray-600: 166, 46, 82;
+    --color-gray-700: 132, 28, 62;
+    --color-gray-800: 88, 15, 45;
+    --color-gray-900: 60, 10, 30;
+
+    /* Commerce orange — premium CTA alt */
+    --color-orange-50: 255, 251, 235;
+    --color-orange-100: 254, 243, 199;
+    --color-orange-200: 253, 230, 138;
+    --color-orange-300: 252, 211, 77;
+    --color-orange-400: 251, 191, 36;
+    --color-orange-500: 245, 158, 11;
+    --color-orange-600: 217, 119, 6;
+    --color-orange-700: 180, 83, 9;
+    --color-orange-800: 146, 64, 14;
+    --color-orange-900: 120, 53, 15;
+
+    /* Status */
+    --color-pending: 202, 138, 4;
+    --color-processing: 161, 98, 7;
+    --color-complete: 34, 197, 94;
+    --color-canceled: 217, 119, 6;
+    --color-failed: 220, 38, 38;
+    --color-out-for-delivery: 79, 70, 229;
+
+    --color-icon: 37, 99, 235;
+
+    /* Typography scale */
+    --h1: 2.25rem;
+    --h2: 1.875rem;
+    --h3: 1.5rem;
+    --h4: 1.25rem;
+    --h5: 1.125rem;
+    --h6: 1rem;
+
+    /* Premium shadows */
+    --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.03);
+    --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.05), 0 1px 2px rgb(0 0 0 / 0.04);
+    --shadow-card: 0 2px 6px rgb(0 0 0 / 0.05), 0 12px 20px rgb(0 0 0 / 0.06);
+    --shadow-elevated: 0 10px 30px rgb(0 0 0 / 0.10);
+    --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.04);
+
+    --radius-card: 1rem;
+    --radius-button: 0.5rem;
+  }
+
+  /* ========== DARK — graphite premium / bleu bold ========= */
+  [data-theme='dark'] {
+    --color-light: 18, 21, 46;
+    --color-dark: 245, 245, 255;
+
+    --text-base: 194, 194, 215;
+    --text-base-dark: 222, 222, 255;
+    --text-muted: 156, 163, 175;
+    --text-heading: 84, 109, 255;
+    --text-sub-heading: 147, 175, 255;
+
+    --color-border-50: 45, 45, 50;
+    --color-border-100: 63, 63, 70;
+    --color-border-200: 82, 82, 91;
+
+    --color-gray-50: 18, 21, 46;
+    --color-gray-100: 26, 33, 70;
+    --color-gray-200: 42, 52, 104;
+    --color-gray-300: 65, 80, 145;
+    --color-gray-400: 99, 120, 200;
+    --color-gray-500: 132, 155, 230;
+    --color-gray-600: 166, 184, 255;
+    --color-gray-700: 198, 212, 255;
+    --color-gray-800: 222, 233, 255;
+    --color-gray-900: 245, 250, 255;
+
+    --shadow-soft: 0 2px 10px rgba(0, 0, 0, 0.35);
+    --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.45);
+    --shadow-elevated: 0 20px 60px rgba(0, 0, 0, 0.6);
+  }
+
+  a {
+    @apply no-underline;
+  }
+
+  body {
+    @apply font-body text-body transition-colors duration-200;
+    background: linear-gradient(180deg, #fafafa 0%, #f4f4f5 50%, #ededee 100%);
+    min-height: 100vh;
+  }
+
+  [data-theme='dark'] body {
+    background: rgb(var(--color-light));
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
+}
+
+@import './custom-plugins.css';
+@import './rich-text-editor.css';
+
+/* ===============================
+   PREMIUM COMPONENT UTILITIES
+   =============================== */
+
+.bg-gray-100 {
+  background: linear-gradient(180deg, #fafafa 0%, #f4f4f5 100%) !important;
+}
+
+.text-main {
+  display: none !important;
+}
+
+.premium-card {
+  @apply p-6 rounded-2xl bg-white/80 backdrop-blur-md transition-all duration-300 border border-gray-200/70;
+  box-shadow: var(--shadow-card);
+}
+
+.premium-select {
+  @apply block w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 focus:outline-none transition-all;
+}
+
+.premium-edit-btn {
+  @apply absolute top-[27px] right-px z-10 flex h-[46px] w-11 items-center justify-center rounded-tr rounded-br border-l border-border-base bg-white text-body transition hover:text-heading;
+}
+
+.premium-preview-btn {
+  @apply inline-flex h-12 items-center justify-center px-5 border border-accent text-accent rounded-md transition-all hover:bg-accent hover:text-white;
+}
+
+/* ========== Premium Motion ========== */
+
+.transition-smooth {
+  @apply transition-all duration-200 ease-out;
+}
+
+.transition-premium {
+  @apply transition-all duration-300;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-lift {
+  box-shadow: var(--shadow-card);
+  @apply transition-premium hover:shadow-elevated hover:-translate-y-0.5;
+}
+
+/* ========== Surfaces ========== */
+
+.card-premium {
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(229, 231, 235, 0.8);
+  border-radius: var(--radius-card);
+  @apply bg-white transition-premium;
+}
+
+.card-premium:hover {
+  box-shadow: var(--shadow-elevated);
+}
+
+[data-theme='dark'] .card-premium {
+  @apply border-gray-700/60 bg-gray-800/60;
+}
+
+.surface {
+  @apply bg-white/85 backdrop-blur-sm border border-gray-200/80 rounded-2xl;
+  box-shadow: var(--shadow-sm);
+}
+
+.surface-elevated {
+  box-shadow: var(--shadow-elevated);
+  @apply bg-white border border-gray-200/80 rounded-2xl;
+}
+
+/* ========== Animations ========== */
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.animate-slideDown {
+  animation: slideDown 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ========== Typography Premium ========== */
+
+.text-display {
+  @apply font-semibold tracking-tight text-gray-900;
+  letter-spacing: -0.02em;
+}
+
+.text-caption {
+  @apply text-sm text-gray-500 font-medium;
+}

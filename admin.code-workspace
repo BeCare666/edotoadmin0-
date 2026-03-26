@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../edoto"
+		},
+		{
+			"path": "../edoto-api"
+		}
+	]
+}

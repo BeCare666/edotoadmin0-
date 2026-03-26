@@ -1,0 +1,74 @@
+{
+    "order": {
+        "confirmed": {
+            "title": "Order Confirmed",
+            "message": "Your order {{orderId}} has been successfully confirmed."
+        },
+        "new": {
+            "title": "New Order Received",
+            "message": "You have received a new order {{orderId}}."
+        },
+        "shipped": {
+            "title": "Order Shipped",
+            "message": "Your order {{orderId}} has been shipped."
+        },
+        "delivered": {
+            "title": "Order Delivered",
+            "message": "Your order {{orderId}} has been delivered."
+        },
+        "cancelled": {
+            "title": "Order Cancelled",
+            "message": "Your order {{orderId}} has been cancelled."
+        },
+        "cancelled.seller": {
+            "title": "Order Cancelled",
+            "message": "Order {{orderId}} has been cancelled by the customer."
+        }
+    },
+    "payment": {
+        "failed": {
+            "title": "Payment Failed",
+            "message": "Payment for order {{orderId}} has failed."
+        },
+        "refunded": {
+            "title": "Payment Refunded",
+            "message": "Payment for order {{orderId}} has been refunded."
+        }
+    },
+    "product": {
+        "backinstock": {
+            "title": "Product Back In Stock",
+            "message": "The product {{productName}} is back in stock."
+        },
+        "review": {
+            "title": "New Review",
+            "message": "A new review has been posted for product {{productName}}."
+        }
+    },
+    "promotion": {
+        "new": {
+            "title": "New Promotion Available",
+            "message": "Check out the promotion: {{promo}}"
+        }
+    },
+    "reminder": {
+        "cart": {
+            "abandoned": {
+                "title": "Abandoned Cart",
+                "message": "You have {{count}} item(s) pending in your cart."
+            }
+        }
+    },
+    "system": {
+        "VENDOR_CREATED_TITLE": "New Vendor Created",
+        "VENDOR_CREATED_MESSAGE": "Your shop {{shop_name}} has been successfully created.",
+        "SHOP_APPROVED_TITLE": "Shop Approved",
+        "SHOP_APPROVED_MESSAGE": "Your shop {{shop_name}} has been approved.",
+        "SHOP_DISAPPROVED_TITLE": "Shop Disapproved",
+        "SHOP_DISAPPROVED_MESSAGE": "Your shop {{shop_name}} has been disapproved.",
+        "welcome": {
+            "title": "Welcome",
+            "message": "You have been added to the shop {{shop_name}}."
+        }
+    }
+}

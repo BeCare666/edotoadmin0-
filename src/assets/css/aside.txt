@@ -1,0 +1,130 @@
+@media (min-width: 1024px) {
+
+  /* Base ultra premium */
+  /* Style appliqué à tous les aside */
+  aside {
+    background: linear-gradient(180deg, #0b0b0d, #111113, #18181b);
+    backdrop-filter: blur(12px);
+    padding: 18px 14px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: all 0.35s cubic-bezier(0.4, 0.0, 0.2, 1);
+    color: #fff !important;
+  }
+
+  /* ❌ EXCLUSION : reset l’aside dans .upload */
+  .upload aside {
+    background: none !important;
+    backdrop-filter: none !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    color: green !important;
+
+  }
+
+  .upload aside span {
+    color: green !important;
+  }
+
+  .upload aside svg {
+    color: green !important;
+  }
+
+  aside * {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: inherit !important;
+    box-shadow: none !important;
+  }
+
+
+
+  /* Neutralise tous les états (hover, focus, active, expanded, selected) */
+  aside *:hover,
+  aside *:focus,
+  aside *:focus-visible,
+  aside *:active,
+  aside *[aria-expanded="true"],
+  aside *[aria-selected="true"],
+  aside *:visited {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  aside a {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: white !important;
+  }
+
+  aside a:hover {
+    background: transparent !important;
+    background-color: transparent !important;
+    color: black !important;
+  }
+
+  aside * {
+    color: #fff !important;
+    font-weight: 300;
+  }
+
+  /* Icônes SVG premium */
+  aside svg {
+    width: 20px;
+    height: 20px;
+    stroke: #ffffff;
+    stroke-width: 1.5;
+    fill: none;
+    opacity: 0.85;
+    transition: all 0.3s ease;
+  }
+
+  /* Structure des liens */
+  aside a,
+  aside button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    letter-spacing: 0.2px;
+    transition: all 0.28s cubic-bezier(0.4, 0.0, 0.2, 1);
+    background: transparent;
+  }
+
+
+
+  /* Icône au survol -> glow subtil */
+  aside a:hover svg,
+  aside button:hover svg {
+    opacity: 1;
+    stroke: #ffffff;
+    filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.35));
+  }
+
+  /* Scrollbar premium */
+  aside::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  aside::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+  }
+
+  aside::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* Séparateur premium */
+  aside hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0));
+    margin: 14px 0;
+  }
+}

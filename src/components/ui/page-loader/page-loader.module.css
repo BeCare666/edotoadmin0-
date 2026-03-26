@@ -1,0 +1,80 @@
+.loaderContainer {
+	position: fixed;
+	/* Pour couvrir tout l'écran */
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	background-color: white;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	z-index: 9999;
+	/* Très élevé pour être au-dessus de tout */
+}
+
+.loaderContainer .loader {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.logo {
+	width: 260px;
+	height: auto;
+}
+
+.text {
+	color: white;
+	font-weight: bold;
+	margin-top: 1.5rem;
+	margin-bottom: 1rem;
+	opacity: 0 !important;
+}
+
+.textspin {
+	opacity: 0 !important;
+}
+
+.dots span {
+	display: inline-block;
+	margin: 0 6px;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background-color: #ffcc00;
+	animation: bounce 1.5s infinite ease-in-out;
+}
+
+.dots span:nth-child(1) {
+	animation-delay: 0s;
+	background-color: #6b362a;
+}
+
+.dots span:nth-child(2) {
+	animation-delay: 0.2s;
+	background-color: #a35c29;
+}
+
+.dots span:nth-child(3) {
+	animation-delay: 0.4s;
+	background-color: #f0b24c;
+}
+
+.dots span:nth-child(4) {
+	animation-delay: 0.6s;
+	background-color: #ffdd66;
+}
+
+@keyframes bounce {
+
+	0%,
+	100% {
+		transform: translateY(0);
+	}
+
+	50% {
+		transform: translateY(-12px);
+	}
+}
