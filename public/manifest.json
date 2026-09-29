@@ -1,8 +1,8 @@
 {
-	"name": "Pixer - React Laravel Multivendor Digital  Marketplace",
-	"short_name": "Pixer",
+	"name": "E·Doto Family — Administration",
+	"short_name": "E·Doto Admin",
 	"theme_color": "#ffffff",
-	"background_color": "#004740",
+	"background_color": "#1F1B16",
 	"display": "fullscreen",
 	"orientation": "portrait",
 	"scope": "/",

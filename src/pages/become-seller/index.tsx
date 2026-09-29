@@ -1,47 +1,26 @@
-import BecomeSellerInfoForm from '@/components/become-seller/become-seller-form';
 import Card from '@/components/common/card';
 import AdminLayout from '@/components/layouts/admin';
-import { BackToTopProvider } from '@/components/ui/back-to-top/back-to-top-context';
-import ErrorMessage from '@/components/ui/error-message';
-import Loader from '@/components/ui/loader/loader';
-import { useBecomeSellerQuery } from '@/data/become-seller';
-import { useSettingsQuery } from '@/data/settings';
 import { adminOnly } from '@/utils/auth-utils';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useRouter } from 'next/router';
 
+// Inscription des vendeurs fermée pour l'instant (décision du 25/09/2026).
+// L'ancien formulaire (components/become-seller/become-seller-form) enregistrait via POST became-seller,
+// route qui fait passer le compte connecté au rôle vendeur : il reste en place pour la réouverture.
 export default function BecomeSeller() {
   const { t } = useTranslation();
-  const { locale } = useRouter();
-
-  const { becomeSellerData, loading, error } = useBecomeSellerQuery({
-    language: locale!,
-  });
-
-  const { settings, loading: loadingSettings } = useSettingsQuery({
-    language: locale!,
-  });
-
-  if (loading || loadingSettings)
-    return <Loader text={t('common:text-loading')} />;
-  if (error) return <ErrorMessage message={error.message} />;
-
   return (
     <>
-      <Card className="mb-8 flex flex-col items-center xl:flex-row">
-        <div className="mb-4 md:w-1/4 xl:mb-0">
-          <h1 className="before:content-'' relative text-lg font-semibold text-heading before:absolute before:-top-0.5 before:h-8 before:rounded-tr-md before:rounded-br-md before:bg-accent ltr:before:-left-8 rtl:before:-right-8 xl:before:w-1">
-            {t('form:become-seller-form-title')}
-          </h1>
-        </div>
+      <Card className="mb-8">
+        <h1 className="text-lg font-semibold text-heading">{t('form:become-seller-form-title')}</h1>
       </Card>
-      <BackToTopProvider>
-        <BecomeSellerInfoForm
-          becomeSellerData={becomeSellerData}
-          settings={settings}
-        />
-      </BackToTopProvider>
+      <Card className="text-center">
+        <p className="text-base font-semibold text-heading">Inscription des vendeurs bientôt disponible.</p>
+        <p className="mt-2 text-sm text-body">
+          Pour l&apos;instant, seule la boutique E·Doto publie des produits. Les vendeurs pourront plus tard
+          s&apos;inscrire, créer leur boutique et vendre.
+        </p>
+      </Card>
     </>
   );
 }

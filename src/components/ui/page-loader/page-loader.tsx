@@ -1,20 +1,17 @@
 import styles from './page-loader.module.css';
 
+// Écran de chargement : emblème E·Doto (le même que sur le site), nom et barre de progression
 export default function PageLoader() {
   return (
-    <div className={styles.loaderContainer}>
-      <img
-        src="https://edotofamily.netlify.app/images/edotofamily6.1.png"
-        alt="logo"
-        className={styles.logo}
-      />
-       
-      <p className={styles.textspin}></p>
-      <p className={styles.textspin}></p>
-      <p className={styles.textspin}></p>
-      <div className={styles.dots}>
- 
+    <div className={styles.loaderContainer} role="status" aria-live="polite">
+      <img src="/logo/edoto-emblem.png" alt="E·Doto Family" className={styles.logo} />
+      <p className={styles.brand}>
+        E·Doto <span>Family</span>
+      </p>
+      <div className={styles.bar} aria-hidden="true">
+        <span />
       </div>
+      <span className={styles.srOnly}>Chargement…</span>
     </div>
   );
 }

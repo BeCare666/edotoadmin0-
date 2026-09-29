@@ -138,6 +138,11 @@ export const Routes = {
   vendorList: '/users/vendors',
   pendingVendorList: '/users/vendors/pending',
   customerList: '/users/customer',
+  pickupPoints: '/pickup-points',
+  customDeliveries: '/custom-deliveries',
+  commissions: '/commissions',
+  sponsors: '/sponsors',
+  sponsorExports: '/sponsor-exports',
   myStaffs: '/users/my-staffs',
   vendorStaffs: '/users/vendor-staffs',
   flashSale: {

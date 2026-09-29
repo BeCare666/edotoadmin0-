@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next';
 import Link from '@/components/ui/link';
 import Image from 'next/image';
 import { siteSettings } from '@/settings/site.settings';
+import emblem from '../../../public/logo/edoto-emblem.png';
 
 type LoginFormCardProps = {
   children: React.ReactNode;
@@ -30,14 +31,14 @@ export default function LoginFormCard({ children, headerMessage }: LoginFormCard
           href={siteSettings?.logo?.href ?? '/'}
           className="inline-block focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition-opacity hover:opacity-90"
         >
-          <Image
-            src={logoUrl}
-            alt={logoAlt}
-            width={logoWidth}
-            height={logoHeight}
-            className="h-auto w-auto object-contain"
-            priority
-          />
+          <span className="flex flex-col items-center gap-3">
+            <span className="relative h-16 w-16">
+              <Image src={emblem} alt="E·Doto Family" fill sizes="64px" className="object-contain" priority />
+            </span>
+            <span className="edoto-serif text-2xl tracking-tight text-[#1F1B16]">
+              E·Doto <span className="text-[#C2185B]">Family</span>
+            </span>
+          </span>
         </Link>
         {headerMessage ? (
           <p className="mt-5 text-sm italic text-body">{headerMessage}</p>

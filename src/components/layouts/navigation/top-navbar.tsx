@@ -10,7 +10,11 @@ import Alert from '@/components/ui/alert';
 import CountdownTimer from '@/components/ui/countdown-timer';
 import LinkButton from '@/components/ui/link-button';
 import Loader from '@/components/ui/loader/loader';
-import Logo from '@/components/ui/logox';
+import Link from '@/components/ui/link';
+import Image from 'next/image';
+import emblem from '../../../../public/logo/edoto-emblem.png';
+import { MenuNavIcon, SearchNavIcon } from '@/components/icons/edoto-nav-icons';
+import { useShellOffsets } from '@/components/layouts/edoto-sidebar';
 import { useModalAction } from '@/components/ui/modal/modal.context';
 import { Config } from '@/config';
 import { Routes } from '@/config/routes';
@@ -66,6 +70,7 @@ const Navbar = () => {
     checkIsMaintenanceModeStart,
   );
   const { width } = useWindowSize();
+  const { left: shellLeft } = useShellOffsets();
   const { settings, loading } = useSettingsQuery({ language: locale! });
   const [notifications, setNotifications] = useState({
     data: [],
@@ -175,7 +180,12 @@ const Navbar = () => {
   }
 
   return (
-    <header className="fixed top-0 z-40 w-full bg-white/90 backdrop-blur-xl border-b border-gray-200/80 shadow-soft">
+    <header
+      className={cn(
+        'edoto-topbar fixed top-0 right-0 left-0 z-40 transition-[left,right] duration-300 ease-out',
+        shellLeft,
+      )}
+    >
       {width >= RESPONSIVE_WIDTH && isMaintenanceMode ? (
         <Alert
           message={
@@ -210,87 +220,47 @@ const Navbar = () => {
       ) : (
         ''
       )}
-      {/*px-5 md:px-8*/}
-      <nav className="flex items-center px-5 md:px-0">
-        <div className="relative flex w-full flex-1 items-center">
-          <div className="flex items-center">
-            <motion.button
-              whileTap={{ scale: 0.88 }}
-              onClick={toggleSidebar}
-              className=" text-gray-200 group flex h-5 w-5 shrink-0 cursor-pointer flex-col justify-center space-y-1 me-4 focus:text-accent focus:outline-none lg:hidden"
-            >
-              <span
-                className={cn(
-                  'h-0.5 rounded-full bg-gray-600 transition-[width] group-hover:bg-accent',
-                  miniSidebar ? 'w-full' : 'w-2/4',
-                )}
-              />
-              <span className="h-0.5 w-full rounded-full bg-gray-600 group-hover:bg-accent" />
-              <span className="h-0.5 w-3/4 rounded-full bg-gray-600 transition-[width] group-hover:bg-accent" />
-            </motion.button>
-            <div
-              className={cn(
-                'text-gray-200 flex h-16 shrink-0 items-center justify-center transition-[width] duration-300 lg:h-[76px] lg:border-solid lg:border-gray-200/80 lg:me-8 lg:border-e',
-                miniSidebar ? 'lg:w-[96px]' : 'lg:w-[289px]',
-              )}
-            >
-              <Logo className="relative h-10 w-full max-w-[220px] lg:h-20 mt-1.5" />
-            </div>
-            <button
-              className="group hidden h-5 w-5 shrink-0 cursor-pointer flex-col justify-center space-y-1 me-6 "
-              onClick={() => setMiniSidebar(!miniSidebar)}
-            >
-              <span
-                className={cn(
-                  'h-0.5 rounded-full bg-gray-600 transition-[width] group-hover:bg-accent',
-                  miniSidebar ? 'w-full' : 'w-2/4',
-                )}
-              />
-              <span className="h-0.5 w-full rounded-full bg-gray-600 group-hover:bg-accent" />
-              <span
-                className={cn(
-                  'h-0.5 rounded-full bg-gray-600 transition-[width] group-hover:bg-accent',
-                  miniSidebar ? 'w-full' : 'w-3/4',
-                )}
-              />
-            </button>
-          </div>
-          <div
-            className="relative ml-auto mr-1.5 flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full border border-gray-200 bg-gray-50 py-4 text-gray-600 hover:border-transparent hover:border-gray-200 hover:bg-white hover:text-accent sm:mr-6 lg:hidden xl:hidden"
+      {/* En-tête E·Doto : même présentation que le dashboard des points de retrait */}
+      <nav className="flex h-16 items-center gap-3 px-4 sm:gap-4 sm:px-8 lg:h-20">
+        <motion.button
+          whileTap={{ scale: 0.92 }}
+          onClick={toggleSidebar}
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#F6F1EA] text-[#3B342D] transition hover:bg-[#EFE7DC] lg:hidden"
+          aria-label="Ouvrir le menu"
+        >
+          <MenuNavIcon className="h-5 w-5" />
+        </motion.button>
+        <Link href={Routes.dashboard} className="flex min-w-0 items-center gap-2 lg:hidden">
+          <span className="relative h-8 w-8 shrink-0">
+            <Image src={emblem} alt="E·Doto Family" fill sizes="32px" className="object-contain" priority />
+          </span>
+          <span className="edoto-serif hidden truncate text-lg text-[#1F1B16] sm:block">
+            E·Doto <span className="text-[#C2185B]">Family</span>
+          </span>
+        </Link>
+
+        <div className="relative hidden min-w-0 max-w-xl flex-1 lg:block">
+          <SearchBar />
+        </div>
+
+        <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
+          <button
+            className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#F6F1EA] text-[#3B342D] transition hover:bg-[#EFE7DC] lg:hidden"
             onClick={handleClick}
+            aria-label={t('common:text-search')}
           >
-            <SearchIcon className="h-4 w-4" />
-          </div>
-          <div className="relative hidden w-full max-w-[710px] py-4 me-6 lg:block 2xl:me-auto">
-            <SearchBar />
-          </div>
-          <div className="hidden lg:flex items-center justify-between bg-white">
-            {/** ToggleButton (Actif/Inactif) masqué pour super admin */}
-            { /**<NotificationBell />**/}
-          </div>
-          <div className="flex shrink-0 grow-0 basis-auto items-center">
-            {hasAccess(adminAndOwnerOnly, permissions) && (
-              <>
-                {false && (
-                  <div className="hidden border-gray-200/80 px-6 py-5 border-e 2xl:block">
-                    <LinkButton
-                      href={Routes.shop.create}
-                      size="small"
-                      className="px-3.5"
-                    >
-                      {t('common:text-create-shop')}
-                    </LinkButton>
-                  </div>
-                )}
-                <div className="hidden px-6 py-5 2xl:block">
-                  <VisitStore />
-                </div>
-                <div className="hidden relative inline-block shrink-0 grow-0 basis-auto text-left ps-1.5 sm:border-solid sm:border-gray-200 sm:py-5 sm:ps-5 sm:border-s mr-4">
-                  <Notifications />
-                </div>
-              </>
-            )}
-          </div>
+            <SearchNavIcon className="h-[18px] w-[18px]" />
+          </button>
+          {hasAccess(adminAndOwnerOnly, permissions) && (
+            <>
+              <div className="hidden 2xl:block">
+                <VisitStore />
+              </div>
+              <div className="hidden">
+                <Notifications />
+              </div>
+            </>
+          )}
 
           {enableMultiLang ? <LanguageSwitcher /> : <LanguageSwitcher />}
 

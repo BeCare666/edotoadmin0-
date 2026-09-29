@@ -45,13 +45,17 @@ const BarChart = ({
         size: [0, 0],
       },
       colors: colors,
+      grid: {
+        borderColor: '#F1ECE4',
+        strokeDashArray: 4,
+      },
       xaxis: {
         labels: {
           show: true,
           style: {
-            colors: '#1F2937',
-            fontSize: '14px',
-            fontFamily: "'Lato', sans-serif",
+            colors: '#9A8E80',
+            fontSize: '12px',
+            fontFamily: 'Inter, sans-serif',
           },
         },
         axisBorder: {
@@ -67,9 +71,9 @@ const BarChart = ({
         labels: {
           show: true,
           style: {
-            color: '#1F2937',
-            fontSize: '14px',
-            fontFamily: "'Lato', sans-serif",
+            colors: '#9A8E80',
+            fontSize: '12px',
+            fontFamily: 'Inter, sans-serif',
           },
         },
       },
@@ -107,14 +111,14 @@ const BarChart = ({
   };
 
   return (
-    <div className="h-full w-full overflow-hidden rounded-lg bg-white p-6 shadow-sm md:p-7">
-      <div className="mb-5 flex items-center justify-between">
-        <h3 className="before:content-'' relative mt-1 bg-light text-lg font-semibold text-heading before:absolute before:-top-px before:h-7 before:w-1 before:rounded-tr-md before:rounded-br-md before:bg-accent ltr:before:-left-6 rtl:before:-right-6 md:before:-top-0.5 md:ltr:before:-left-7 md:rtl:before:-right-7 lg:before:h-8">
+    <div className="h-full w-full overflow-hidden rounded-3xl border border-[#EDE6DC] bg-white/90 p-6 shadow-[0_1px_2px_rgba(60,40,20,0.04),0_12px_32px_-18px_rgba(60,40,20,0.18)]">
+      <div className="mb-4 flex items-center justify-between">
+        <h3 className="edoto-serif text-lg text-[#1F1B16]">
           {widgetTitle}
         </h3>
 
         <div className="flex flex-col">
-          <span className="text-lg font-semibold text-green-500">
+          <span className="text-lg font-semibold text-[#3F6B45]">
             {prefix}
             {totalValue}
           </span>

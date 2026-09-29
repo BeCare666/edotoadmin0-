@@ -1,6 +1,6 @@
 import Link from '@/components/ui/link';
 import { getIcon } from '@/utils/get-icon';
-import * as sidebarIcons from '@/components/icons/sidebar';
+import { edotoNavIcons as sidebarIcons } from '@/components/icons/edoto-nav-icons';
 import { useUI } from '@/contexts/ui.context';
 import { useRouter } from 'next/router';
 import cn from 'classnames';
@@ -61,10 +61,10 @@ function SidebarShortItem({
                     query: { parents: label },
                   }}
                   className={cn(
-                    'relative flex w-full cursor-pointer items-center rounded-lg py-2 text-sm text-start focus:text-accent',
+                    'relative flex w-full cursor-pointer items-center rounded-xl px-3 py-2 text-sm text-start transition-colors',
                     sanitizedPath === itemHref
-                      ? 'bg-transparent font-medium text-accent-hover'
-                      : 'text-body-dark hover:text-accent focus:text-accent',
+                      ? 'bg-[#FCE8F0] font-medium text-[#C2185B]'
+                      : 'text-[#3B342D] hover:bg-[#F6F1EA] hover:text-[#1F1B16]',
                   )}
                   title={t(item?.label)}
                   onClick={() => closeSidebar()}
@@ -77,19 +77,21 @@ function SidebarShortItem({
         </>
       )}
       isPopover={true}
+      className="!w-60 !rounded-2xl border border-[#EDE6DC] !bg-[#FFFDF9] !p-2 text-start"
       isOpen={dropdown}
       placement="left"
     >
       <div
         className={cn(
-          'relative flex w-full cursor-pointer items-center px-3 py-2.5 text-sm text-gray-600 before:absolute before:-right-5 before:top-0 before:h-full before:w-5 before:content-[""]',
-          miniSidebar ? 'hover:text-accent ltr:pl-3 rtl:pr-3' : null,
+          'relative flex w-full cursor-pointer items-center justify-center rounded-2xl py-3 text-sm text-[#D8CFC3] transition-colors duration-200 before:absolute before:-right-5 before:top-0 before:h-full before:w-5 before:content-[""] hover:bg-white/[0.06] hover:text-white',
+          dropdown && 'bg-white/[0.06] text-white',
         )}
+        aria-label={label}
       >
         {getIcon({
           iconList: sidebarIcons,
           iconName: icon,
-          className: 'w-5 h-5',
+          className: 'w-[18px] h-[18px]',
         })}
       </div>
     </AdvancePopover>
@@ -176,17 +178,19 @@ const SidebarItem = ({
         <motion.div
           initial={false}
           className={cn(
-            'group cursor-pointer rounded-xl px-3 py-2.5 text-gray-700 transition-colors duration-200 hover:bg-gray-100/80 focus:text-accent',
-            isOpen ? 'bg-gray-100/80 font-medium text-gray-900' : '',
+            'group cursor-pointer rounded-2xl px-4 py-3 transition-colors duration-200',
+            isOpen
+              ? 'bg-white/[0.08] text-white'
+              : 'text-[#D8CFC3] hover:bg-white/[0.06] hover:text-white',
           )}
           onClick={onClick}
         >
-          <div className={cn('flex w-full items-center text-sm')}>
-            <span className="text-gray-600">
+          <div className={cn('flex w-full items-center gap-3 text-sm')}>
+            <span className={cn('shrink-0', isOpen ? 'text-[#FF6EA9]' : '')}>
               {getIcon({
                 iconList: sidebarIcons,
                 iconName: icon,
-                className: 'w-5 h-5 me-3',
+                className: 'w-[18px] h-[18px]',
               })}
             </span>
             <span
@@ -224,8 +228,8 @@ const SidebarItem = ({
               }}
               className={miniSidebar ? 'relative' : '!mt-0'}
             >
-              <div className="pt-2 ltr:pl-5 rtl:pr-5">
-                <div className="space-y-1 border-0 border-l border-dashed border-slate-300 ltr:pl-1 rtl:pr-1">
+              <div className="pb-1 pt-1.5 ltr:pl-[26px] rtl:pr-[26px]">
+                <div className="space-y-0.5 border-0 border-white/10 ltr:border-l ltr:pl-2 rtl:border-r rtl:pr-2">
                   {childMenu?.map((item: any, index: number) => {
                     if (
                       shop &&
@@ -245,15 +249,21 @@ const SidebarItem = ({
                           }}
                           as={itemHref}
                           className={cn(
-                            'relative flex w-full cursor-pointer items-center rounded-lg py-2 px-5 text-sm text-start before:absolute before:-left-0.5 before:top-[18px] before:h-px before:w-3 before:border-t before:border-dashed before:border-gray-300 before:content-[""] focus:text-accent',
+                            'relative flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] text-start transition-colors duration-200',
                             sanitizedPath === itemHref
-                              ? 'bg-transparent font-medium text-accent-hover'
-                              : 'text-body-dark hover:text-accent focus:text-accent',
+                              ? 'bg-[#FFFDF9] font-medium text-[#1F1B16] shadow-lg'
+                              : 'text-[#B8AC9E] hover:bg-white/[0.06] hover:text-white',
                           )}
                           title={t(item.label)}
                           onClick={() => closeSidebar()}
                         >
-                          <span>{t(item.label)}</span>
+                          <span
+                            className={cn(
+                              'h-1.5 w-1.5 shrink-0 rounded-full',
+                              sanitizedPath === itemHref ? 'bg-[#C2185B]' : 'bg-white/20',
+                            )}
+                          />
+                          <span className="truncate">{t(item.label)}</span>
                         </Link>
                       </div>
                     );
@@ -269,41 +279,36 @@ const SidebarItem = ({
     <Link
       href={href}
       className={cn(
-        `group flex w-full items-center gap-2.5 rounded-md px-3 py-2.5 text-sm text-gray-700 text-start focus:text-accent ${
-          miniSidebar && width >= RESPONSIVE_WIDTH
-            ? 'hover:text-accent-hover ltr:pl-3 rtl:pr-3'
-            : 'hover:bg-gray-100'
-        }`,
+        'group relative flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm text-start transition-colors duration-200',
+        miniSidebar && width >= RESPONSIVE_WIDTH ? 'justify-center !px-0' : '',
         sanitizedPath === href
-          ? `font-medium !text-accent-hover ${
-              !miniSidebar ? 'bg-accent/10 hover:!bg-accent/10' : ''
-            }`
-          : '',
+          ? 'bg-[#FFFDF9] font-medium text-[#1F1B16] shadow-lg'
+          : 'text-[#D8CFC3] hover:bg-white/[0.06] hover:text-white',
       )}
       title={label}
+      aria-label={miniSidebar && width >= RESPONSIVE_WIDTH ? label : undefined}
+      aria-current={sanitizedPath === href ? 'page' : undefined}
       onClick={() => closeSidebar()}
     >
       {icon ? (
         <span
           className={cn(
-            'transition',
-            sanitizedPath === href
-              ? 'text-accent-hover'
-              : 'text-gray-600 group-focus:text-accent',
-            miniSidebar && width >= RESPONSIVE_WIDTH
-              ? 'group-hover:text-accent'
-              : null,
+            'shrink-0 transition-colors',
+            sanitizedPath === href ? 'text-[#C2185B]' : '',
           )}
         >
           {getIcon({
             iconList: sidebarIcons,
             iconName: icon,
-            className: 'w-5 h-5',
+            className: 'w-[18px] h-[18px]',
           })}
         </span>
       ) : null}
       <span
-        className={cn(miniSidebar && width >= RESPONSIVE_WIDTH ? 'hidden' : '')}
+        className={cn(
+          'flex-1 truncate',
+          miniSidebar && width >= RESPONSIVE_WIDTH ? 'hidden' : '',
+        )}
       >
         {label}
       </span>

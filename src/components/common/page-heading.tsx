@@ -13,7 +13,8 @@ const PageHeading = ({
     <h2
       className={twMerge(
         classNames(
-          "before:content-'' relative text-lg font-semibold text-heading before:absolute before:-top-0.5 before:h-8 before:rounded-tr-md before:rounded-br-md before:bg-accent ltr:before:-left-8 rtl:before:-right-8 md:before:w-1",
+          // Visuel E·Doto : titre en sérif, comme les dashboards point de retrait / sponsor
+          'edoto-serif text-xl font-normal tracking-tight text-[#1F1B16] sm:text-2xl',
           className
         )
       )}

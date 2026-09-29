@@ -81,17 +81,17 @@ export const siteSettings = {
           {
             href: Routes.campaign?.create || '#',
             label: 'sidebar-nav-item-create-campaign',
-            icon: 'InventoryIcon',
+            icon: 'CalendarPlusIcon',
           },
           {
-            href: Routes.campaign?.active || '#',
-            label: 'sidebar-nav-item-active-campaigns',
-            icon: 'InventoryIcon',
+            href: Routes.sponsors || '#',
+            label: 'text-sponsors',
+            icon: 'SponsorIcon',
           },
           {
-            href: Routes.campaign?.upcoming || '#',
-            label: 'sidebar-nav-item-upcoming-campaigns',
-            icon: 'InventoryIcon',
+            href: Routes.sponsorExports || '#',
+            label: 'text-sponsor-exports',
+            icon: 'DownloadIcon',
           },
         ],
       },
@@ -182,6 +182,11 @@ export const siteSettings = {
             icon: 'OrdersIcon',
           },
           {
+            href: Routes.customDeliveries || '#',
+            label: 'text-custom-deliveries',
+            icon: 'TruckIcon',
+          },
+          {
             href: Routes.transaction || '#',
             label: 'text-transactions',
             icon: 'TransactionsIcon',
@@ -225,6 +230,16 @@ export const siteSettings = {
             href: Routes.customerList || '#',
             label: 'text-customers',
             icon: 'CustomersIcon',
+          },
+          {
+            href: Routes.pickupPoints || '#',
+            label: 'text-pickup-points',
+            icon: 'MapPinIcon',
+          },
+          {
+            href: Routes.commissions || '#',
+            label: 'text-pickup-commissions',
+            icon: 'WalletIcon',
           },
         ],
       },

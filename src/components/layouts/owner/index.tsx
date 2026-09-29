@@ -10,7 +10,7 @@ import SideBarMenu from '@/components/layouts/owner/menu';
 import { useWindowSize } from '@/utils/use-window-size';
 import { RESPONSIVE_WIDTH } from '@/utils/constants';
 import { adminOnly, getAuthCredentials, hasAccess } from '@/utils/auth-utils';
-import Scrollbar from '@/components/ui/scrollbar';
+import EdotoSidebar, { useShellOffsets } from '@/components/layouts/edoto-sidebar';
 import {
   checkIsMaintenanceModeComing,
   checkIsMaintenanceModeStart,
@@ -19,8 +19,8 @@ import {
 const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
   children,
 }) => {
-  const [miniSidebar, _] = useAtom(miniSidebarInitialValue);
-  const { locale } = useRouter();
+  const { padding } = useShellOffsets();
+  const { locale, pathname } = useRouter();
   const router = useRouter();
   const dir = locale === 'ar' || locale === 'he' ? 'rtl' : 'ltr';
   const { width } = useWindowSize();
@@ -31,7 +31,7 @@ const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
 
   return (
     <div
-      className="flex flex-col min-h-screen transition-colors duration-150 bg-gray-100"
+      className="flex min-h-screen flex-col bg-[#FAF7F2] transition-colors duration-150"
       dir={dir}
     >
       <Navbar />
@@ -40,50 +40,24 @@ const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
         {!permission ? <SideBarMenu /> : null}
       </MobileNavigation>
 
-      <div className="flex flex-1">
-        <aside
-          className={cn(
-            'text-gray-200 fixed bottom-0 z-10 hidden h-full w-72 shadow transition-[width] duration-300 ltr:left-0 ltr:right-auto rtl:right-0 rtl:left-auto lg:block',
-            width >= RESPONSIVE_WIDTH &&
-              (underMaintenance || underMaintenanceStart)
-              ? 'lg:pt-[8.75rem]'
-              : 'pt-20',
-            miniSidebar && width >= RESPONSIVE_WIDTH ? 'lg:w-24' : 'lg:w-76'
-          )}
-        >
-          <div className="w-full h-full overflow-x-hidden sidebar-scrollbar">
-            <Scrollbar
-              className="w-full h-full"
-              options={{
-                scrollbars: {
-                  autoHide: 'never',
-                },
-                overflow: {
-                  x: 'hidden',
-                },
-              }}
-            >
-              {/** <OwnerInformation />**/}
-              {!permission ? <SideBarMenu /> : null}
-            </Scrollbar>
-          </div>
-        </aside>
-        <main
-          className={cn(
-            'relative flex w-full flex-col justify-start transition-[padding] duration-300',
-            width >= RESPONSIVE_WIDTH &&
-              (underMaintenance || underMaintenanceStart)
-              ? 'lg:pt-[8.75rem]'
-              : 'pt-[72px] lg:pt-20',
-            miniSidebar && width >= RESPONSIVE_WIDTH
-              ? 'ltr:lg:pl-24 rtl:lg:pr-24'
-              : 'ltr:xl:pl-76 rtl:xl:pr-76 ltr:lg:pl-72 rtl:lg:pr-72 rtl:lg:pl-0'
-          )}
-        >
-          <div className="h-full p-5 md:p-8">{children}</div>
-          <Footer />
-        </main>
-      </div>
+      {/* Barre latérale sombre sur toute la hauteur, logo compris */}
+      <EdotoSidebar>
+        {/** <OwnerInformation />**/}
+        {!permission ? <SideBarMenu /> : null}
+      </EdotoSidebar>
+
+      <main
+        className={cn(
+          'relative flex min-h-screen w-full flex-col justify-start transition-[padding] duration-300 ease-out',
+          width >= RESPONSIVE_WIDTH && (underMaintenance || underMaintenanceStart)
+            ? 'lg:pt-[8.75rem]'
+            : 'pt-16 lg:pt-20',
+          padding,
+        )}
+      >
+        <div key={pathname} className="edoto-page h-full flex-1 px-4 pb-10 pt-6 sm:px-8 sm:pt-8">{children}</div>
+        <Footer />
+      </main>
     </div>
   );
 };

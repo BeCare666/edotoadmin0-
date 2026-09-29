@@ -111,21 +111,19 @@ const SearchBar: React.FC<IProps> = ({ }: IProps) => {
         className={cn('fixed inset-0', searchText === '' && 'hidden')}
         onClick={() => setSearchText('')}
       />
-      <div className="relative w-full max-w-lg rounded-3xl">
-        <SearchIcon className="absolute inset-y-0 left-0 my-auto h-4 w-4 " />
-        <div className='opacity-0'></div>
+      <div className="relative w-full">
+        <SearchIcon className="pointer-events-none absolute inset-y-0 my-auto h-[17px] w-[17px] text-[#9A8E80] ltr:left-4 rtl:right-4" />
         <input
           type="text"
-          className="ml-2 w-full bg-transparent border-0 border-b border-gray-700 text-gray-200 placeholder-gray-500 
-             focus:border-indigo-500 focus:ring-0 focus:outline-none transition-colors duration-300
-             py-2 text-sm"
+          className="w-full rounded-2xl border border-transparent bg-[#F6F1EA] py-3 text-sm text-[#1F1B16] placeholder:text-[#9A8E80] transition focus:border-[#E4DBCE] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#FF6EA9]/25 ltr:pl-11 ltr:pr-20 rtl:pr-11 rtl:pl-20"
           placeholder={t('text-top-bar-search-placeholder')}
+          aria-label={t('text-top-bar-search-placeholder')}
           value={searchText}
           onChange={(e) => handleSearch(e?.target?.value)}
         />
         {!isEmpty(searchItem) && (
           <button
-            className="absolute top-1/2 h-auto w-auto -translate-y-1/2 px-0 text-sm font-medium text-gray-500 hover:text-accent-hover ltr:right-4 rtl:left-4"
+            className="absolute top-1/2 h-auto w-auto -translate-y-1/2 px-0 text-xs font-medium text-[#9A8E80] hover:text-[#C2185B] ltr:right-4 rtl:left-4"
             onClick={(e) => {
               e.preventDefault();
               setSearchText('');
@@ -137,7 +135,7 @@ const SearchBar: React.FC<IProps> = ({ }: IProps) => {
       </div>
 
       {!isEmpty(searchItem) ? (
-        <div className="sidebar-scrollbar absolute top-12 z-30 h-[418px] max-h-[418px] w-full max-w-lg rounded-xl border border-solid border-gray-200 bg-white py-4 shadow-box lg:top-[74px]">
+        <div className="sidebar-scrollbar absolute top-full z-30 mt-2 h-[418px] max-h-[418px] w-full overflow-hidden rounded-2xl border border-[#EDE6DC] bg-[#FFFDF9] py-3 shadow-2xl">
           <Scrollbar
             className="max-h-full w-full"
             options={{
@@ -147,7 +145,7 @@ const SearchBar: React.FC<IProps> = ({ }: IProps) => {
             }}
           >
             <div className="flex flex-col">
-              <h4 className="px-6 pb-2 text-sm font-medium text-black xl:text-base">
+              <h4 className="edoto-serif px-5 pb-2 text-base text-[#1F1B16]">
                 {t('text-quick-page-links')}
               </h4>
               <div className="mx-3">
@@ -160,16 +158,16 @@ const SearchBar: React.FC<IProps> = ({ }: IProps) => {
                         setSearchItem([]);
                         setSearchText('');
                       }}
-                      className="group flex items-center rounded-lg py-2.5 px-3 text-sm text-gray-700 transition duration-200 ease-in-out hover:bg-gray-100 hover:text-heading"
+                      className="group flex items-center rounded-xl px-3 py-2.5 text-sm text-[#3B342D] transition duration-200 ease-in-out hover:bg-[#F6F1EA] hover:text-[#1F1B16]"
                     >
-                      <span className="inline-flex shrink-0 items-center justify-center rounded-md border border-gray-200 p-2 text-gray-500 group-hover:border-gray-300">
+                      <span className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#F3EEE7] p-2 text-[#7A6E62] group-hover:text-[#C2185B]">
                         <TermsIcon className="h-5 w-5" />
                       </span>
                       <div className="flex flex-col ltr:pl-3 rtl:pr-3">
                         <span className="whitespace-nowrap font-medium capitalize">
                           {isEmpty(shop) ? t(item.customLabel) : t(item.label)}
                         </span>
-                        <span className="text-gray-500">{item?.href}</span>
+                        <span className="text-xs text-[#9A8E80]">{item?.href}</span>
                       </div>
                     </Link>
                   );

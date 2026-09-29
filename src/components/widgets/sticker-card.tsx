@@ -21,65 +21,60 @@ const StickerCard = ({
 }: StickerCardProps) => {
   const { t } = useTranslation('widgets');
 
+  const tint = color || '#1F1B16';
+
+  // Carte statistique E·Doto : même présentation que les dashboards point de retrait / sponsor
   return (
     <div
       className={twMerge(
-        'group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-gray-200/80 bg-white p-6',
-        'shadow-card transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-elevated hover:border-gray-200'
+        'group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-[#EDE6DC] bg-white/90 p-5',
+        'shadow-[0_1px_2px_rgba(60,40,20,0.04),0_12px_32px_-18px_rgba(60,40,20,0.18)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-16px_rgba(60,40,20,0.25)]',
       )}
     >
-      <div className="flex items-start justify-between gap-4">
+      <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <span className="text-xs font-medium uppercase tracking-wider text-gray-500">
+          <p className="text-xs uppercase tracking-[0.12em] text-[#9A8E80]">
             {t(titleTransKey)}
-          </span>
-          <p className="mt-2 text-2xl font-semibold tabular-nums tracking-tight text-gray-900">
+          </p>
+          <p className="mt-2 truncate text-2xl font-semibold tabular-nums text-[#1F1B16] sm:text-[28px]">
             {price ?? '—'}
           </p>
           {note && (
-            <span className="mt-1 block text-xs text-gray-400">Comparé à {note}</span>
+            <p className="mt-1 text-xs text-[#7A6E62]">Comparé à {note}</p>
           )}
         </div>
-        <div
-          className={twMerge(
-            classNames(
-              'flex h-12 w-12 shrink-0 items-center justify-center rounded-xl',
-              iconClassName
-            )
-          )}
-          style={{
-            backgroundColor: `${color}15`,
-            color: color,
-            boxShadow: `0 0 0 1px ${color}20`,
-          }}
-        >
-          {icon}
-        </div>
+        {icon && (
+          <span
+            className={twMerge(
+              classNames(
+                'flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl [&>svg]:h-5 [&>svg]:w-5',
+                iconClassName,
+              ),
+            )}
+            style={{ backgroundColor: `${tint}14`, color: tint }}
+          >
+            {icon}
+          </span>
+        )}
       </div>
 
       {/* --- Indicateur de tendance --- */}
       {indicator && (
         <div className="mt-4 flex items-center space-x-2 text-sm font-medium">
           {indicator === 'up' && (
-            <span className="flex items-center text-emerald-500">
-              <IosArrowUp width="10px" height="12px" className="inline-block mr-1" />
+            <span className="flex items-center text-[#3F6B45]">
+              <IosArrowUp width="10px" height="12px" className="mr-1 inline-block" />
               {indicatorText}
             </span>
           )}
           {indicator === 'down' && (
-            <span className="flex items-center text-rose-500">
-              <IosArrowDown width="10px" height="12px" className="inline-block mr-1" />
+            <span className="flex items-center text-[#9B2C2C]">
+              <IosArrowDown width="10px" height="12px" className="mr-1 inline-block" />
               {indicatorText}
             </span>
           )}
         </div>
       )}
-
-      <div className="mt-6 h-12 w-full opacity-60">
-        <svg viewBox="0 0 100 30" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" className="h-full w-full">
-          <path d="M0 18 L10 15 L20 16 L30 10 L40 11 L50 8 L60 12 L70 10 L80 14 L90 13 L100 9" />
-        </svg>
-      </div>
 
       {/* --- Lien en bas si défini --- */}
       {link && (
@@ -87,17 +82,11 @@ const StickerCard = ({
           href={link}
           target="_blank"
           rel="noreferrer"
-          className="mt-3 text-xs font-semibold text-indigo-600 hover:text-indigo-800 hover:underline transition-colors"
+          className="mt-3 text-xs font-medium text-[#C2185B] transition-colors hover:underline"
         >
           {linkText}
         </a>
       )}
-
-      {/* --- Glow d’arrière-plan subtil --- */}
-      <div
-        className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-        style={{ background: `radial-gradient(circle, ${color}12 0%, transparent 70%)` }}
-      />
     </div>
   );
 };

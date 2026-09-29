@@ -20,7 +20,7 @@ import {
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import logo from '@/assets/logo/logo.png';
+import logo from '../../../public/logo/edoto-emblem.png';
 
 const loginFormSchema = yup.object().shape({
   email: yup
@@ -98,10 +98,10 @@ const LoginForm = () => {
         <div className="absolute -top-14 left-1/2 -translate-x-1/2 bg-white p-3 rounded-full shadow-lg border border-white/40">
           <Image
             src={logo}
-            alt="Logo"
+            alt="E·Doto Family"
             width={70}
             height={70}
-            className="rounded-full object-cover"
+            className="object-contain"
           />
         </div>
 

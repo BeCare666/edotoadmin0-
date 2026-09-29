@@ -1,80 +1,92 @@
 .loaderContainer {
 	position: fixed;
 	/* Pour couvrir tout l'écran */
-	top: 0;
-	left: 0;
+	inset: 0;
 	width: 100vw;
 	height: 100vh;
-	background-color: white;
+	background-color: #faf7f2;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	gap: 18px;
 	z-index: 9999;
 	/* Très élevé pour être au-dessus de tout */
 }
 
-.loaderContainer .loader {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-}
-
 .logo {
-	width: 260px;
+	width: 112px;
 	height: auto;
+	animation: breathe 1.8s ease-in-out infinite;
 }
 
-.text {
-	color: white;
-	font-weight: bold;
-	margin-top: 1.5rem;
-	margin-bottom: 1rem;
-	opacity: 0 !important;
+.brand {
+	margin: 0;
+	font-family: ui-serif, Georgia, Cambria, 'Times New Roman', serif;
+	font-size: 26px;
+	letter-spacing: -0.01em;
+	color: #1f1b16;
 }
 
-.textspin {
-	opacity: 0 !important;
+.brand span {
+	color: #c2185b;
 }
 
-.dots span {
-	display: inline-block;
-	margin: 0 6px;
-	width: 10px;
-	height: 10px;
-	border-radius: 50%;
-	background-color: #ffcc00;
-	animation: bounce 1.5s infinite ease-in-out;
+.bar {
+	position: relative;
+	width: 140px;
+	height: 3px;
+	border-radius: 999px;
+	background: #ede6dc;
+	overflow: hidden;
 }
 
-.dots span:nth-child(1) {
-	animation-delay: 0s;
-	background-color: #6b362a;
+.bar span {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 40%;
+	border-radius: 999px;
+	background: linear-gradient(90deg, #ff6ea9, #c2185b);
+	animation: slide 1.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
 }
 
-.dots span:nth-child(2) {
-	animation-delay: 0.2s;
-	background-color: #a35c29;
+.srOnly {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	white-space: nowrap;
 }
 
-.dots span:nth-child(3) {
-	animation-delay: 0.4s;
-	background-color: #f0b24c;
-}
-
-.dots span:nth-child(4) {
-	animation-delay: 0.6s;
-	background-color: #ffdd66;
-}
-
-@keyframes bounce {
-
+@keyframes breathe {
 	0%,
 	100% {
-		transform: translateY(0);
+		transform: scale(1);
+		opacity: 1;
 	}
 
 	50% {
-		transform: translateY(-12px);
+		transform: scale(1.05);
+		opacity: 0.85;
+	}
+}
+
+@keyframes slide {
+	0% {
+		transform: translateX(-100%);
+	}
+
+	100% {
+		transform: translateX(250%);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.logo,
+	.bar span {
+		animation: none;
 	}
 }

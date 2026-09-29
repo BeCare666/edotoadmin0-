@@ -90,33 +90,21 @@ const Footer: React.FC<IFooterProp> = ({ className }) => {
 
   return (
     <footer
-      className={`
-        mt-auto
-        bg-white/10
-        backdrop-blur-xl
-        border-t border-black/10 
-        transition-all
-         className="
-        w-full lg:left-22  mt-72
-  "
-        ${className}
-      `}
+      className={`mt-auto border-t border-[#EDE6DC] bg-[#FAF7F2]/90 ${className ?? ''}`}
     >
-      <div className="mx-auto w-full max-w-7xl px-6 py-4 flex flex-col items-center gap-3">
-
-        {/* TEXT */}
-        <span className="text-sm text-gray-600 text-center">
-          ©{date.getFullYear()}{" "}
+      <div className="flex min-h-[3.5rem] flex-col items-center justify-between gap-2 px-4 py-3 text-xs text-[#9A8E80] sm:flex-row sm:px-8">
+        <span className="truncate text-center sm:text-left">
+          © {date.getFullYear()}{' '}
           <Link
-            className="font-medium hover:text-gray-100 transition-colors"
+            className="text-[#3B342D] transition-colors hover:text-[#C2185B]"
             href={siteLink ?? Routes.dashboard}
           >
-            {siteTitle}
+            {siteTitle || 'E·Doto Family'}
           </Link>
-          . {copyrightText}{" "}
+          {copyrightText ? `. ${copyrightText}` : ''}{' '}
           {externalText && (
             <Link
-              className="font-medium hover:text-gray-100 transition-colors"
+              className="text-[#3B342D] transition-colors hover:text-[#C2185B]"
               href={externalLink ?? Routes.dashboard}
             >
               {externalText}
@@ -124,23 +112,17 @@ const Footer: React.FC<IFooterProp> = ({ className }) => {
           )}
         </span>
 
-        {/* SOCIAL ICONS */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4">
           {socialIcons.map((icon) => (
             <Link
               key={icon.name}
               href={icon.href}
-              className="text-gray-400 hover:text-white transition-colors"
+              className="text-[#9A8E80] transition-colors hover:text-[#C2185B] [&>svg]:h-4 [&>svg]:w-4"
               aria-label={icon.name}
             >
               {icon.svg}
             </Link>
           ))}
-        </div>
-
-        {/* VERSION */}
-        <div className="text-xs text-gray-500 tracking- hidden">
-          v{process.env.NEXT_PUBLIC_VERSION}
         </div>
       </div>
     </footer>

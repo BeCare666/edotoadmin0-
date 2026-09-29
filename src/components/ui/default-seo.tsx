@@ -44,9 +44,20 @@ const DefaultSeo = () => {
         },
       ]}
       additionalLinkTags={[
+        // Icônes E·Doto (emblème du site) ; ?v=2 force le navigateur à oublier l'ancienne icône
+        {
+          rel: 'icon',
+          href: '/favicon.ico?v=2',
+          sizes: 'any',
+        },
+        {
+          rel: 'icon',
+          href: '/favicon.png?v=2',
+          type: 'image/png',
+        },
         {
           rel: 'apple-touch-icon',
-          href: 'icons/apple-icon-180.png',
+          href: '/icons/apple-icon-180.png?v=2',
         },
         {
           rel: 'manifest',

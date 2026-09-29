@@ -15,47 +15,48 @@
 
   :root,
   [data-theme='light'] {
-    /* Accent — premium commerce blue */
-    --color-accent: 37, 99, 235;
-    --color-accent-hover: 29, 78, 216;
-    --color-accent-300: 191, 219, 254;
-    --color-accent-400: 147, 197, 253;
-    --color-accent-500: 96, 165, 250;
-    --color-accent-600: 37, 99, 235;
-    --color-accent-700: 29, 78, 216;
+    /* Nouveau visuel E·Doto (25/09/2026) : ivoire, sable, brun profond, accent rose E·Doto */
+    /* Accent — rose E·Doto */
+    --color-accent: 194, 24, 91;
+    --color-accent-hover: 160, 18, 74;
+    --color-accent-300: 252, 232, 240;
+    --color-accent-400: 247, 190, 214;
+    --color-accent-500: 255, 110, 169;
+    --color-accent-600: 194, 24, 91;
+    --color-accent-700: 160, 18, 74;
 
     /* Surfaces */
     --color-light: 255, 255, 255;
-    --color-dark: 17, 24, 39;
-    --color-muted-black: 22, 22, 26;
+    --color-dark: 31, 27, 22;
+    --color-muted-black: 31, 27, 22;
 
-    /* Text hierarchy — premium rose */
-    --text-base: 118, 75, 94;
-    --text-base-dark: 88, 48, 65;
-    --text-muted: 194, 143, 159;
-    --text-muted-light: 237, 200, 215;
-    --text-sub-heading: 141, 81, 104;
-    --text-heading: 99, 39, 60;
-    --text-bolder: 72, 27, 42;
+    /* Texte — brun profond */
+    --text-base: 92, 83, 74;
+    --text-base-dark: 59, 52, 45;
+    --text-muted: 154, 142, 128;
+    --text-muted-light: 216, 207, 195;
+    --text-sub-heading: 90, 80, 70;
+    --text-heading: 31, 27, 22;
+    --text-bolder: 20, 17, 14;
 
-    /* Borders — premium rose */
-    --color-border-50: 255, 244, 248;
-    --color-border-100: 255, 228, 235;
-    --color-border-200: 252, 206, 220;
-    --color-border-base: 245, 182, 200;
-    --color-border-400: 223, 128, 154;
+    /* Bordures — sable */
+    --color-border-50: 250, 247, 242;
+    --color-border-100: 243, 238, 231;
+    --color-border-200: 237, 230, 220;
+    --color-border-base: 228, 219, 206;
+    --color-border-400: 200, 188, 172;
 
-    /* Neutral rose scale */
-    --color-gray-50: 255, 244, 248;
-    --color-gray-100: 255, 228, 235;
-    --color-gray-200: 252, 206, 220;
-    --color-gray-300: 245, 182, 200;
-    --color-gray-400: 223, 128, 154;
-    --color-gray-500: 199, 86, 119;
-    --color-gray-600: 166, 46, 82;
-    --color-gray-700: 132, 28, 62;
-    --color-gray-800: 88, 15, 45;
-    --color-gray-900: 60, 10, 30;
+    /* Neutres chauds */
+    --color-gray-50: 250, 247, 242;
+    --color-gray-100: 243, 238, 231;
+    --color-gray-200: 237, 230, 220;
+    --color-gray-300: 216, 207, 195;
+    --color-gray-400: 184, 172, 158;
+    --color-gray-500: 154, 142, 128;
+    --color-gray-600: 122, 110, 98;
+    --color-gray-700: 92, 83, 74;
+    --color-gray-800: 59, 52, 45;
+    --color-gray-900: 31, 27, 22;
 
     /* Commerce orange — premium CTA alt */
     --color-orange-50: 255, 251, 235;
@@ -77,7 +78,7 @@
     --color-failed: 220, 38, 38;
     --color-out-for-delivery: 79, 70, 229;
 
-    --color-icon: 37, 99, 235;
+    --color-icon: 194, 24, 91;
 
     /* Typography scale */
     --h1: 2.25rem;
@@ -90,11 +91,11 @@
     /* Premium shadows */
     --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.03);
     --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.05), 0 1px 2px rgb(0 0 0 / 0.04);
-    --shadow-card: 0 2px 6px rgb(0 0 0 / 0.05), 0 12px 20px rgb(0 0 0 / 0.06);
-    --shadow-elevated: 0 10px 30px rgb(0 0 0 / 0.10);
-    --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.04);
+    --shadow-card: 0 1px 2px rgb(60 40 20 / 0.04), 0 12px 32px -18px rgb(60 40 20 / 0.18);
+    --shadow-elevated: 0 18px 40px -16px rgb(60 40 20 / 0.25);
+    --shadow-soft: 0 1px 2px rgb(60 40 20 / 0.05);
 
-    --radius-card: 1rem;
+    --radius-card: 1.5rem;
     --radius-button: 0.5rem;
   }
 
@@ -135,7 +136,7 @@
 
   body {
     @apply font-body text-body transition-colors duration-200;
-    background: linear-gradient(180deg, #fafafa 0%, #f4f4f5 50%, #ededee 100%);
+    background: #faf7f2;
     min-height: 100vh;
   }
 
@@ -162,7 +163,7 @@
    =============================== */
 
 .bg-gray-100 {
-  background: linear-gradient(180deg, #fafafa 0%, #f4f4f5 100%) !important;
+  background: #f3eee7 !important;
 }
 
 .text-main {
@@ -170,7 +171,7 @@
 }
 
 .premium-card {
-  @apply p-6 rounded-2xl bg-white/80 backdrop-blur-md transition-all duration-300 border border-gray-200/70;
+  @apply p-6 rounded-3xl bg-white/90 backdrop-blur-md transition-all duration-300 border border-border-200;
   box-shadow: var(--shadow-card);
 }
 
@@ -286,4 +287,53 @@
 
 .text-caption {
   @apply text-sm text-gray-500 font-medium;
+}
+
+/* ===============================
+   NOUVEAU VISUEL E·DOTO — barre latérale sombre, titres en sérif
+   (habillage uniquement : aucune logique modifiée)
+   =============================== */
+.edoto-sidebar {
+  background: #1f1b16 !important;
+}
+/* Menu des vendeurs (layouts/owner/menu.tsx, pas encore utilisé) : textes lisibles sur fond sombre */
+.edoto-sidebar .text-body\/60 { color: #9a8e80 !important; letter-spacing: 0.18em; }
+.edoto-sidebar .text-gray-600,
+.edoto-sidebar .text-gray-700,
+.edoto-sidebar .text-body-dark { color: #d8cfc3 !important; }
+.edoto-sidebar .hover\:bg-gray-100:hover { background: rgba(255, 255, 255, 0.06) !important; color: #ffffff !important; }
+/* Barre de défilement discrète sur fond sombre */
+.edoto-sidebar .os-scrollbar-handle { background: rgba(255, 255, 255, 0.14) !important; }
+.edoto-sidebar .os-scrollbar-handle:hover { background: rgba(255, 255, 255, 0.24) !important; }
+
+.edoto-topbar {
+  background: rgba(250, 247, 242, 0.85) !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid #ede6dc !important;
+  box-shadow: none !important;
+}
+
+.edoto-serif,
+.edoto-heading h1,
+h1.edoto-heading {
+  font-family: ui-serif, Georgia, Cambria, 'Times New Roman', serif !important;
+  letter-spacing: -0.01em;
+}
+
+
+/* Animations du cadre (mêmes courbes que le dashboard des points de retrait) */
+@keyframes edoto-view-in {
+  from { opacity: 0; transform: translateY(8px); }
+  /* transform: none à la fin : les éléments « fixed » des pages (fenêtres, barres de boutons) restent bien placés */
+  to { opacity: 1; transform: none; }
+}
+.edoto-page { animation: edoto-view-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+.edoto-stagger > * { animation: edoto-view-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+.edoto-stagger > *:nth-child(2) { animation-delay: 0.05s; }
+.edoto-stagger > *:nth-child(3) { animation-delay: 0.1s; }
+.edoto-stagger > *:nth-child(4) { animation-delay: 0.15s; }
+.edoto-stagger > *:nth-child(n + 5) { animation-delay: 0.2s; }
+@media (prefers-reduced-motion: reduce) {
+  .edoto-page, .edoto-stagger > * { animation: none; }
 }

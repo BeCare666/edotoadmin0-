@@ -33,22 +33,16 @@ export default function LanguageSwitcher() {
   return (
     <Listbox value={selectedItem} onChange={handleItemClick}>
       {({ open }) => (
-        <div className="min-w-90 relative z-10 py-2 sm:border-gray-200/80 sm:py-3 sm:border-s lg:py-4 lg:pe-6 lg:ms-0">
-          <Listbox.Button className="gap-3r relative flex w-full cursor-pointer items-end rounded px-1.5 py-0.5 text-[13px] font-semibold text-heading text-start focus:outline-none">
-            <span className="hidden lg:block">
-              <span className="text-xs font-medium text-gray-400">
-                {t('common:text-language')}
-              </span>
-              <span className="flex items-center truncate font-medium text-black">
-                {selectedItem ? t(selectedItem.name) : t('common:text-language')}
-              </span>
+        <div className="relative z-10">
+          <Listbox.Button
+            className="flex h-11 cursor-pointer items-center gap-2 rounded-2xl bg-[#F6F1EA] px-3 text-sm text-[#3B342D] transition hover:bg-[#EFE7DC] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6EA9]/40"
+            aria-label={t('common:text-language')}
+          >
+            <WorldIcon className="h-[18px] w-[18px]" />
+            <span className="hidden truncate xl:block">
+              {selectedItem ? t(selectedItem.name) : t('common:text-language')}
             </span>
-            <span className="pointer-events-none absolute bottom-0.5 hidden items-center ltr:right-0 rtl:left-0 lg:flex">
-              <LangSwitcherIcon className="h-4 w-4 text-[#666666]" aria-hidden="true" />
-            </span>
-            <span className="ml-auto flex h-9 w-9 items-center justify-center rounded-full border border-gray-200/80 bg-[#F8F8FA] py-4 text-[#666666] lg:hidden xl:hidden">
-              <WorldIcon className="h-5 w-5" />
-            </span>
+            <LangSwitcherIcon className="hidden h-3.5 w-3.5 text-[#9A8E80] xl:block" aria-hidden="true" />
           </Listbox.Button>
 
           <Transition
@@ -60,13 +54,13 @@ export default function LanguageSwitcher() {
           >
             <Listbox.Options
               static
-              className="absolute right-0 mt-3 max-h-60 w-56 overflow-auto rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm shadow-box lg:mt-4"
+              className="absolute right-0 mt-2 max-h-60 w-56 overflow-auto rounded-2xl border border-[#EDE6DC] bg-[#FFFDF9] px-2 py-1 text-sm shadow-2xl"
             >
               {filterItem?.map((option, index) => (
                 <Listbox.Option
                   key={index}
                   className={({ active }) =>
-                    `${active ? 'text-accent' : 'text-gray-900'} relative cursor-pointer select-none rounded-lg border-b border-dashed border-gray-200 py-2.5 last:border-0`
+                    `${active ? 'bg-[#F6F1EA] text-[#1F1B16]' : 'text-[#3B342D]'} relative cursor-pointer select-none rounded-xl px-3 py-2.5`
                   }
                   value={option}
                 >

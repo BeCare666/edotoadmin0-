@@ -29,6 +29,13 @@ import { BasketIcon } from '@/components/icons/summary/basket';
 import { ChecklistIcon } from '@/components/icons/summary/checklist';
 import Search from '@/components/common/search';
 import DashboardHeader from './dashboardHeader';
+import EdotoOverview from './edoto-overview';
+import {
+  OrdersIcon,
+  RefundIcon,
+  TrendingIcon,
+  WalletIcon,
+} from '@/components/icons/edoto-nav-icons';
 // const TotalOrderByStatus = dynamic(
 //   () => import('@/components/dashboard/total-order-by-status')
 // );
@@ -193,59 +200,52 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-8 lg:space-y-10">
-      {/* Hero + CTA */}
-      <div className="card-premium p-7 md:p-8 lg:p-9 hover-lift">
-        <DashboardHeader
-          actionTitle={t('common:text-create-shop')}
-          actionDescription={t('common:text-dashboard-create-shop-description')}
-          onActionClick={() => router.push(`/shops/create`)}
-          showCreateShopCTA={false}
+    <div className="space-y-6 lg:space-y-8">
+      {/* Accueil */}
+      <DashboardHeader
+        actionTitle={t('common:text-create-shop')}
+        actionDescription={t('common:text-dashboard-create-shop-description')}
+        onActionClick={() => router.push(`/shops/create`)}
+        showCreateShopCTA={false}
+      />
+
+      {/* Chiffres clés (même présentation que les dashboards point de retrait / sponsor) */}
+      <div className="edoto-stagger grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <StickerCard
+          titleTransKey={t('common:total-revenue')}
+          price={total_revenue}
+          color="#3B342D"
+          icon={<WalletIcon />}
+        />
+        <StickerCard
+          titleTransKey={t('common:today-revenue')}
+          price={todays_revenue}
+          color="#C2185B"
+          icon={<TrendingIcon />}
+        />
+        <StickerCard
+          titleTransKey={t('common:refunds')}
+          price={total_refund}
+          color="#8A6A3B"
+          icon={<RefundIcon />}
+        />
+        <StickerCard
+          titleTransKey={t('common:total-orders')}
+          price={cleanNumber}
+          color="#3F6B45"
+          icon={<OrdersIcon />}
         />
       </div>
 
-      {/* Bento: 4 KPI cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="card-premium p-6 hover-lift">
-          <StickerCard
-            titleTransKey={t('common:total-revenue')}
-            price={total_revenue}
-            color="#7C3AED"
-            icon={<svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v8m0 0l3-3m-3 3l-3-3" /></svg>}
-          />
-        </div>
-        <div className="card-premium p-6 lg:p-7 hover-lift">
-          <StickerCard
-            titleTransKey={t('common:today-revenue')}
-            price={todays_revenue}
-            color="#EC4899"
-            icon={<svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 8v8m0 0l3-3m-3 3l-3-3" /></svg>}
-          />
-        </div>
-        <div className="card-premium p-6 lg:p-7 hover-lift">
-          <StickerCard
-            titleTransKey={t('common:refunds')}
-            price={total_refund}
-            color="#0EA5E9"
-            icon={<svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 3h18M3 9h18M3 15h18M3 21h18" /></svg>}
-          />
-        </div>
-        <div className="card-premium p-6 hover-lift">
-          <StickerCard
-            titleTransKey={t('common:total-orders')}
-            price={cleanNumber}
-            color="#F97316"
-            icon={<svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8h18M3 16h18M5 12h14" /></svg>}
-          />
-        </div>
-      </div>
+      {/* Vue d'ensemble E·Doto (nouveau visuel) */}
+      <EdotoOverview />
 
       {/* Chart + Recent Orders */}
 
       <div className="mb-8 flex w-full flex-wrap md:flex-nowrap">
         <ColumnChart
           widgetTitle={t('common:sale-history')}
-          colors={['#6073D4']}
+          colors={['#C2185B']}
           series={salesByYear}
           categories={[
             t('common:january'),

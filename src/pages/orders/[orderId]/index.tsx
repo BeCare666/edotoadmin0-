@@ -2,7 +2,6 @@ import Card from '@/components/common/card';
 import { DownloadIcon } from '@/components/icons/download-icon';
 import Layout from '@/components/layouts/admin';
 import OrderStatusProgressBox from '@/components/order/order-status-progress-box';
-import OrderViewHeader from '@/components/order/order-view-header';
 import Button from '@/components/ui/button';
 import ErrorMessage from '@/components/ui/error-message';
 import ValidationError from '@/components/ui/form-validation-error';
@@ -32,6 +31,10 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useFormatPhoneNumber } from '@/utils/format-phone-number';
+import Link from 'next/link';
+import OtpReveal, { otpState } from '@/components/order/otp-reveal';
+import { fcfa } from '@/components/campaign/campaign-api';
+import { adminOnly } from '@/utils/auth-utils';
 
 type FormValues = {
   order_status: any;
@@ -190,209 +193,174 @@ export default function OrderDetailsPage() {
     },
   ];
 
-  // TODO : this area need to be checked in Pixer
+  const o: any = order;
+  const w = o?.delivery_type === 'CUSTOM' ? o?.custom_delivery : null;
+  const point = o?.pickup_point;
+  const code = otpState(o ?? {});
+  const customer = o?.pickupRowsCustomer;
+  const cardTitle = 'mb-4 edoto-serif text-lg font-semibold text-heading';
 
+  // Nouveau visuel E·Doto + G2 (point de retrait, code masqué). Logique inchangée :
+  // changement de statut, facture, produits et totaux utilisent les mêmes appels qu'avant.
   return (
-    <>
-      <Card className="relative overflow-hidden">
-        <div className="mb-6 -mt-5 -ml-5 -mr-5 md:-mr-8 md:-ml-8 md:-mt-8">
-          <OrderViewHeader order={order} wrapperClassName="px-8 py-4" />
+    <div className="space-y-6">
+      <Card className="flex flex-col gap-5 lg:flex-row lg:items-center">
+        <div className="flex-1">
+          <p className="text-xs uppercase tracking-[0.18em] text-body">{t('form:input-label-order-id')}</p>
+          <h1 className="edoto-serif mt-1 text-2xl font-semibold text-heading md:text-3xl">{order?.tracking_number}</h1>
+          <p className="mt-1 text-sm text-body">
+            {o?.created_at ? new Date(o.created_at).toLocaleString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : ''}
+            {' · '}
+            {t(o?.payment_status)} · {t(o?.order_status)}
+          </p>
         </div>
-        <div className="flex w-full">
-          <Button
-            onClick={handleDownloadInvoice}
-            className="mb-5 bg-blue-500 ltr:ml-auto rtl:mr-auto"
-          >
-            <DownloadIcon className="h-4 w-4 me-3" />
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start">
+          {![OrderStatus.FAILED, OrderStatus.CANCELLED, OrderStatus.REFUNDED].includes(order?.order_status! as OrderStatus) && (
+            <form onSubmit={handleSubmit(ChangeStatus)} className="flex items-start gap-3">
+              <div className="z-20 w-56">
+                <SelectInput
+                  name="order_status"
+                  control={control}
+                  getOptionLabel={(option: any) => t(option.name)}
+                  getOptionValue={(option: any) => option.status}
+                  options={ORDER_STATUS.slice(0, 6)}
+                  placeholder={t(`text-${order?.order_status}`) ?? t('form:input-placeholder-order-status')}
+                />
+                <ValidationError message={t(errors?.order_status?.message)} />
+              </div>
+              <Button loading={updating}>{t('form:button-label-change-status')}</Button>
+            </form>
+          )}
+          <Button onClick={handleDownloadInvoice} variant="outline">
+            <DownloadIcon className="h-4 w-4 me-2" />
             {t('common:text-download')} {t('common:text-invoice')}
           </Button>
         </div>
-
-        <div className="flex flex-col items-center lg:flex-row">
-          <h3 className="mb-8 w-full whitespace-nowrap text-center text-2xl font-semibold text-heading lg:mb-0 lg:w-1/3 lg:text-start">
-            {t('form:input-label-order-id')} - {order?.tracking_number}
-          </h3>
-          {![
-            OrderStatus.FAILED,
-            OrderStatus.CANCELLED,
-            OrderStatus.REFUNDED,
-          ].includes(order?.order_status! as OrderStatus) && (
-              <form
-                onSubmit={handleSubmit(ChangeStatus)}
-                className="flex w-full items-start ms-auto lg:w-2/4"
-              >
-                <div className="z-20 w-full me-5">
-                  <SelectInput
-                    name="order_status"
-                    control={control}
-                    getOptionLabel={(option: any) => t(option.name)}
-                    getOptionValue={(option: any) => option.status}
-                    options={ORDER_STATUS.slice(0, 6)}
-                    placeholder={t(`text-${order?.order_status}`) ?? t('form:input-placeholder-order-status')}
-                  />
-
-                  <ValidationError message={t(errors?.order_status?.message)} />
-                </div>
-                <Button loading={updating}>
-                  <span className="hidden sm:block">
-                    {t('form:button-label-change-status')}
-                  </span>
-                  <span className="block sm:hidden">
-                    {t('form:form:button-label-change')}
-                  </span>
-                </Button>
-              </form>
-            )}
-        </div>
-
-        <div className=" my-5 flex items-center justify-center lg:my-10">
-          <OrderStatusProgressBox
-            orderStatus={order?.order_status as OrderStatus}
-            paymentStatus={order?.payment_status as PaymentStatus}
-          />
-        </div>
-
-        <div className="mb-10">
-          {order ? (
-            <Table
-              //@ts-ignore
-              columns={columns}
-              emptyText={() => (
-                <div className="flex flex-col items-center py-7">
-                  <NoDataFound className="w-52" />
-                  <div className="mb-1 pt-6 text-base font-semibold text-heading">
-                    {t('table:empty-table-data')}
-                  </div>
-                  <p className="text-[13px]">
-                    {t('table:empty-table-sorry-text')}
-                  </p>
-                </div>
-              )}
-              data={order?.products!}
-              rowKey="id"
-              scroll={{ x: 300 }}
-            />
-          ) : (
-            <span>{t('common:no-order-found')}</span>
-          )}
-
-          {order?.parent_id! ? (
-            <div className="flex w-full flex-col space-y-2 border-t-4 border-double border-border-200 px-4 py-4 ms-auto sm:w-1/2 md:w-1/3">
-              <div className="flex items-center justify-between text-sm text-body">
-                <span>{t('common:order-sub-total')}</span>
-                <span>{subtotal}</span>
-              </div>
-              <div className="flex items-center justify-between text-base font-semibold text-heading">
-                <span>{t('common:order-total')}</span>
-                <span>{total}</span>
-              </div>
-            </div>
-          ) : (
-            <>
-              <div className="flex w-full flex-col space-y-2 border-t-4 border-double border-border-200 px-4 py-4 ms-auto sm:w-1/2 md:w-1/3">
-                <div className="flex items-center justify-between text-sm text-body">
-                  <span>{t('common:order-sub-total')}</span>
-                  <span>{sub_total}</span>
-                </div>
-                <div className="flex items-center justify-between text-sm text-body">
-                  <span> {t('text-shipping-charge')}</span>
-                  <span>{shipping_charge}</span>
-                </div>
-                <div className="flex items-center justify-between text-sm text-body">
-                  <span> {t('text-tax')}</span>
-                  <span>{sales_tax}</span>
-                </div>
-                {order?.discount! > 0 && (
-                  <div className="flex items-center justify-between text-sm text-body">
-                    <span>{t('text-discount')}</span>
-                    <span>{discount}</span>
-                  </div>
-                )}
-
-                <div className="flex items-center justify-between text-base font-semibold text-heading">
-                  <span> {t('text-total')}</span>
-                  <span>{total}</span>
-                </div>
-
-                {order?.wallet_point?.amount! && (
-                  <>
-                    <div className="flex items-center justify-between text-sm text-body">
-                      <span> {t('text-paid-from-wallet')}</span>
-                      <span>{wallet_total}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-base font-semibold text-heading">
-                      <span> {t('text-amount-due')}</span>
-                      <span>{amountDue}</span>
-                    </div>
-                  </>
-                )}
-              </div>
-            </>
-          )}
-        </div>
-
-        {order?.note ? (
-          <div>
-            <h2 className="mt-12 mb-5 text-xl font-bold text-heading">
-              Purchase Note
-            </h2>
-            <div className="mb-12 flex items-start rounded border border-gray-700 bg-gray-100 p-4">
-              {order?.note}
-            </div>
-          </div>
-        ) : (
-          ''
-        )}
-
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between">
-          <div className="mb-10 w-full sm:mb-0 sm:w-1/2 sm:pe-8">
-            <h3 className="mb-3 border-b border-border-200 pb-2 font-semibold text-heading">
-              {t('text-order-details')}
-            </h3>
-
-            <div className="flex flex-col items-start space-y-1 text-sm text-body">
-              <span>
-                {formatString(order?.products?.length, t('text-item'))}
-              </span>
-              <span>{order?.delivery_time}</span>
-              <span>
-                {`${t('text-payment-method')}:  ${order?.payment_gateway}`}
-              </span>
-            </div>
-          </div>
-
-          <div className="mb-10 w-full sm:mb-0 sm:w-1/2 sm:pe-8">
-            <h3 className="mb-3 border-b border-border-200 pb-2 font-semibold text-heading">
-              {t('common:billing-address')}
-            </h3>
-
-            <div className="flex flex-col items-start space-y-1 text-sm text-body">
-              <span>{order?.customer_name}</span>
-              {order?.billing_address && (
-                <span>{formatAddress(order.billing_address)}</span>
-              )}
-              {order?.customer_contact && <span>{phoneNumber}</span>}
-            </div>
-          </div>
-
-          <div className="w-full sm:w-1/2 sm:ps-8">
-            <h3 className="mb-3 border-b border-border-200 pb-2 font-semibold text-heading text-start sm:text-end">
-              {t('common:shipping-address')}
-            </h3>
-
-            <div className="flex flex-col items-start space-y-1 text-sm text-body text-start sm:items-end sm:text-end">
-              <span>{order?.customer_name}</span>
-              {order?.shipping_address && (
-                <span>{formatAddress(order.shipping_address)}</span>
-              )}
-              {order?.customer_contact && <span>{phoneNumber}</span>}
-            </div>
-          </div>
-        </div>
       </Card>
-    </>
+
+      <Card className="flex items-center justify-center">
+        <OrderStatusProgressBox orderStatus={order?.order_status as OrderStatus} paymentStatus={order?.payment_status as PaymentStatus} />
+      </Card>
+
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+        <div className="space-y-6 xl:col-span-2">
+          <Card>
+            <h2 className={cardTitle}>{t('table:table-item-products')}</h2>
+            {order ? (
+              <Table
+                //@ts-ignore
+                columns={columns}
+                emptyText={() => (
+                  <div className="flex flex-col items-center py-7">
+                    <NoDataFound className="w-40" />
+                    <div className="mb-1 pt-6 text-base font-semibold text-heading">{t('table:empty-table-data')}</div>
+                  </div>
+                )}
+                data={order?.products!}
+                rowKey="id"
+                scroll={{ x: 300 }}
+              />
+            ) : (
+              <span>{t('common:no-order-found')}</span>
+            )}
+            <div className="mt-4 ms-auto flex w-full flex-col space-y-2 border-t border-border-200 pt-4 sm:w-1/2">
+              <div className="flex justify-between text-sm text-body"><span>{t('common:order-sub-total')}</span><span>{sub_total}</span></div>
+              {!order?.parent_id && (
+                <>
+                  <div className="flex justify-between text-sm text-body"><span>{t('text-shipping-charge')}</span><span>{shipping_charge}</span></div>
+                  <div className="flex justify-between text-sm text-body"><span>{t('text-tax')}</span><span>{sales_tax}</span></div>
+                  {order?.discount! > 0 && <div className="flex justify-between text-sm text-body"><span>{t('text-discount')}</span><span>{discount}</span></div>}
+                </>
+              )}
+              <div className="flex justify-between text-base font-semibold text-heading"><span>{t('text-total')}</span><span>{total}</span></div>
+              {!order?.parent_id && order?.wallet_point?.amount! ? (
+                <>
+                  <div className="flex justify-between text-sm text-body"><span>{t('text-paid-from-wallet')}</span><span>{wallet_total}</span></div>
+                  <div className="flex justify-between text-base font-semibold text-heading"><span>{t('text-amount-due')}</span><span>{amountDue}</span></div>
+                </>
+              ) : null}
+            </div>
+          </Card>
+
+          {order?.note ? (
+            <Card>
+              <h2 className={cardTitle}>Note</h2>
+              <p className="whitespace-pre-line text-sm text-heading">{order?.note}</p>
+            </Card>
+          ) : null}
+        </div>
+
+        <div className="space-y-6">
+          {/* G2 : retrait (point choisi ou livraison à domicile) et code de retrait */}
+          <Card>
+            <h2 className={cardTitle}>Retrait</h2>
+            {w ? (
+              <div className="space-y-1 text-sm">
+                <p className="font-medium text-accent">Livraison à domicile</p>
+                <p className="whitespace-pre-line text-heading">{w.description}</p>
+                <p className="text-body">Tél. client : {w.phone}</p>
+                <p className="text-body">{w.distance_km} km · frais {fcfa(w.fee)}</p>
+                <p className="text-body">
+                  {w.courier_name ? `Zem : ${w.courier_name} (${w.courier_phone})` : 'Aucun zem désigné'}
+                  {' · '}
+                  <Link href="/custom-deliveries" className="text-accent hover:underline">Livraisons à domicile</Link>
+                </p>
+              </div>
+            ) : point ? (
+              <div className="space-y-1 text-sm">
+                <p className="font-medium text-heading">{point.name}</p>
+                <p className="text-body">{point.email}</p>
+                {point.pickup_lat != null && point.pickup_lng != null && (
+                  <a
+                    href={`https://www.openstreetmap.org/?mlat=${point.pickup_lat}&mlon=${point.pickup_lng}#map=18/${point.pickup_lat}/${point.pickup_lng}`}
+                    target="_blank" rel="noopener noreferrer" className="text-accent hover:underline"
+                  >
+                    Voir sur la carte
+                  </a>
+                )}
+              </div>
+            ) : (
+              <p className="text-sm text-body">Point de retrait non choisi.</p>
+            )}
+
+            <div className="mt-5 border-t border-border-200 pt-4">
+              <p className="mb-2 text-xs uppercase tracking-wider text-body">Code de retrait</p>
+              <OtpReveal code={o?.otp_code} />
+              <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
+                <span className={`rounded-full px-2 py-0.5 font-medium ${code.className}`}>{code.label}</span>
+                {code.key === 'active' && o?.otp_expires_at && <span className="text-body">jusqu&apos;au {new Date(o.otp_expires_at).toLocaleString('fr-FR')}</span>}
+                {o?.delivered_at && <span className="text-body">retiré le {new Date(o.delivered_at).toLocaleString('fr-FR')}</span>}
+              </div>
+            </div>
+          </Card>
+
+          <Card>
+            <h2 className={cardTitle}>Client</h2>
+            <div className="space-y-1 text-sm">
+              <p className="text-heading">{customer?.name || order?.customer_name || '—'}</p>
+              {customer?.email && <p className="text-body">{customer.email}</p>}
+              {order?.customer_contact && <p className="text-body">{phoneNumber}</p>}
+              {order?.billing_address && <p className="text-body">{formatAddress(order.billing_address)}</p>}
+              {order?.shipping_address && <p className="text-body">{formatAddress(order.shipping_address)}</p>}
+            </div>
+          </Card>
+
+          <Card>
+            <h2 className={cardTitle}>{t('text-order-details')}</h2>
+            <div className="space-y-1 text-sm text-body">
+              <p>{formatString(order?.products?.length, t('text-item'))}</p>
+              {order?.delivery_time && <p>{order?.delivery_time}</p>}
+              <p>{`${t('text-payment-method')} : ${order?.payment_gateway}`}</p>
+            </div>
+          </Card>
+        </div>
+      </div>
+    </div>
   );
 }
+OrderDetailsPage.authenticate = {
+  permissions: adminOnly,
+};
 OrderDetailsPage.Layout = Layout;
 
 export const getServerSideProps = async ({ locale }: any) => ({
