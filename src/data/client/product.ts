@@ -12,7 +12,7 @@ import { crudFactory } from './curd-factory';
 import { HttpClient } from './http-client';
 
 /** Keys sent only for relations; backend may not have these columns on products table */
-const UPDATE_OMIT_KEYS = ['variations'] as const;
+const UPDATE_OMIT_KEYS = ['variations', 'variation_options', 'in_flash_sale'] as const;
 
 /** Backend peut renvoyer { data: product } (Laravel) ou le produit directement */
 function normalizeProductResponse(
@@ -62,6 +62,8 @@ export const productClient = {
       searchJoin: 'and',
       with: 'shop;type;categories',
       shop_id,
+      // Catégorie (id) lue directement par l'API (table product_categories)
+      ...(categories ? { categories } : {}),
       ...params,
       search: HttpClient.formatSearchParams({
         type,
@@ -72,6 +74,10 @@ export const productClient = {
         status,
       }),
     });
+  },
+  // Compteurs réels des filtres de la liste admin
+  adminFacets(params: { shop_id?: string | number }) {
+    return HttpClient.get<any>(`${API_ENDPOINTS.PRODUCTS}/admin-facets`, params.shop_id ? { shop_id: params.shop_id } : {});
   },
   popular({ shop_id, ...params }: Partial<ProductQueryOptions>) {
     return HttpClient.get<Product[]>(API_ENDPOINTS.POPULAR_PRODUCTS, {

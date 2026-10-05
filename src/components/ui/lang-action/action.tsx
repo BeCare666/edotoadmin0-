@@ -38,7 +38,7 @@ export default function LanguageSwitcher({
     query: { shop },
   } = useRouter();
 
-  const preview = `${process.env.NEXT_PUBLIC_SHOP_URL}/products/preview/${slug}`;
+  const preview = `${process.env.NEXT_PUBLIC_SHOP_URL}/product/${slug}`;
 
   return (
     <>

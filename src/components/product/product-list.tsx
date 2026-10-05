@@ -25,6 +25,7 @@ import { useState } from 'react';
 import TitleWithSort from '@/components/ui/title-with-sort';
 import { Routes } from '@/config/routes';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
+import { PRODUCT_STATUS_LABEL } from '@/components/product/product-status';
 
 export type IProps = {
   products: Product[] | undefined;
@@ -70,7 +71,6 @@ const ProductList = ({
       });
     },
   });
-  console.log('products in ProductList', products);
   let columns = [
     {
       title: t('table:table-item-id'),
@@ -176,19 +176,16 @@ const ProductList = ({
       width: 180,
       onHeaderCell: () => onHeaderClick('price'),
       render(value: string, record: Product) {
-        const saleAmount = Number(record?.sale_price ?? record?.price ?? 0);
-        const unit = record?.unit ?? '';
-
-        // formater le prix manuellement
-        const formattedSalePrice = new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD',
-        }).format(saleAmount);
-
+        // Prix en FCFA ; prix promo affiché avec l'ancien prix barré
+        const price = Number(record?.price ?? 0);
+        const sale = record?.sale_price != null ? Number(record.sale_price) : null;
+        const onSale = sale != null && sale < price;
+        const f = (n: number) => `${Math.round(n).toLocaleString('fr-FR')} FCFA`;
         return (
-          <span className="whitespace-nowrap text-gray-800 dark:text-gray-200">
-            {formattedSalePrice} / {unit}
-          </span>
+          <div className="flex flex-col items-end whitespace-nowrap">
+            <span className="font-semibold text-gray-800 dark:text-gray-200">{f(onSale ? sale! : price)}</span>
+            {onSale && <span className="text-[12px] text-gray-400 line-through">{f(price)}</span>}
+          </div>
         );
       },
 
@@ -236,9 +233,13 @@ const ProductList = ({
             }`}
         >
           <Badge
-            text={status}
+            text={PRODUCT_STATUS_LABEL[status] ?? status}
             color={
-              status.toLowerCase() === 'draft'
+              status === 'publish'
+                ? 'bg-emerald-50 !text-emerald-700'
+                : status === 'unpublish' || status === 'rejected'
+                ? 'bg-gray-100 !text-gray-600'
+                : status.toLowerCase() === 'draft'
                 ? 'bg-yellow-400/10 text-yellow-500'
                 : 'bg-accent bg-opacity-10 !text-accent'
             }

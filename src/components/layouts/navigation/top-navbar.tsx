@@ -46,6 +46,7 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useWindowSize } from 'react-use';
 import AuthorizedMenu from './authorized-menu';
+import EdotoNotificationBell from './edoto-notification-bell';
 
 export const isInArray = (array: Date[], value: Date) => {
   return !!array?.find((item) => {
@@ -262,7 +263,11 @@ const Navbar = () => {
             </>
           )}
 
-          {enableMultiLang ? <LanguageSwitcher /> : <LanguageSwitcher />}
+          {/* Notifications calculées à partir des données réelles (super admin) */}
+          {hasAccess(adminOnly, permissions) && <EdotoNotificationBell />}
+
+          {/* Admin uniquement en français : plus de sélecteur de langue */}
+          {enableMultiLang ? <LanguageSwitcher /> : null}
 
           <AuthorizedMenu />
         </div>

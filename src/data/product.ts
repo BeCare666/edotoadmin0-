@@ -127,7 +127,13 @@ export const useDeleteProductMutation = () => {
       queryClient.invalidateQueries(API_ENDPOINTS.PRODUCTS);
     },
     onError: (error: any) => {
-      toast.error(t(`common:${error?.response?.data.message}`));
+      // L'API renvoie un message lisible en français (ex. produit présent dans des commandes)
+      const message = error?.response?.data?.message;
+      toast.error(
+        typeof message === 'string' && message
+          ? message
+          : 'La suppression a échoué. Réessayez.',
+      );
     },
   });
 };
@@ -165,6 +171,16 @@ export const useProductsQuery = (
     error,
     loading: isLoading,
   };
+};
+
+// Compteurs réels (statuts, catégories, étiquettes, stock, promo, prix) pour les filtres admin
+export const useProductFacetsQuery = (shop_id?: string | number) => {
+  const { data, isLoading } = useQuery<any, Error>(
+    [API_ENDPOINTS.PRODUCTS, 'admin-facets', shop_id ?? 'all'],
+    () => productClient.adminFacets({ shop_id }),
+    { staleTime: 30_000 },
+  );
+  return { facets: data, loading: isLoading };
 };
 
 export const useGenerateDescriptionMutation = () => {

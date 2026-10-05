@@ -203,6 +203,10 @@ export default function CreateOrUpdateProductForm({
     // send if th productis isOrigin
 
     backendInput.is_origin = isOrigin === 'true';
+    // --- Image principale : objet unique attendu (le champ peut renvoyer un tableau) ---
+    if (Array.isArray(backendInput.image)) {
+      backendInput.image = backendInput.image[0] ?? null;
+    }
     // --- Gestion des vidéos (le backend attend un objet unique) ---
     if (Array.isArray(inputValues.video) && inputValues.video.length > 0) {
       backendInput.video = inputValues.video[0];
@@ -212,8 +216,13 @@ export default function CreateOrUpdateProductForm({
 
     // --- Cast des prix ---
     if (backendInput.price) backendInput.price = Number(backendInput.price);
-    if (backendInput.sale_price)
-      backendInput.sale_price = Number(backendInput.sale_price);
+    // Prix promo vide → null (l'API refuse une chaîne vide et null retire la promo)
+    backendInput.sale_price =
+      backendInput.sale_price === '' || backendInput.sale_price == null
+        ? null
+        : Number(backendInput.sale_price);
+    if (backendInput.quantity != null && backendInput.quantity !== '')
+      backendInput.quantity = Number(backendInput.quantity);
 
     // --- Gestion des catégories, sous-catégories et sub-categories ---
     // On transforme les données du front en tableau que le backend attend
@@ -672,7 +681,7 @@ export default function CreateOrUpdateProductForm({
               <div className="ml-auto flex items-center gap-3">
                 {showPreviewButton && currentStep === 4 && (
                   <Link
-                    href={`${process.env.NEXT_PUBLIC_SHOP_URL}/products/preview/${router.query.productSlug}`}
+                    href={`${process.env.NEXT_PUBLIC_SHOP_URL}/product/${router.query.productSlug}`}
                     target="_blank"
                     className="inline-flex h-12 flex-shrink-0 items-center justify-center rounded border !border-accent bg-transparent px-5 py-0 text-sm font-semibold leading-none !text-accent outline-none transition duration-300 ease-in-out hover:border-accent hover:bg-accent hover:!text-white focus:shadow focus:outline-none focus:ring-1 focus:ring-accent-700 md:text-base"
                   >

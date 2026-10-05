@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { toast } from 'react-toastify';
 import Layout from '@/components/layouts/admin';
 import Card from '@/components/common/card';
-import PageHeading from '@/components/common/page-heading';
+import EdotoFilterBar, { FilterDef, FilterValues } from '@/components/filters/edoto-filter-bar';
 import { adminOnly } from '@/utils/auth-utils';
 import { apiCall } from '@/components/campaign/campaign-api';
 
@@ -29,6 +29,9 @@ export default function SponsorsPage() {
   const [rows, setRows] = useState<SponsorRow[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<number | null>(null);
+  const [search, setSearch] = useState('');
+  const [values, setValues] = useState<FilterValues>({ account_status: '', campaigns: '', expired: '' });
+  const [sort, setSort] = useState('name');
 
   const load = useCallback(async () => {
     setError(null);
@@ -56,15 +59,54 @@ export default function SponsorsPage() {
     }
   };
 
+  // Filtres sur les données réelles de la liste (non paginée)
+  const all = rows ?? [];
+  const count = (pred: (s: SponsorRow) => boolean) => all.filter(pred).length;
+  const visible = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    const out = all.filter((s) =>
+      (!term || s.name.toLowerCase().includes(term) || s.email.toLowerCase().includes(term)) &&
+      (!values.account_status || s.account_status === values.account_status) &&
+      (!values.campaigns || (values.campaigns === 'with' ? s.campaigns_count > 0 : s.campaigns_count === 0)) &&
+      (!values.expired || (s.account_status === 'invited' && s.invitation_expired)),
+    );
+    return [...out].sort((a, b) => (sort === 'campaigns' ? b.campaigns_count - a.campaigns_count : a.name.localeCompare(b.name, 'fr')));
+  }, [all, search, values, sort]);
+  const filters: FilterDef[] = [
+    { type: 'chips', key: 'campaigns', label: 'Campagnes', options: [
+      { value: 'with', label: 'Avec campagne', count: count((s) => s.campaigns_count > 0) },
+      { value: 'without', label: 'Sans campagne', count: count((s) => s.campaigns_count === 0) },
+    ] },
+    { type: 'chips', key: 'expired', label: 'Invitation', options: [
+      { value: '1', label: 'Lien expiré', count: count((s) => s.account_status === 'invited' && s.invitation_expired) },
+    ] },
+  ];
+
   return (
     <>
-      <Card className="mb-8">
-        <PageHeading title="Sponsors" />
-        <p className="mt-1 text-sm text-body">
+      <div className="mb-6">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">Partenaires</p>
+        <h1 className="mt-1 font-serif text-3xl font-semibold text-heading">Sponsors</h1>
+        <p className="mt-1 max-w-3xl text-sm text-body">
           Invitez un sponsor : il reçoit un e-mail pour choisir son mot de passe (lien valable 7 jours), puis accède à son
           espace, limité aux campagnes qu&apos;il soutient. Les sponsors se créent dans le formulaire d&apos;une campagne.
         </p>
-      </Card>
+      </div>
+      <EdotoFilterBar
+        search={{ value: search, onChange: setSearch, placeholder: 'Nom ou e-mail du sponsor…' }}
+        quick={{
+          key: 'account_status',
+          allLabel: 'Tous',
+          allCount: all.length,
+          options: (Object.keys(STATUS) as SponsorRow['account_status'][]).map((k) => ({ value: k, label: STATUS[k].label, count: count((s) => s.account_status === k) })),
+        }}
+        filters={filters}
+        values={values}
+        onChange={(patch) => setValues((v) => ({ ...v, ...patch }))}
+        onReset={() => { setValues({ account_status: '', campaigns: '', expired: '' }); setSearch(''); setSort('name'); }}
+        sort={{ value: sort, options: [{ value: 'name', label: 'Nom A → Z' }, { value: 'campaigns', label: 'Plus de campagnes' }], onChange: setSort }}
+        resultLabel={rows ? `${visible.length} sponsor${visible.length > 1 ? 's' : ''}` : 'Chargement…'}
+      />
       <Card className="overflow-x-auto p-0 md:p-0">
         {error ? (
           <p className="p-6 text-sm text-red-600">{error}</p>
@@ -72,6 +114,8 @@ export default function SponsorsPage() {
           <p className="p-6 text-sm text-body">Chargement…</p>
         ) : rows.length === 0 ? (
           <p className="p-10 text-center text-sm text-body">Aucun sponsor. Ajoutez-en depuis le formulaire d&apos;une campagne (« + Nouveau sponsor »).</p>
+        ) : visible.length === 0 ? (
+          <p className="p-10 text-center text-sm text-body">Aucun sponsor ne correspond à ces filtres.</p>
         ) : (
           <table className="w-full min-w-[760px] text-left text-sm">
             <thead className="border-b border-border-200 text-xs uppercase tracking-wider text-body">
@@ -83,7 +127,7 @@ export default function SponsorsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border-100">
-              {rows.map((s) => {
+              {visible.map((s) => {
                 const st = STATUS[s.account_status];
                 return (
                   <tr key={s.id}>

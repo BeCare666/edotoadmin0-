@@ -15,11 +15,10 @@ if (process.env.NEXT_PUBLIC_ENABLE_MULTI_LANG === 'true') {
 export const Config = {
   broadcastDriver: process.env.NEXT_PUBLIC_API_BROADCAST_DRIVER ?? 'log',
   pusherEnable: process.env.NEXT_PUBLIC_PUSHER_ENABLED ?? 'false',
-  defaultLanguage: process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE ?? 'fr',
-  availableLanguages: process.env.NEXT_PUBLIC_AVAILABLE_LANGUAGES
-    ? process.env.NEXT_PUBLIC_AVAILABLE_LANGUAGES.split(',')
-    : [],
-  enableMultiLang: process.env.NEXT_PUBLIC_ENABLE_MULTI_LANG === 'true',
+  // Admin uniquement en français (voir next-i18next.config.js)
+  defaultLanguage: 'fr',
+  availableLanguages: ['fr'],
+  enableMultiLang: false,
   rtlLanguages: ['ar', 'fa', 'he'],
   getDirection: (language: string | undefined) => {
     if (!language) return 'ltr';

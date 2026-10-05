@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { toast } from 'react-toastify';
 import Layout from '@/components/layouts/admin';
 import Card from '@/components/common/card';
-import PageHeading from '@/components/common/page-heading';
+import EdotoFilterBar, { FilterDef, FilterValues } from '@/components/filters/edoto-filter-bar';
 import { adminOnly, getAuthCredentials } from '@/utils/auth-utils';
 
 type PickupStatus = 'pending' | 'active' | 'blocked';
@@ -18,9 +18,18 @@ interface PickupPoint {
   is_verified: number;
   status: PickupStatus;
   created_at: string;
+  orders_count?: number;
 }
 
 const API = process.env.NEXT_PUBLIC_REST_API_ENDPOINT;
+
+const SORTS = [
+  { value: 'default', label: 'En attente d’abord' },
+  { value: 'recent', label: 'Inscrits récemment' },
+  { value: 'oldest', label: 'Inscrits en premier' },
+  { value: 'name', label: 'Nom A → Z' },
+  { value: 'orders', label: 'Plus de commandes' },
+];
 
 const TABS: { key: '' | PickupStatus; label: string }[] = [
   { key: 'pending', label: 'En attente' },
@@ -61,6 +70,10 @@ async function apiCall(path: string, init: RequestInit = {}) {
 
 export default function PickupPointsPage() {
   const [status, setStatus] = useState<'' | PickupStatus>('pending');
+  const [search, setSearch] = useState('');
+  const [values, setValues] = useState<FilterValues>({ verified: '', located: '' });
+  const [sort, setSort] = useState('default');
+  const [facets, setFacets] = useState<any>(null);
   const [page, setPage] = useState(1);
   const [rows, setRows] = useState<PickupPoint[]>([]);
   const [lastPage, setLastPage] = useState(1);
@@ -73,9 +86,12 @@ export default function PickupPointsPage() {
     setLoading(true);
     setError(null);
     try {
-      const qs = new URLSearchParams({ page: String(page), limit: '20' });
+      const qs = new URLSearchParams({ page: String(page), limit: '20', sort });
       if (status) qs.set('status', status);
+      if (search) qs.set('search', search);
+      Object.entries(values).forEach(([k, v]) => v && qs.set(k, v));
       const data = await apiCall(`admin/pickup-points?${qs.toString()}`);
+      apiCall('admin/pickup-points/facets').then(setFacets).catch(() => setFacets(null));
       setRows(data.data || []);
       setLastPage(data.last_page || 1);
       setTotal(data.total || 0);
@@ -84,7 +100,7 @@ export default function PickupPointsPage() {
     } finally {
       setLoading(false);
     }
-  }, [status, page]);
+  }, [status, page, search, values, sort]);
 
   useEffect(() => {
     load();
@@ -149,37 +165,47 @@ export default function PickupPointsPage() {
     }
   };
 
+  const filters: FilterDef[] = useMemo(() => [
+    { type: 'chips', key: 'verified', label: 'E-mail confirmé', options: [
+      { value: '1', label: 'Confirmé', count: facets?.verified?.yes ?? 0 },
+      { value: '0', label: 'Non confirmé', count: facets?.verified?.no ?? 0 },
+    ] },
+    { type: 'chips', key: 'located', label: 'Position GPS', options: [
+      { value: '1', label: 'Renseignée', count: facets?.located?.yes ?? 0 },
+      { value: '0', label: 'Manquante', count: facets?.located?.no ?? 0 },
+    ] },
+  ], [facets]);
+
   return (
     <>
-      <Card className="mb-8 flex flex-col gap-4 md:flex-row md:items-center">
-        <div className="md:w-1/3">
-          <PageHeading title="Points de retrait" />
-          <p className="mt-1 text-sm text-body">
-            Un point inscrit doit confirmer son e-mail, puis être validé ici
-            avant de pouvoir se connecter.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2 md:ms-auto" role="tablist">
-          {TABS.map((t) => (
-            <button
-              key={t.key || 'all'}
-              role="tab"
-              aria-selected={status === t.key}
-              onClick={() => {
-                setStatus(t.key);
-                setPage(1);
-              }}
-              className={`rounded-full border px-4 py-1.5 text-sm transition ${
-                status === t.key
-                  ? 'border-accent bg-accent text-white'
-                  : 'border-border-200 bg-white text-heading hover:border-accent'
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-      </Card>
+      <div className="mb-6">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">Réseau</p>
+        <h1 className="mt-1 font-serif text-3xl font-semibold text-heading">Points de retrait</h1>
+        <p className="mt-1 text-sm text-body">
+          Un point inscrit doit confirmer son e-mail, puis être validé ici avant de pouvoir se connecter.
+        </p>
+      </div>
+
+      <EdotoFilterBar
+        search={{ value: search, onChange: (v) => { setSearch(v); setPage(1); }, placeholder: 'Nom, e-mail ou adresse du point…' }}
+        quick={{
+          key: 'status',
+          allLabel: 'Tous',
+          allCount: facets?.total,
+          options: TABS.filter((t) => t.key).map((t) => ({ value: t.key, label: t.label, count: facets?.status?.[t.key] ?? 0 })),
+        }}
+        filters={filters}
+        values={{ ...values, status }}
+        onChange={(patch) => {
+          if ('status' in patch) setStatus(patch.status as any);
+          const { status: _s, ...rest } = patch;
+          if (Object.keys(rest).length) setValues((v) => ({ ...v, ...rest }));
+          setPage(1);
+        }}
+        onReset={() => { setValues({ verified: '', located: '' }); setStatus(''); setSearch(''); setSort('default'); setPage(1); }}
+        sort={{ value: sort, options: SORTS, onChange: (v) => { setSort(v); setPage(1); } }}
+        resultLabel={loading ? 'Recherche…' : `${total} point${total > 1 ? 's' : ''}`}
+      />
 
       <Card className="overflow-x-auto p-0">
         {error ? (
@@ -188,7 +214,7 @@ export default function PickupPointsPage() {
           <p className="p-6 text-sm text-body">Chargement…</p>
         ) : rows.length === 0 ? (
           <p className="p-6 text-sm text-body">
-            Aucun point de retrait dans cette catégorie.
+            Aucun point de retrait ne correspond à ces filtres.
           </p>
         ) : (
           <table className="w-full min-w-[860px] text-left text-sm">
@@ -198,6 +224,7 @@ export default function PickupPointsPage() {
                 <th className="px-4 py-3 font-semibold">Adresse / position</th>
                 <th className="px-4 py-3 font-semibold">E-mail confirmé</th>
                 <th className="px-4 py-3 font-semibold">Statut</th>
+                <th className="px-4 py-3 font-semibold">Commandes</th>
                 <th className="px-4 py-3 font-semibold">Inscrit le</th>
                 <th className="px-4 py-3 text-right font-semibold">Actions</th>
               </tr>
@@ -249,6 +276,7 @@ export default function PickupPointsPage() {
                         {badge.label}
                       </span>
                     </td>
+                    <td className="px-4 py-3 font-medium text-heading tabular-nums">{p.orders_count ?? 0}</td>
                     <td className="px-4 py-3 text-body">
                       {new Date(p.created_at).toLocaleDateString('fr-FR')}
                     </td>

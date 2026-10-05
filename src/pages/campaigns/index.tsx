@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { toast } from 'react-toastify';
 import Layout from '@/components/layouts/admin';
 import Card from '@/components/common/card';
-import PageHeading from '@/components/common/page-heading';
+import EdotoFilterBar, { FilterDef, FilterValues } from '@/components/filters/edoto-filter-bar';
 import { adminOnly } from '@/utils/auth-utils';
 import { apiCall, CampaignStatus, downloadFile, fcfa, formatDate, STATUS_BADGE } from '@/components/campaign/campaign-api';
 
@@ -29,8 +29,22 @@ const TABS: { key: '' | CampaignStatus; label: string }[] = [
   { key: 'terminee', label: 'Terminées' },
 ];
 
+const EMPTY: FilterValues = { city: '', sponsor: '' };
+
+const SORTS = [
+  { value: 'date_desc', label: 'Début le plus récent' },
+  { value: 'date_asc', label: 'Début le plus ancien' },
+  { value: 'registrations', label: "Plus d'inscrits" },
+  { value: 'budget', label: 'Budget le plus élevé' },
+  { value: 'title', label: 'Titre A → Z' },
+];
+
 export default function CampaignsPage() {
   const [status, setStatus] = useState<'' | CampaignStatus>('');
+  const [search, setSearch] = useState('');
+  const [values, setValues] = useState<FilterValues>(EMPTY);
+  const [sort, setSort] = useState('date_desc');
+  const [facets, setFacets] = useState<any>(null);
   const [page, setPage] = useState(1);
   const [rows, setRows] = useState<CampaignRow[]>([]);
   const [lastPage, setLastPage] = useState(1);
@@ -40,12 +54,21 @@ export default function CampaignsPage() {
   const [busyId, setBusyId] = useState<number | null>(null);
   const [exporting, setExporting] = useState(false);
 
+  const loadFacets = useCallback(() => {
+    apiCall('admin/campaigns/facets').then(setFacets).catch(() => setFacets(null));
+  }, []);
+  useEffect(() => {
+    loadFacets();
+  }, [loadFacets]);
+
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const qs = new URLSearchParams({ page: String(page), limit: '20' });
+      const qs = new URLSearchParams({ page: String(page), limit: '20', sort });
       if (status) qs.set('status', status);
+      if (search) qs.set('search', search);
+      Object.entries(values).forEach(([k, v]) => v && qs.set(k, v));
       const data = await apiCall(`admin/campaigns?${qs.toString()}`);
       setRows(data.data || []);
       setLastPage(data.last_page || 1);
@@ -55,7 +78,7 @@ export default function CampaignsPage() {
     } finally {
       setLoading(false);
     }
-  }, [status, page]);
+  }, [status, page, search, values, sort]);
 
   useEffect(() => {
     load();
@@ -68,6 +91,7 @@ export default function CampaignsPage() {
       const res = await apiCall(`admin/campaigns/${c.id}`, { method: 'DELETE' });
       toast.success(res.message || 'Campagne supprimée.');
       await load();
+      loadFacets();
     } catch (e: any) {
       toast.error(e.message);
     } finally {
@@ -86,40 +110,50 @@ export default function CampaignsPage() {
     }
   };
 
+  const filters: FilterDef[] = useMemo(() => [
+    { type: 'chips', key: 'city', label: 'Ville', options: (facets?.cities ?? []).map((c: any) => ({ value: c.value, label: c.value, count: c.count })) },
+    { type: 'chips', key: 'sponsor', label: 'Sponsor', options: facets?.sponsors ?? [] },
+  ], [facets]);
+
   return (
     <>
-      <Card className="mb-8 flex flex-col gap-4 md:flex-row md:items-center">
-        <div className="md:w-1/3">
-          <PageHeading title="Campagnes" />
-          <p className="mt-1 text-sm text-body">Statut calculé à partir des dates de début et de fin.</p>
-        </div>
-        <div className="flex flex-wrap gap-2 md:ms-auto" role="tablist">
-          {TABS.map((t) => (
-            <button
-              key={t.key || 'all'}
-              role="tab"
-              aria-selected={status === t.key}
-              onClick={() => {
-                setStatus(t.key);
-                setPage(1);
-              }}
-              className={`rounded-full border px-4 py-1.5 text-sm transition ${
-                status === t.key ? 'border-accent bg-accent text-white' : 'border-border-200 bg-white text-heading hover:border-accent'
-              }`}
-            >
-              {t.label}
-            </button>
-          ))}
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">Santé communautaire</p>
+          <h1 className="mt-1 font-serif text-3xl font-semibold text-heading">Campagnes</h1>
+          <p className="mt-1 text-sm text-body">Statut calculé à partir des dates de début et de fin (heure du Bénin).</p>
         </div>
         <div className="flex gap-2">
-          <button onClick={exportAll} disabled={exporting} className="rounded-md border border-border-200 px-4 py-2 text-sm font-semibold text-heading hover:border-accent disabled:opacity-50">
+          <button onClick={exportAll} disabled={exporting} className="rounded-2xl border border-border-200 bg-white px-5 py-3 text-sm font-semibold text-heading transition hover:border-heading disabled:opacity-50">
             {exporting ? 'Export…' : 'Excel global'}
           </button>
-          <Link href="/campaigns/create" className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-hover">
-            Nouvelle campagne
+          <Link href="/campaigns/create" className="rounded-2xl bg-heading px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-accent">
+            + Nouvelle campagne
           </Link>
         </div>
-      </Card>
+      </div>
+
+      <EdotoFilterBar
+        search={{ value: search, onChange: (v) => { setSearch(v); setPage(1); }, placeholder: 'Rechercher une campagne par titre…' }}
+        quick={{
+          key: 'status',
+          allLabel: 'Toutes',
+          allCount: facets?.total,
+          options: TABS.filter((t) => t.key).map((t) => ({ value: t.key, label: t.label, count: facets?.status?.[t.key] ?? 0 })),
+        }}
+        filters={filters}
+        values={{ ...values, status }}
+        onChange={(patch) => {
+          if ('status' in patch) setStatus(patch.status as any);
+          const { status: _s, ...rest } = patch;
+          if (Object.keys(rest).length) setValues((v) => ({ ...v, ...rest }));
+          setPage(1);
+        }}
+        onReset={() => { setValues(EMPTY); setStatus(''); setSearch(''); setSort('date_desc'); setPage(1); }}
+        sort={{ value: sort, options: SORTS, onChange: (v) => { setSort(v); setPage(1); } }}
+        resultLabel={loading ? 'Recherche…' : `${total} campagne${total > 1 ? 's' : ''}`}
+      />
+
 
       <Card className="overflow-x-auto p-0">
         {error ? (
@@ -127,7 +161,7 @@ export default function CampaignsPage() {
         ) : loading ? (
           <p className="p-6 text-sm text-body">Chargement…</p>
         ) : rows.length === 0 ? (
-          <p className="p-6 text-sm text-body">Aucune campagne dans cette catégorie.</p>
+          <p className="p-6 text-sm text-body">Aucune campagne ne correspond à ces filtres.</p>
         ) : (
           <table className="w-full min-w-[1100px] text-left text-sm">
             <thead className="border-b border-border-200 text-xs uppercase tracking-wider text-body">

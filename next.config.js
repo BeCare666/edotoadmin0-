@@ -11,9 +11,14 @@ const { i18n } = require('./next-i18next.config');
 
 const nextConfig = {
   reactStrictMode: true,
-  i18n: {
-    locales: ['en', 'fr', 'ar'], // langues supportées
-    defaultLocale: 'fr',         // langue par défaut
+  // Admin uniquement en français : plus de /en ni /ar, pas de détection de la langue du navigateur
+  i18n,
+  // Anciennes adresses /en/… ou /ar/… → même page en français
+  async redirects() {
+    return ['en', 'ar', 'de', 'es'].flatMap((l) => [
+      { source: `/${l}`, destination: '/', permanent: false, locale: false },
+      { source: `/${l}/:path*`, destination: '/:path*', permanent: false, locale: false },
+    ]);
   },
   images: {
     domains: [

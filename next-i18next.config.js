@@ -24,10 +24,14 @@ function generateLocales() {
   return [process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE];
 }
 
+// L'admin E·Doto est uniquement en français, quelles que soient les variables
+// d'environnement (vercel.json imposait « en » en production).
+void generateLocales;
 module.exports = {
   i18n: {
-    defaultLocale: process.env.NEXT_PUBLIC_DEFAULT_LANGUAGE ?? 'en',
-    locales: generateLocales(),
+    defaultLocale: 'fr',
+    locales: ['fr'],
+    localeDetection: false,
   },
   localePath: path.resolve('./public/locales'),
   reloadOnPrerender: process.env.NODE_ENV === 'development',

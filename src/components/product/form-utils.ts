@@ -364,7 +364,8 @@ export function getProductInputValues(
     is_digital: true,
     in_flash_sale,
 
-    type_id: type?.id,
+    // Nombre attendu par l'API (IsNumber) : l'id peut arriver en texte depuis le formulaire d'édition
+    type_id: type?.id != null && (type.id as any) !== '' ? Number(type.id) : undefined,
     product_type: 'simple',
 
     // Formulaire : [{ categories_id, sous_categories_id, sub_categories_id }] → API : ids de catégories (string[]).

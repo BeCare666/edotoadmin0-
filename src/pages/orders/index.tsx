@@ -1,14 +1,15 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Layout from '@/components/layouts/admin';
 import Card from '@/components/common/card';
-import PageHeading from '@/components/common/page-heading';
 import { adminOnly } from '@/utils/auth-utils';
 import { useExportOrderQuery } from '@/data/export';
 import { apiCall, fcfa } from '@/components/campaign/campaign-api';
 import OtpReveal, { otpState } from '@/components/order/otp-reveal';
+import EdotoFilterBar, { FilterDef, FilterValues } from '@/components/filters/edoto-filter-bar';
+import { DELIVERY_TYPE_LABEL, ORDER_STATUS_LABEL, PAYMENT_STATUS_LABEL } from '@/components/order/order-labels';
 
 // Liste des commandes (nouveau visuel E·Doto + G2 : point de retrait et code masqué).
 // Recherche envoyée telle quelle à l'API (l'ancienne liste envoyait « tracking_number:… », jamais trouvé).
@@ -34,48 +35,89 @@ function withdrawal(o: any) {
   return { label: 'Non choisi', tone: 'text-body' };
 }
 
+
+const EMPTY: FilterValues = {
+  order_status: '', payment_status: '', delivery_type: '', kind: '', pickup_point_id: '',
+  date_from: '', date_to: '', min_total: '', max_total: '',
+};
+
+const SORTS = [
+  { value: 'created_at:desc', label: 'Plus récentes' },
+  { value: 'created_at:asc', label: 'Plus anciennes' },
+  { value: 'total:desc', label: 'Montant décroissant' },
+  { value: 'total:asc', label: 'Montant croissant' },
+  { value: 'updated_at:desc', label: 'Mises à jour récemment' },
+];
+
 export default function Orders() {
   const { t } = useTranslation();
-  const [searchInput, setSearchInput] = useState('');
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
-  const [orderBy, setOrderBy] = useState<Sort>('created_at');
-  const [sortedBy, setSortedBy] = useState<'desc' | 'asc'>('desc');
+  const [sort, setSort] = useState('created_at:desc');
+  const [values, setValues] = useState<FilterValues>(EMPTY);
   const [data, setData] = useState<any>(null);
+  const [facets, setFacets] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const { refetch } = useExportOrderQuery({}, { enabled: false });
+  const [orderBy, sortedBy] = sort.split(':') as [Sort, 'desc' | 'asc'];
 
+  // Compteurs réels (périmètre admin), rechargés avec la recherche
   useEffect(() => {
-    const tm = setTimeout(() => {
-      setSearch(searchInput.trim());
-      setPage(1);
-    }, 400);
-    return () => clearTimeout(tm);
-  }, [searchInput]);
+    const qs = new URLSearchParams();
+    if (search) qs.set('search', search);
+    apiCall(`orders/facets?${qs.toString()}`).then(setFacets).catch(() => setFacets(null));
+  }, [search]);
 
   const load = useCallback(async () => {
     setError(null);
     try {
       const qs = new URLSearchParams({ page: String(page), limit: '20', orderBy, sortedBy });
       if (search) qs.set('search', search);
+      Object.entries(values).forEach(([k, v]) => v && qs.set(k, v));
       setData(await apiCall(`orders?${qs.toString()}`));
     } catch (e: any) {
       setError(e.message);
     }
-  }, [page, search, orderBy, sortedBy]);
+  }, [page, search, orderBy, sortedBy, values]);
 
   useEffect(() => {
     load();
   }, [load]);
 
   const sortBy = (col: Sort) => {
-    if (orderBy === col) setSortedBy((s) => (s === 'desc' ? 'asc' : 'desc'));
-    else {
-      setOrderBy(col);
-      setSortedBy('desc');
-    }
+    setSort((prev) => {
+      const [c, d] = prev.split(':');
+      return `${col}:${c === col && d === 'desc' ? 'asc' : 'desc'}`;
+    });
     setPage(1);
   };
+
+  const filters: FilterDef[] = useMemo(() => [
+    {
+      type: 'chips', key: 'payment_status', label: 'Paiement',
+      options: (facets?.payment_status ?? []).map((p: any) => ({ value: p.value, label: PAYMENT_STATUS_LABEL[p.value] ?? p.value, count: p.count })),
+    },
+    {
+      type: 'chips', key: 'delivery_type', label: 'Mode de retrait',
+      options: (facets?.delivery_type ?? []).map((p: any) => ({ value: p.value, label: DELIVERY_TYPE_LABEL[p.value] ?? p.value, count: p.count })),
+    },
+    {
+      type: 'chips', key: 'kind', label: 'Origine de la commande',
+      options: [
+        { value: 'shop', label: 'Boutique', count: facets?.kind?.shop ?? 0 },
+        { value: 'campaign', label: 'Kit de campagne', count: facets?.kind?.campaign ?? 0 },
+      ],
+    },
+    {
+      type: 'select', key: 'pickup_point_id', label: 'Point de retrait', placeholder: 'Tous les points',
+      options: (facets?.pickup_points ?? []).map((p: any) => ({ value: p.id == null ? 'none' : String(p.id), label: p.id == null ? 'Aucun point choisi' : p.name ?? `Point #${p.id}`, count: p.count })),
+    },
+    { type: 'dates', key: 'period', label: 'Période (heure du Bénin)', fromKey: 'date_from', toKey: 'date_to' },
+    {
+      type: 'range', key: 'amount', label: 'Montant total', minKey: 'min_total', maxKey: 'max_total', unit: 'FCFA',
+      minHint: facets?.total_range?.min ?? null, maxHint: facets?.total_range?.max ?? null,
+    },
+  ], [facets]);
 
   async function handleExportOrder() {
     const { data: url } = await refetch();
@@ -89,28 +131,40 @@ export default function Orders() {
 
   const arrow = (col: Sort) => (orderBy === col ? (sortedBy === 'desc' ? ' ↓' : ' ↑') : '');
   const lastPage = data?.last_page || 1;
+  const total = Number(data?.total ?? 0);
+  const filtered = Boolean(search) || Object.values(values).some(Boolean);
 
   return (
     <>
-      <Card className="mb-8 flex flex-col gap-4 md:flex-row md:items-center">
-        <div className="md:w-1/3">
-          <PageHeading title={t('form:input-label-orders')} />
-          <p className="mt-1 text-sm text-body">Point de retrait et code de retrait de chaque commande.</p>
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">Ventes</p>
+          <h1 className="mt-1 font-serif text-3xl font-semibold text-heading">{t('form:input-label-orders')}</h1>
+          <p className="mt-1 text-sm text-body">
+            {facets ? `${facets.total.toLocaleString('fr-FR')} commande${facets.total > 1 ? 's' : ''} · point de retrait et code de chaque commande` : 'Point de retrait et code de retrait de chaque commande.'}
+          </p>
         </div>
-        <div className="flex w-full flex-col gap-3 sm:flex-row md:ms-auto md:w-auto">
-          <input
-            type="search"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="N° de suivi, code, contact…"
-            aria-label="Rechercher une commande"
-            className="w-full rounded-2xl border border-border-200 bg-white px-4 py-2.5 text-sm focus:border-accent focus:outline-none sm:w-80"
-          />
-          <button onClick={handleExportOrder} className="shrink-0 rounded-2xl border border-border-200 bg-white px-4 py-2.5 text-sm font-semibold text-heading hover:border-accent">
-            {t('common:text-export-orders')}
-          </button>
-        </div>
-      </Card>
+        <button onClick={handleExportOrder} className="inline-flex items-center justify-center rounded-2xl border border-border-200 bg-white px-5 py-3 text-sm font-semibold text-heading transition hover:border-heading">
+          {t('common:text-export-orders')}
+        </button>
+      </div>
+
+      <EdotoFilterBar
+        search={{ value: search, onChange: (v) => { setSearch(v); setPage(1); }, placeholder: 'N° de suivi, code, nom ou contact du client…' }}
+        quick={{
+          key: 'order_status',
+          allLabel: 'Toutes',
+          allCount: facets?.total,
+          options: (facets?.order_status ?? []).map((s: any) => ({ value: s.value, label: ORDER_STATUS_LABEL[s.value] ?? s.value, count: s.count })),
+        }}
+        filters={filters}
+        values={values}
+        onChange={(patch) => { setValues((v) => ({ ...v, ...patch })); setPage(1); }}
+        onReset={() => { setValues(EMPTY); setSearch(''); setSort('created_at:desc'); setPage(1); }}
+        sort={{ value: sort, options: SORTS, onChange: (v) => { setSort(v); setPage(1); } }}
+        resultLabel={data ? `${total.toLocaleString('fr-FR')} résultat${total > 1 ? 's' : ''}` : 'Recherche…'}
+      />
+
 
       <Card className="overflow-x-auto p-0 md:p-0">
         {error ? (
@@ -118,7 +172,7 @@ export default function Orders() {
         ) : !data ? (
           <p className="p-6 text-sm text-body">{t('common:text-loading')}</p>
         ) : data.data.length === 0 ? (
-          <p className="p-10 text-center text-sm text-body">{search ? `Aucune commande pour « ${search} ».` : 'Aucune commande.'}</p>
+          <p className="p-10 text-center text-sm text-body">{filtered ? 'Aucune commande ne correspond à ces filtres.' : 'Aucune commande.'}</p>
         ) : (
           <table className="w-full min-w-[1100px] text-left text-sm">
             <thead className="border-b border-border-200 text-xs uppercase tracking-wider text-body">
@@ -157,10 +211,10 @@ export default function Orders() {
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-right font-medium text-heading">{fcfa(o.total)}</td>
                     <td className="px-6 py-4">
-                      <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${PAYMENT_BADGE[o.payment_status] ?? 'bg-gray-100 text-gray-600'}`}>{t(o.payment_status)}</span>
+                      <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${PAYMENT_BADGE[o.payment_status] ?? 'bg-gray-100 text-gray-600'}`}>{PAYMENT_STATUS_LABEL[o.payment_status] ?? o.payment_status}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${STATUS_BADGE[o.order_status] ?? 'bg-gray-100 text-gray-600'}`}>{t(o.order_status)}</span>
+                      <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${STATUS_BADGE[o.order_status] ?? 'bg-gray-100 text-gray-600'}`}>{ORDER_STATUS_LABEL[o.order_status] ?? o.order_status}</span>
                     </td>
                     <td className="px-6 py-4 text-right">
                       <Link href={`/orders/${o.id}`} className="rounded-full border border-border-200 px-3 py-1.5 text-xs font-semibold text-heading hover:border-accent hover:text-accent">Détail</Link>
