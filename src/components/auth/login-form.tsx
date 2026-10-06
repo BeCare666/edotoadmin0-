@@ -98,7 +98,7 @@ const LoginForm = () => {
         <div className="absolute -top-14 left-1/2 -translate-x-1/2 bg-white p-3 rounded-full shadow-lg border border-white/40">
           <Image
             src={logo}
-            alt="E·Doto Family"
+            alt="E.doto family"
             width={70}
             height={70}
             className="object-contain"
@@ -106,7 +106,7 @@ const LoginForm = () => {
         </div>
 
         <h1 className="text-2xl font-bold text-[#0F172A] mt-2 text-center">
-          Administration<span className="text-[#FF6EA9]"> E·Doto Family</span>
+          Administration<span className="text-[#FF6EA9]"> E.doto family</span>
         </h1>
         <p className="text-gray-500 mt-2 mb-8 text-sm text-center">
           Connectez-vous à l'espace admin

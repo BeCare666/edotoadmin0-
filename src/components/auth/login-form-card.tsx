@@ -33,10 +33,10 @@ export default function LoginFormCard({ children, headerMessage }: LoginFormCard
         >
           <span className="flex flex-col items-center gap-3">
             <span className="relative h-16 w-16">
-              <Image src={emblem} alt="E·Doto Family" fill sizes="64px" className="object-contain" priority />
+              <Image src={emblem} alt="E.doto family" fill sizes="64px" className="object-contain" priority />
             </span>
             <span className="edoto-serif text-2xl tracking-tight text-[#1F1B16]">
-              E·Doto <span className="text-[#C2185B]">Family</span>
+              E.doto <span className="text-[#C2185B]">family</span>
             </span>
           </span>
         </Link>

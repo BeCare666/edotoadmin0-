@@ -637,5 +637,11 @@
   "sidebar-nav-item-campaigns": "Toutes les campagnes",
   "sidebar-nav-item-create-campaign": "Créer une campagne",
   "sidebar-nav-item-active-campaigns": "Campagnes en cours",
-  "sidebar-nav-item-upcoming-campaigns": "Campagnes à venir"
+  "sidebar-nav-item-upcoming-campaigns": "Campagnes à venir",
+  "text-orders-to-process": "Commandes à traiter",
+  "text-orders-processed": "Commandes traitées",
+  "text-orders-withdrawn": "Commandes retirées",
+  "text-kit-requests-to-process": "Demandes de kit à traiter",
+  "text-kit-requests-processed": "Kits traités (emballés)",
+  "text-kit-requests-withdrawn": "Kits retirés"
 }

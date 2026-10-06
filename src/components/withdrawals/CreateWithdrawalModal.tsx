@@ -123,7 +123,7 @@ export default function CreateWithdrawalModal({ open, onClose, onCreated }: Prop
             <div className="relative w-full max-w-lg bg-white rounded-xl shadow-xl p-6 z-10">
                 <h3 className="text-lg font-semibold text-slate-900 mb-2">Nouvelle demande de retrait</h3>
                 <p className="text-sm text-slate-500 mb-4">
-                    Initie une demande — le statut sera <span className="font-medium">pending</span> jusqu'à approbation.
+                    Initie une demande : le statut sera <span className="font-medium">pending</span> jusqu'à approbation.
                 </p>
 
                 {balance !== null && (

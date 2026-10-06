@@ -44,7 +44,7 @@ const DefaultSeo = () => {
         },
       ]}
       additionalLinkTags={[
-        // Icônes E·Doto (emblème du site) ; ?v=2 force le navigateur à oublier l'ancienne icône
+        // Icônes E.doto (emblème du site) ; ?v=2 force le navigateur à oublier l'ancienne icône
         {
           rel: 'icon',
           href: '/favicon.ico?v=2',

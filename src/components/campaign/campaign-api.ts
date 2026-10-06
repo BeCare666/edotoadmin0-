@@ -66,4 +66,4 @@ export async function downloadFile(path: string, fallbackName: string) {
 export const fcfa = (n: number) => `${Math.round(Number(n) || 0).toLocaleString('fr-FR')} FCFA`;
 
 export const formatDate = (iso: string | null) =>
-  iso ? new Date(`${iso}T00:00:00`).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+  iso ? new Date(`${iso}T00:00:00`).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' }) : 'Non définie';

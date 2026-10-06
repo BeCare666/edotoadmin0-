@@ -3,15 +3,15 @@ import Layout from '@/components/layouts/admin';
 import { adminOnly } from '@/utils/auth-utils';
 import OrdersBoard from '@/components/order/orders-board';
 
-// Commandes : étape « to_process » (voir components/order/orders-board.tsx)
-export default function OrdersToProcess() {
-  return <OrdersBoard stage="to_process" />;
+// Commandes : étape « withdrawn » (voir components/order/orders-board.tsx)
+export default function OrdersWithdrawn() {
+  return <OrdersBoard stage="withdrawn" />;
 }
 
-OrdersToProcess.authenticate = {
+OrdersWithdrawn.authenticate = {
   permissions: adminOnly,
 };
-OrdersToProcess.Layout = Layout;
+OrdersWithdrawn.Layout = Layout;
 
 export const getStaticProps = async ({ locale }: any) => ({
   props: {

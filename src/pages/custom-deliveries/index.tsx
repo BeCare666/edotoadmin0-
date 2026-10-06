@@ -365,7 +365,7 @@ export default function CustomDeliveriesPage() {
             </div>
           </div>
           <button onClick={() => setResult(null)} className="mt-4 text-sm text-body underline">
-            J'ai transmis le lien et le PIN — fermer
+            J'ai transmis le lien et le PIN : fermer
           </button>
         </Card>
       )}
@@ -436,7 +436,7 @@ export default function CustomDeliveriesPage() {
                           </div>
                         </>
                       ) : (
-                        <span className="text-body">—</span>
+                        <span className="text-body">Aucun zem désigné</span>
                       )}
                     </td>
                     <td className="px-4 py-3 text-right">

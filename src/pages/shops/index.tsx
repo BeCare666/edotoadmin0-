@@ -99,7 +99,7 @@ export default function AllShopPage() {
               {t('common:sidebar-nav-item-shops')}
             </h1>
             <p className="mt-1 text-sm font-medium text-slate-600">
-              Gestion des B Spaces (Business Space) – boutiques et vendeurs
+              Gestion des B Spaces (Business Space) : boutiques et vendeurs
             </p>
           </div>
           <div className="flex w-full min-w-0 sm:w-80">

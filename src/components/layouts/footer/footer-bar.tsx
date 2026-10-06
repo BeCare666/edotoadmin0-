@@ -99,7 +99,7 @@ const Footer: React.FC<IFooterProp> = ({ className }) => {
             className="text-[#3B342D] transition-colors hover:text-[#C2185B]"
             href={siteLink ?? Routes.dashboard}
           >
-            {siteTitle || 'E·Doto Family'}
+            {siteTitle || 'E.doto family'}
           </Link>
           {copyrightText ? `. ${copyrightText}` : ''}{' '}
           {externalText && (

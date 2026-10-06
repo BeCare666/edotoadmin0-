@@ -80,13 +80,14 @@ export default function CampaignDetailPage() {
           <div className="mt-2 flex flex-wrap items-center gap-3 text-sm text-body">
             <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${badge?.className ?? ''}`}>{badge?.label ?? c.status}</span>
             <span>{formatDate(c.date_start)} → {formatDate(c.date_end)}</span>
-            <span>Ville(s) : {c.cities.join(', ') || '—'}</span>
+            <span>Ville(s) : {c.cities.join(', ') || 'non renseignée'}</span>
           </div>
         </div>
         <div className="flex gap-2">
           <button onClick={exportOne} disabled={exporting} className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-hover disabled:opacity-50">
             {exporting ? 'Export…' : 'Télécharger l’Excel'}
           </button>
+          <Link href={`/campaign-requests?campaign_id=${c.id}`} className="rounded-md border border-border-200 px-4 py-2 text-sm font-semibold text-heading hover:border-accent">Demandes de kit</Link>
           <Link href={`/campaigns/${c.id}/edit`} className="rounded-md border border-border-200 px-4 py-2 text-sm font-semibold text-heading hover:border-accent">Modifier</Link>
         </div>
       </Card>

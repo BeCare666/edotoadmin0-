@@ -84,6 +84,21 @@ export const siteSettings = {
             icon: 'CalendarPlusIcon',
           },
           {
+            href: Routes.campaignRequests || '#',
+            label: 'text-kit-requests-to-process',
+            icon: 'OrdersIcon',
+          },
+          {
+            href: Routes.campaignRequestsProcessed || '#',
+            label: 'text-kit-requests-processed',
+            icon: 'OrdersIcon',
+          },
+          {
+            href: Routes.campaignRequestsWithdrawn || '#',
+            label: 'text-kit-requests-withdrawn',
+            icon: 'OrdersIcon',
+          },
+          {
             href: Routes.sponsors || '#',
             label: 'text-sponsors',
             icon: 'SponsorIcon',
@@ -178,7 +193,17 @@ export const siteSettings = {
         childMenu: [
           {
             href: Routes.order?.list || '#',
-            label: 'sidebar-nav-item-orders',
+            label: 'text-orders-to-process',
+            icon: 'OrdersIcon',
+          },
+          {
+            href: Routes.ordersProcessed || '#',
+            label: 'text-orders-processed',
+            icon: 'OrdersIcon',
+          },
+          {
+            href: Routes.ordersWithdrawn || '#',
+            label: 'text-orders-withdrawn',
             icon: 'OrdersIcon',
           },
           {

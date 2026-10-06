@@ -44,19 +44,19 @@ export function useCollapsed() {
   };
 }
 
-// Logo du site E·Doto (emblème sur pastille claire + nom)
+// Logo du site E.doto (emblème sur pastille claire + nom)
 export function EdotoBrand({ compact = false, subtitle }: { compact?: boolean; subtitle?: string }) {
   return (
     <Link href={Routes.dashboard} className="flex min-w-0 items-center gap-3">
       <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#FFFDF9] shadow-[0_6px_18px_-8px_rgba(0,0,0,0.6)] ring-1 ring-white/10">
         <span className="relative h-8 w-8">
-          <Image src={emblem} alt="E·Doto Family" fill sizes="32px" className="object-contain" priority />
+          <Image src={emblem} alt="E.doto family" fill sizes="32px" className="object-contain" priority />
         </span>
       </span>
       {!compact && (
         <span className="min-w-0">
           <span className="edoto-serif block truncate text-xl leading-tight tracking-tight text-white">
-            E·Doto <span className="text-[#FF6EA9]">Family</span>
+            E.doto <span className="text-[#FF6EA9]">family</span>
           </span>
           {subtitle && (
             <span className="mt-1 block truncate text-[10px] uppercase tracking-[0.25em] text-[#B8AC9E]">
@@ -120,7 +120,7 @@ export function EdotoSidebarPanel({
           </span>
         ) : (
           <>
-            <p className="truncate text-sm text-white">{me?.name ?? '—'}</p>
+            <p className="truncate text-sm text-white">{me?.name ?? 'Administrateur'}</p>
             <p className="mt-0.5 truncate text-xs text-[#B8AC9E]">{me?.email}</p>
           </>
         )}

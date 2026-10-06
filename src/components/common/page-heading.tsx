@@ -13,7 +13,7 @@ const PageHeading = ({
     <h2
       className={twMerge(
         classNames(
-          // Visuel E·Doto : titre en sérif, comme les dashboards point de retrait / sponsor
+          // Visuel E.doto : titre en sérif, comme les dashboards point de retrait / sponsor
           'edoto-serif text-xl font-normal tracking-tight text-[#1F1B16] sm:text-2xl',
           className
         )

@@ -221,7 +221,7 @@ const Navbar = () => {
       ) : (
         ''
       )}
-      {/* En-tête E·Doto : même présentation que le dashboard des points de retrait */}
+      {/* En-tête E.doto : même présentation que le dashboard des points de retrait */}
       <nav className="flex h-16 items-center gap-3 px-4 sm:gap-4 sm:px-8 lg:h-20">
         <motion.button
           whileTap={{ scale: 0.92 }}
@@ -233,10 +233,10 @@ const Navbar = () => {
         </motion.button>
         <Link href={Routes.dashboard} className="flex min-w-0 items-center gap-2 lg:hidden">
           <span className="relative h-8 w-8 shrink-0">
-            <Image src={emblem} alt="E·Doto Family" fill sizes="32px" className="object-contain" priority />
+            <Image src={emblem} alt="E.doto family" fill sizes="32px" className="object-contain" priority />
           </span>
           <span className="edoto-serif hidden truncate text-lg text-[#1F1B16] sm:block">
-            E·Doto <span className="text-[#C2185B]">Family</span>
+            E.doto <span className="text-[#C2185B]">family</span>
           </span>
         </Link>
 

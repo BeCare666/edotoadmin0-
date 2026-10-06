@@ -188,10 +188,10 @@ export default function CampaignsPage() {
                     <td className="px-4 py-3">
                       <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${badge?.className ?? ''}`}>{badge?.label ?? c.status}</span>
                     </td>
-                    <td className="px-4 py-3">{c.cities.join(', ') || '—'}</td>
+                    <td className="px-4 py-3">{c.cities.join(', ') || 'Non renseignée'}</td>
                     <td className="px-4 py-3 text-body">{formatDate(c.date_start)} → {formatDate(c.date_end)}</td>
                     <td className="px-4 py-3">
-                      <div>{c.sponsor_names || '—'}</div>
+                      <div>{c.sponsor_names || 'Aucun sponsor'}</div>
                       <div className="text-xs text-body">{fcfa(c.budget)}</div>
                     </td>
                     <td className="px-4 py-3">{c.objective_kits}</td>

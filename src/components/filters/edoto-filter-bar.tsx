@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import cn from 'classnames';
 
-// Barre de filtres commune aux listes de l'admin E·Doto.
+// Barre de filtres commune aux listes de l'admin E.doto.
 // Elle n'invente aucune valeur : chaque liste lui passe les options tirées de la base
 // (avec leurs compteurs réels) et reçoit les changements sous forme clé → valeur.
 
@@ -107,7 +107,7 @@ export default function EdotoFilterBar({ search, quick, filters = [], values, on
         const b = values[f.maxKey];
         if (!a && !b) continue;
         const u = f.unit ? ` ${f.unit}` : '';
-        const label = a && b ? `${fmt(+a)} – ${fmt(+b)}${u}` : a ? `≥ ${fmt(+a)}${u}` : `≤ ${fmt(+b)}${u}`;
+        const label = a && b ? `${fmt(+a)} à ${fmt(+b)}${u}` : a ? `≥ ${fmt(+a)}${u}` : `≤ ${fmt(+b)}${u}`;
         out.push({ id: f.key, label: `${f.label} : ${label}`, clear: { [f.minKey]: '', [f.maxKey]: '' } });
       } else if (f.type === 'dates') {
         const a = values[f.fromKey];
@@ -250,12 +250,12 @@ export default function EdotoFilterBar({ search, quick, filters = [], values, on
                 <div>
                   <div className="flex items-center gap-2">
                     <DebouncedNumber value={values[f.minKey] ?? ''} onCommit={(v) => onChange({ [f.minKey]: v })} placeholder="Min" unit={f.unit} />
-                    <span className="text-body">–</span>
+                    <span className="text-body">à</span>
                     <DebouncedNumber value={values[f.maxKey] ?? ''} onCommit={(v) => onChange({ [f.maxKey]: v })} placeholder="Max" unit={f.unit} />
                   </div>
                   {(f.minHint != null || f.maxHint != null) && (
                     <p className="mt-1.5 text-[11px] text-body">
-                      En base : {f.minHint != null ? fmt(f.minHint) : '—'} à {f.maxHint != null ? fmt(f.maxHint) : '—'}{f.unit ? ` ${f.unit}` : ''}
+                      En base : {f.minHint != null ? fmt(f.minHint) : 'aucune valeur'} à {f.maxHint != null ? fmt(f.maxHint) : 'aucune valeur'}{f.unit ? ` ${f.unit}` : ''}
                     </p>
                   )}
                 </div>

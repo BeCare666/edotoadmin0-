@@ -23,7 +23,7 @@ const StickerCard = ({
 
   const tint = color || '#1F1B16';
 
-  // Carte statistique E·Doto : même présentation que les dashboards point de retrait / sponsor
+  // Carte statistique E.doto : même présentation que les dashboards point de retrait / sponsor
   return (
     <div
       className={twMerge(
@@ -37,7 +37,7 @@ const StickerCard = ({
             {t(titleTransKey)}
           </p>
           <p className="mt-2 truncate text-2xl font-semibold tabular-nums text-[#1F1B16] sm:text-[28px]">
-            {price ?? '—'}
+            {price ?? '…'}
           </p>
           {note && (
             <p className="mt-1 text-xs text-[#7A6E62]">Comparé à {note}</p>

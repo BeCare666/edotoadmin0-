@@ -2,7 +2,7 @@
 export const ORDER_STATUS_LABEL: Record<string, string> = {
   'order-pending': 'En attente',
   'order-processing': 'En traitement',
-  'order-completed': 'Retirée / livrée',
+  'order-completed': 'Terminée (retirée / livrée)',
   'order-cancelled': 'Annulée',
   'order-refunded': 'Remboursée',
   'order-failed': 'Échouée',

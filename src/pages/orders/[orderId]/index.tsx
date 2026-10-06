@@ -10,11 +10,7 @@ import SelectInput from '@/components/ui/select-input';
 import { Table } from '@/components/ui/table';
 import { clearCheckoutAtom } from '@/contexts/checkout';
 import { useCart } from '@/contexts/quick-cart/cart.context';
-import {
-  useDownloadInvoiceMutation,
-  useOrderQuery,
-  useUpdateOrderMutation,
-} from '@/data/order';
+import { useOrderQuery, useUpdateOrderMutation } from '@/data/order';
 import { NoDataFound } from '@/components/icons/no-data-found';
 import { siteSettings } from '@/settings/site.settings';
 import { Attachment, OrderStatus, PaymentStatus } from '@/types';
@@ -28,12 +24,15 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import { useQueryClient } from 'react-query';
 import { useForm } from 'react-hook-form';
 import { useFormatPhoneNumber } from '@/utils/format-phone-number';
 import Link from 'next/link';
 import OtpReveal, { otpState } from '@/components/order/otp-reveal';
-import { fcfa } from '@/components/campaign/campaign-api';
+import { apiCall, fcfa } from '@/components/campaign/campaign-api';
+import { ORDER_STAGE_LABELS, ORDER_STAGE_LINKS } from '@/components/order/orders-board';
 import { adminOnly } from '@/utils/auth-utils';
 
 type FormValues = {
@@ -58,14 +57,8 @@ export default function OrderDetailsPage() {
     isLoading: loading,
     error,
   } = useOrderQuery({ id: query.orderId as string, language: locale! });
-  const { refetch } = useDownloadInvoiceMutation(
-    {
-      order_id: query.orderId as string,
-      isRTL,
-      language: locale!,
-    },
-    { enabled: false }
-  );
+  const queryClient = useQueryClient();
+  const [busy, setBusy] = useState<'process' | 'invoice' | null>(null);
 
   const {
     handleSubmit,
@@ -136,14 +129,30 @@ export default function OrderDetailsPage() {
   if (loading) return <Loader text={t('common:text-loading')} />;
   if (error) return <ErrorMessage message={error.message} />;
 
+  // Facture client générée au paiement (FeexPay) : GET orders/:id/invoice → lien du PDF
   async function handleDownloadInvoice() {
-    const { data } = await refetch();
+    setBusy('invoice');
+    try {
+      const { url } = await apiCall(`orders/${query.orderId}/invoice`);
+      window.open(url, '_blank', 'noopener,noreferrer');
+    } catch (e: any) {
+      toast.info(e.message);
+    } finally {
+      setBusy(null);
+    }
+  }
 
-    if (data) {
-      const a = document.createElement('a');
-      a.href = data;
-      a.setAttribute('download', 'order-invoice');
-      a.click();
+  // Traiter (colis préparé) / annuler le traitement
+  async function toggleProcessed(processed: boolean) {
+    setBusy('process');
+    try {
+      await apiCall(`orders/${query.orderId}/${processed ? 'process' : 'unprocess'}`, { method: 'PATCH' });
+      toast.success(processed ? 'Commande traitée : elle passe dans « Traitées ».' : 'Traitement annulé : la commande revient « à traiter ».');
+      await queryClient.invalidateQueries();
+    } catch (e: any) {
+      toast.error(e.message);
+    } finally {
+      setBusy(null);
     }
   }
 
@@ -199,8 +208,13 @@ export default function OrderDetailsPage() {
   const code = otpState(o ?? {});
   const customer = o?.pickupRowsCustomer;
   const cardTitle = 'mb-4 edoto-serif text-lg font-semibold text-heading';
+  // Étape de suivi (mêmes règles que l'API, orders/order-stage.ts)
+  const withdrawnNow = o?.order_status === 'order-completed' || Number(o?.otp_used) === 1;
+  const stage: 'to_process' | 'processed' | 'withdrawn' = withdrawnNow ? 'withdrawn' : o?.processed_at ? 'processed' : 'to_process';
+  const paid = o?.payment_status === 'payment-success';
+  const stopped = ['order-cancelled', 'order-refunded', 'order-failed'].includes(o?.order_status);
 
-  // Nouveau visuel E·Doto + G2 (point de retrait, code masqué). Logique inchangée :
+  // Nouveau visuel E.doto + G2 (point de retrait, code masqué). Logique inchangée :
   // changement de statut, facture, produits et totaux utilisent les mêmes appels qu'avant.
   return (
     <div className="space-y-6">
@@ -231,11 +245,32 @@ export default function OrderDetailsPage() {
               <Button loading={updating}>{t('form:button-label-change-status')}</Button>
             </form>
           )}
-          <Button onClick={handleDownloadInvoice} variant="outline">
-            <DownloadIcon className="h-4 w-4 me-2" />
-            {t('common:text-download')} {t('common:text-invoice')}
-          </Button>
+          {order?.payment_status === PaymentStatus.SUCCESS && (
+            <Button onClick={handleDownloadInvoice} variant="outline" loading={busy === 'invoice'} disabled={busy === 'invoice'}>
+              <DownloadIcon className="h-4 w-4 me-2" />
+              {t('common:text-download')} {t('common:text-invoice')}
+            </Button>
+          )}
         </div>
+      </Card>
+
+      {/* Suivi admin : à traiter → traitée (colis préparé) → retirée (terminée) */}
+      <Card className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-xs uppercase tracking-[0.18em] text-body">Suivi</p>
+          <p className="mt-1 text-base font-semibold text-heading">
+            <Link href={ORDER_STAGE_LINKS[stage]} className="hover:text-accent">{ORDER_STAGE_LABELS[stage]}</Link>
+            {stage === 'processed' && o?.processed_at && <span className="ms-2 text-sm font-normal text-body">le {new Date(o.processed_at).toLocaleString('fr-FR')}</span>}
+            {stage === 'withdrawn' && o?.delivered_at && <span className="ms-2 text-sm font-normal text-body">le {new Date(o.delivered_at).toLocaleString('fr-FR')} · terminée</span>}
+          </p>
+          {stage === 'to_process' && !paid && !stopped && <p className="mt-1 text-sm text-body">Une commande se traite une fois payée.</p>}
+        </div>
+        {stage === 'to_process' && paid && !stopped && (
+          <Button onClick={() => toggleProcessed(true)} loading={busy === 'process'} disabled={busy === 'process'}>Traiter la commande</Button>
+        )}
+        {stage === 'processed' && (
+          <Button onClick={() => toggleProcessed(false)} variant="outline" loading={busy === 'process'} disabled={busy === 'process'}>Annuler le traitement</Button>
+        )}
       </Card>
 
       <Card className="flex items-center justify-center">
@@ -337,7 +372,7 @@ export default function OrderDetailsPage() {
           <Card>
             <h2 className={cardTitle}>Client</h2>
             <div className="space-y-1 text-sm">
-              <p className="text-heading">{customer?.name || order?.customer_name || '—'}</p>
+              <p className="text-heading">{customer?.name || order?.customer_name || 'Client non renseigné'}</p>
               {customer?.email && <p className="text-body">{customer.email}</p>}
               {order?.customer_contact && <p className="text-body">{phoneNumber}</p>}
               {order?.billing_address && <p className="text-body">{formatAddress(order.billing_address)}</p>}

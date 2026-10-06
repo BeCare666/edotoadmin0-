@@ -419,7 +419,7 @@ export default function WithdrawalsPage() {
                                                     </button>
                                                 </div>
                                             ) : (
-                                                <span className="text-slate-400">—</span>
+                                                <span className="text-slate-400">Aucune action</span>
                                             )}
 
                                         </td>

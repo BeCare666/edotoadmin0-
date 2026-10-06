@@ -1,6 +1,6 @@
 import * as legacyIcons from '@/components/icons/sidebar';
 
-// Icônes de navigation E·Doto (28/09/2026) : un seul style de trait (24 px, trait 1,75, bouts arrondis).
+// Icônes de navigation E.doto (28/09/2026) : un seul style de trait (24 px, trait 1,75, bouts arrondis).
 // Les noms reprennent ceux de site.settings ; un nom absent retombe sur l'ancienne icône.
 type IconProps = React.SVGAttributes<SVGElement> & { className?: string };
 

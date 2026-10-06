@@ -237,7 +237,7 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Vue d'ensemble E·Doto (nouveau visuel) */}
+      {/* Vue d'ensemble E.doto (nouveau visuel) */}
       <EdotoOverview />
 
       {/* Chart + Recent Orders */}

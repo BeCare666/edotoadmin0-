@@ -91,7 +91,7 @@ export default function ShopPreviewView() {
       </div>
     );
   }
-  const ownerName = (shopDetail?.owner ?? shop.owner)?.name ?? shop.owner_id ?? '—';
+  const ownerName = (shopDetail?.owner ?? shop.owner)?.name ?? shop.owner_id ?? 'Non renseigné';
   const addressParts = [
     shop.street_address,
     shop.address?.city,
@@ -99,7 +99,7 @@ export default function ShopPreviewView() {
     shop.address?.zip,
     shop.country ?? shop.address?.country,
   ].filter(Boolean);
-  const addressStr = addressParts.length > 0 ? addressParts.join(', ') : '—';
+  const addressStr = addressParts.length > 0 ? addressParts.join(', ') : 'Adresse non renseignée';
 
   const handleValidateAccount = () => {
     closeModal();
@@ -147,8 +147,8 @@ export default function ShopPreviewView() {
             />
           </div>
           <div>
-            <h3 className="text-xl font-semibold text-heading">{shop.name ?? '—'}</h3>
-            <p className="text-sm text-body">@{shop.slug ?? '—'}</p>
+            <h3 className="text-xl font-semibold text-heading">{shop.name ?? 'Boutique sans nom'}</h3>
+            <p className="text-sm text-body">@{shop.slug ?? 'non renseigné'}</p>
             <span
               className={`mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ${
                 shop.is_active
@@ -173,7 +173,7 @@ export default function ShopPreviewView() {
             <dt className="text-xs font-semibold uppercase tracking-wider text-body">
               {t('common:shop-preview-contact')}
             </dt>
-            <dd className="mt-1 font-medium text-heading">{shop.contact ?? '—'}</dd>
+            <dd className="mt-1 font-medium text-heading">{shop.contact ?? 'Non renseigné'}</dd>
           </div>
           <div className="rounded-xl border border-border-200 bg-gray-100/80 p-4 sm:col-span-2">
             <dt className="text-xs font-semibold uppercase tracking-wider text-body">

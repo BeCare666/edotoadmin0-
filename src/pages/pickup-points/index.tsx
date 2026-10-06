@@ -245,7 +245,7 @@ export default function PickupPointsPage() {
                       <div className="text-xs text-body">{p.email}</div>
                     </td>
                     <td className="px-4 py-3">
-                      <div>{p.pickup_address || '—'}</div>
+                      <div>{p.pickup_address || 'Adresse non renseignée'}</div>
                       {hasCoords ? (
                         <a
                           className="text-xs text-accent hover:underline"

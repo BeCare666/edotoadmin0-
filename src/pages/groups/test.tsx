@@ -140,7 +140,7 @@ export default function TypesPage() {
                                 <div>
                                     <p className="font-semibold text-gray-800">{t.name}</p>
                                     <p className="text-sm text-gray-500">
-                                        {t.slug || "—"} • {t.language.toUpperCase()}
+                                        {t.slug || "sans slug"} • {t.language.toUpperCase()}
                                     </p>
                                 </div>
                             </div>

@@ -9,7 +9,7 @@ import {
   TruckIcon,
 } from '@/components/icons/edoto-nav-icons';
 
-// Vue d'ensemble E·Doto du tableau de bord admin (nouveau visuel, 25/09/2026) :
+// Vue d'ensemble E.doto du tableau de bord admin (nouveau visuel, 25/09/2026) :
 // uniquement des routes existantes, aucune donnée inventée.
 interface Counts {
   deliveries: number | null;
@@ -35,7 +35,7 @@ function Tile({ label, value, hint, href, tone, icon: Icon }: { label: string; v
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-xs uppercase tracking-[0.12em] text-[#9A8E80]">{label}</p>
-          <p className="mt-2 text-2xl font-semibold tabular-nums text-[#1F1B16] sm:text-[28px]">{value === null ? '—' : value}</p>
+          <p className="mt-2 text-2xl font-semibold tabular-nums text-[#1F1B16] sm:text-[28px]">{value === null ? '…' : value}</p>
         </div>
         <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${TONES[tone]}`}>
           <Icon className="h-5 w-5" />
@@ -69,7 +69,7 @@ export default function EdotoOverview() {
     <div className="space-y-4">
       <div>
         <h2 className="edoto-serif text-xl tracking-tight text-[#1F1B16] sm:text-2xl">À traiter</h2>
-        <p className="mt-1 text-sm text-[#7A6E62]">Ce qui attend une action de l’équipe E·Doto.</p>
+        <p className="mt-1 text-sm text-[#7A6E62]">Ce qui attend une action de l’équipe E.doto.</p>
       </div>
       <div className="edoto-stagger grid grid-cols-1 gap-4 md:grid-cols-3">
         <Tile label="Livraisons à confier" value={counts.deliveries} hint="Confier à un zem" href="/custom-deliveries" tone="rose" icon={TruckIcon} />
@@ -102,7 +102,7 @@ export default function EdotoOverview() {
                 <Link href={`/orders/${o.id}`} className="flex flex-wrap items-center gap-x-6 gap-y-1 px-6 py-3.5 transition hover:bg-[#FAF7F2]">
                   <span className="min-w-0 flex-1 sm:flex-none sm:w-56">
                     <span className="block truncate text-sm font-medium text-[#1F1B16]">{o.tracking_number}</span>
-                    <span className="block truncate text-xs text-[#9A8E80]">{o.customer_display?.name || '—'}</span>
+                    <span className="block truncate text-xs text-[#9A8E80]">{o.customer_display?.name || 'Client non renseigné'}</span>
                   </span>
                   <span className="order-last w-full truncate text-xs text-[#7A6E62] md:order-none md:w-auto md:flex-1 md:text-sm">
                     {o.delivery_type === 'CUSTOM' ? 'Livraison à domicile' : o.pickup_point_name || 'Point non choisi'}

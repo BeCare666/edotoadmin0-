@@ -15,7 +15,7 @@ export function otpState(order: { otp_code?: string | null; otp_used?: any; otp_
 
 export default function OtpReveal({ code, compact = false }: { code?: string | null; compact?: boolean }) {
   const [shown, setShown] = useState(false);
-  if (!code) return <span className="text-sm text-body">—</span>;
+  if (!code) return <span className="text-sm text-body">Aucun code</span>;
   return (
     <span className="inline-flex items-center gap-2">
       <span className={`font-mono tracking-[0.3em] text-heading ${compact ? 'text-sm' : 'text-lg'}`} aria-live="polite">

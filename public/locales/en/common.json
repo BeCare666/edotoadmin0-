@@ -709,5 +709,11 @@
   "sidebar-nav-item-campaigns": "All Campaigns",
   "sidebar-nav-item-create-campaign": "Create Campaign",
   "sidebar-nav-item-active-campaigns": "Active Campaigns",
-  "sidebar-nav-item-upcoming-campaigns": "Upcoming Campaigns"
+  "sidebar-nav-item-upcoming-campaigns": "Upcoming Campaigns",
+  "text-orders-to-process": "Orders to process",
+  "text-orders-processed": "Processed orders",
+  "text-orders-withdrawn": "Picked-up orders",
+  "text-kit-requests-to-process": "Kit requests to process",
+  "text-kit-requests-processed": "Processed kits (packed)",
+  "text-kit-requests-withdrawn": "Picked-up kits"
 }
