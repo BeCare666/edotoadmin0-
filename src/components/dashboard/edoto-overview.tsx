@@ -69,7 +69,7 @@ export default function EdotoOverview() {
     <div className="space-y-4">
       <div>
         <h2 className="edoto-serif text-xl tracking-tight text-[#1F1B16] sm:text-2xl">À traiter</h2>
-        <p className="mt-1 text-sm text-[#7A6E62]">Ce qui attend une action de l’équipe E.doto.</p>
+        <p className="mt-1 text-sm text-[#7A6E62]">Ce qui attend une action de l’équipe E.doto family.</p>
       </div>
       <div className="edoto-stagger grid grid-cols-1 gap-4 md:grid-cols-3">
         <Tile label="Livraisons à confier" value={counts.deliveries} hint="Confier à un zem" href="/custom-deliveries" tone="rose" icon={TruckIcon} />

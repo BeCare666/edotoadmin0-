@@ -1,0 +1,23 @@
+/* =========================================================================================
+   Police unique de l'admin E.doto family (06/10/2026, Poppins depuis le 07/10/2026)
+   Même police que le site : Poppins, imposée à TOUS les textes (menus, tableaux,
+   formulaires, calendriers, éditeur, fenêtres). Pour changer de police partout : modifier
+   uniquement --edoto-font ci-dessous. (Chargée dans pages/_document.tsx ; importée en dernier
+   dans pages/_app.tsx.)
+   ========================================================================================= */
+:root {
+  --edoto-font: 'Poppins', Arial, sans-serif;
+  /* Taille visuelle : « none » pour Poppins ; 0.548 (hauteur des minuscules de Poppins) pour les autres.
+     Depuis le 07/10/2026, la police est choisie dans Police du site (utils/site-font.ts). */
+  --edoto-font-adjust: none;
+}
+
+html,
+body,
+*,
+*::before,
+*::after {
+  font-family: var(--edoto-font) !important;
+  font-size-adjust: var(--edoto-font-adjust) !important;
+}
+

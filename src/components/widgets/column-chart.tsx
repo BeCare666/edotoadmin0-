@@ -55,7 +55,7 @@ const BarChart = ({
           style: {
             colors: '#9A8E80',
             fontSize: '12px',
-            fontFamily: 'Inter, sans-serif',
+            fontFamily: "'Poppins', Arial, sans-serif", // police unique (edoto-font.css)
           },
         },
         axisBorder: {
@@ -73,7 +73,7 @@ const BarChart = ({
           style: {
             colors: '#9A8E80',
             fontSize: '12px',
-            fontFamily: 'Inter, sans-serif',
+            fontFamily: "'Poppins', Arial, sans-serif", // police unique (edoto-font.css)
           },
         },
       },

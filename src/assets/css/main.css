@@ -4,7 +4,7 @@
 
 @layer base {
   * {
-    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--edoto-font);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -317,7 +317,7 @@
 .edoto-serif,
 .edoto-heading h1,
 h1.edoto-heading {
-  font-family: ui-serif, Georgia, Cambria, 'Times New Roman', serif !important;
+  font-family: var(--edoto-font) !important;
   letter-spacing: -0.01em;
 }
 

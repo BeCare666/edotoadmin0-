@@ -41,7 +41,7 @@
   margin-bottom: 5px !important;
 }
 .react-datepicker {
-  font-family: 'Open Sans', sans-serif !important;
+  font-family: var(--edoto-font) !important;
   font-size: 13px !important;
   background-color: #fff !important;
   color: #6b7280 !important;

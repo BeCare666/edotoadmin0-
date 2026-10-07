@@ -19,8 +19,9 @@ module.exports = {
       fontFamily: {
         // body: ['Open Sans', 'system-ui', 'sans-serif'],
         // heading: ['Open Sans', 'system-ui', 'sans-serif'],
-        body: [`Inter, sans-serif`],
-        heading: [`Inter, sans-serif`],
+        // Police unique (06/10/2026) : assets/css/edoto-font.css (variable --edoto-font)
+        body: ['var(--edoto-font)'],
+        heading: ['var(--edoto-font)'],
       },
       colors: {
         light: withOpacity('--color-light'),

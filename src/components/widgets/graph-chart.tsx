@@ -34,7 +34,7 @@ const GraphChart = ({ widgetTitle, series, labels, colors }: any) => {
           style: {
             colors: '#161F6A',
             fontSize: '14px',
-            fontFamily: "'Lato', sans-serif",
+            fontFamily: "'Poppins', Arial, sans-serif", // police unique (edoto-font.css)
           },
         },
         axisBorder: {
@@ -70,7 +70,7 @@ const GraphChart = ({ widgetTitle, series, labels, colors }: any) => {
           style: {
             color: '#161F6A',
             fontSize: '14px',
-            fontFamily: "'Lato', sans-serif",
+            fontFamily: "'Poppins', Arial, sans-serif", // police unique (edoto-font.css)
           },
         },
       },

@@ -17,7 +17,7 @@ export default function BecomeSeller() {
       <Card className="text-center">
         <p className="text-base font-semibold text-heading">Inscription des vendeurs bientôt disponible.</p>
         <p className="mt-2 text-sm text-body">
-          Pour l&apos;instant, seule la boutique E.doto publie des produits. Les vendeurs pourront plus tard
+          Pour l&apos;instant, seule la boutique E.doto family publie des produits. Les vendeurs pourront plus tard
           s&apos;inscrire, créer leur boutique et vendre.
         </p>
       </Card>

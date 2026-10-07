@@ -715,5 +715,6 @@
   "text-orders-withdrawn": "Picked-up orders",
   "text-kit-requests-to-process": "Kit requests to process",
   "text-kit-requests-processed": "Processed kits (packed)",
-  "text-kit-requests-withdrawn": "Picked-up kits"
+  "text-kit-requests-withdrawn": "Picked-up kits",
+  "text-site-font": "Site font"
 }

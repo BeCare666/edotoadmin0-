@@ -293,6 +293,11 @@ export const siteSettings = {
         icon: 'SettingsIcon',
         childMenu: [
           {
+            href: Routes.siteFont || '#',
+            label: 'text-site-font',
+            icon: 'SettingsIcon',
+          },
+          {
             href: Routes.settings || '#',
             label: 'sidebar-nav-item-settings',
             icon: 'SettingsIcon',

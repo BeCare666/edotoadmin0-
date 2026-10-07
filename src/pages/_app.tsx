@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app';
 import 'react-toastify/dist/ReactToastify.css';
 import '@/assets/css/main.css';
+import '@/assets/css/edoto-font.css'; // police unique : en dernier
 import { UIProvider } from '@/contexts/ui.context';
 import { SettingsProvider } from '@/contexts/settings.context';
 import ErrorMessage from '@/components/ui/error-message';
@@ -15,7 +16,8 @@ import { ModalProvider } from '@/components/ui/modal/modal.context';
 import DefaultSeo from '@/components/ui/default-seo';
 import ManagedModal from '@/components/ui/modal/managed-modal';
 import { CartProvider } from '@/contexts/quick-cart/cart.context';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { syncSiteFont } from '@/utils/site-font';
 import type { NextPageWithLayout } from '@/types';
 import { useRouter } from 'next/router';
 import PrivateRoute from '@/utils/private-route';
@@ -40,6 +42,10 @@ const CustomApp = ({ Component, pageProps }: AppPropsWithLayout) => {
   const Layout = (Component as any).Layout || Noop;
   const authProps = (Component as any).authenticate;
   const [queryClient] = useState(() => new QueryClient());
+  // Police choisie par le super admin (Police du site) : lue à l'ouverture
+  useEffect(() => {
+    syncSiteFont(process.env.NEXT_PUBLIC_REST_API_ENDPOINT);
+  }, []);
   const getLayout = Component.getLayout ?? ((page) => page);
   console.log()
   const { locale } = useRouter();

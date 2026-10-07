@@ -643,5 +643,6 @@
   "text-orders-withdrawn": "Commandes retirées",
   "text-kit-requests-to-process": "Demandes de kit à traiter",
   "text-kit-requests-processed": "Kits traités (emballés)",
-  "text-kit-requests-withdrawn": "Kits retirés"
+  "text-kit-requests-withdrawn": "Kits retirés",
+  "text-site-font": "Police du site"
 }

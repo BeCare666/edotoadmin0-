@@ -140,6 +140,7 @@ export const Routes = {
   customerList: '/users/customer',
   pickupPoints: '/pickup-points',
   customDeliveries: '/custom-deliveries',
+  siteFont: '/site-font',
   ordersProcessed: '/orders/processed',
   ordersWithdrawn: '/orders/withdrawn',
   campaignRequests: '/campaign-requests',
