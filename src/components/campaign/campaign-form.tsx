@@ -39,7 +39,8 @@ const label = 'mb-1 block text-sm font-semibold text-heading';
  * Création / modification d'une campagne : nom, kits fournis, ville(s), dates de début et de fin,
  * sponsors (existants) avec leur montant. Budget = somme des montants (calculé).
  */
-export default function CampaignForm({ campaignId, initial }: { campaignId?: number; initial?: CampaignFormValues }) {
+// proposalId (15/10/2026) : création à partir d'une demande de campagne validée d'un sponsor
+export default function CampaignForm({ campaignId, initial, proposalId }: { campaignId?: number; initial?: CampaignFormValues; proposalId?: number }) {
   const router = useRouter();
   const [values, setValues] = useState<CampaignFormValues>(initial ?? EMPTY_FORM);
   const [cityInput, setCityInput] = useState('');
@@ -101,6 +102,7 @@ export default function CampaignForm({ campaignId, initial }: { campaignId?: num
         image_url: values.image_url,
         cities: values.cities,
         sponsors: values.sponsors.map((s) => ({ sponsor_id: s.sponsor_id, amount: Number(s.amount) || 0 })),
+        ...(proposalId && !campaignId ? { proposal_id: proposalId } : {}),
       };
       const res = await apiCall(campaignId ? `admin/campaigns/${campaignId}` : 'admin/campaigns', {
         method: campaignId ? 'PUT' : 'POST',

@@ -104,6 +104,11 @@ export const siteSettings = {
             icon: 'SponsorIcon',
           },
           {
+            href: Routes.campaignProposals || '#',
+            label: 'text-campaign-proposals',
+            icon: 'CalendarPlusIcon',
+          },
+          {
             href: Routes.sponsorExports || '#',
             label: 'text-sponsor-exports',
             icon: 'DownloadIcon',

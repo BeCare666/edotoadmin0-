@@ -5,6 +5,7 @@ import { apiCall } from '@/components/campaign/campaign-api';
 import {
   BellNavIcon,
   BoxAlertIcon,
+  CalendarPlusIcon,
   CalendarScheduleIcon,
   CheckCircleNavIcon,
   DownloadIcon,
@@ -35,6 +36,7 @@ const TYPE_STYLE: Record<string, { icon: React.ComponentType<{ className?: strin
   delivery: { icon: TruckIcon, tone: 'bg-[#FCE8F0] text-[#C2185B]' },
   pickup_point: { icon: MapPinIcon, tone: 'bg-[#F3EBDD] text-[#8A6A3B]' },
   sponsor_export: { icon: DownloadIcon, tone: 'bg-[#F3EBDD] text-[#8A6A3B]' },
+  sponsor_proposal: { icon: CalendarPlusIcon, tone: 'bg-[#FCE8F0] text-[#C2185B]' },
   stock: { icon: BoxAlertIcon, tone: 'bg-[#FDECEC] text-[#B42318]' },
   registrations: { icon: UsersIcon, tone: 'bg-[#E8EFE6] text-[#3F6B45]' },
   campaign: { icon: CalendarScheduleIcon, tone: 'bg-[#FCE8F0] text-[#C2185B]' },

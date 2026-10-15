@@ -149,6 +149,7 @@ export const Routes = {
   commissions: '/commissions',
   sponsors: '/sponsors',
   sponsorExports: '/sponsor-exports',
+  campaignProposals: '/campaign-proposals',
   myStaffs: '/users/my-staffs',
   vendorStaffs: '/users/vendor-staffs',
   flashSale: {
