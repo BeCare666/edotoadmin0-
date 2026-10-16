@@ -28,6 +28,9 @@ export default function EditCampaignPage() {
           cities: c.cities ?? [],
           // Liens sans sponsor enregistré (anciennes données) : non modifiables ici
           sponsors: (c.sponsors ?? []).filter((s: any) => s.sponsor_id).map((s: any) => ({ sponsor_id: s.sponsor_id, amount: String(s.amount) })),
+          target_sex: c.target_sex ?? 'all',
+          target_age_min: c.target_age_min === null || c.target_age_min === undefined ? '' : String(c.target_age_min),
+          target_age_max: c.target_age_max === null || c.target_age_max === undefined ? '' : String(c.target_age_max),
         }),
       )
       .catch((e) => setError(e.message));

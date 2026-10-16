@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import Card from '@/components/common/card';
 import { apiCall, BENIN_CITIES, fcfa } from './campaign-api';
+import { intInput, MAX_AGE, MIN_AGE, TARGET_SEX_OPTIONS } from '@/utils/field-rules';
 
 interface Sponsor {
   id: number;
@@ -19,6 +20,10 @@ export interface CampaignFormValues {
   image_url: string;
   cities: string[];
   sponsors: { sponsor_id: number; amount: string }[];
+  // Public ciblé (16/10/2026) : sexe (all = les deux) et tranche d'âge (vide = sans limite)
+  target_sex?: string;
+  target_age_min?: string;
+  target_age_max?: string;
 }
 
 export const EMPTY_FORM: CampaignFormValues = {
@@ -30,6 +35,9 @@ export const EMPTY_FORM: CampaignFormValues = {
   image_url: '',
   cities: [],
   sponsors: [],
+  target_sex: 'all',
+  target_age_min: '',
+  target_age_max: '',
 };
 
 const input = 'w-full rounded-md border border-border-200 px-3 py-2 text-sm focus:border-accent focus:outline-none';
@@ -91,6 +99,17 @@ export default function CampaignForm({ campaignId, initial, proposalId }: { camp
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Tranche d'âge cohérente avant l'envoi (même contrôle que l'API)
+    const a = values.target_age_min ? Number(values.target_age_min) : null;
+    const b = values.target_age_max ? Number(values.target_age_max) : null;
+    if ((a !== null && (a < MIN_AGE || a > MAX_AGE)) || (b !== null && (b < MIN_AGE || b > MAX_AGE))) {
+      toast.error(`L'âge doit être compris entre ${MIN_AGE} et ${MAX_AGE} ans.`);
+      return;
+    }
+    if (a !== null && b !== null && a > b) {
+      toast.error("L'âge minimum ne peut pas dépasser l'âge maximum.");
+      return;
+    }
     setSaving(true);
     try {
       const body = {
@@ -102,6 +121,9 @@ export default function CampaignForm({ campaignId, initial, proposalId }: { camp
         image_url: values.image_url,
         cities: values.cities,
         sponsors: values.sponsors.map((s) => ({ sponsor_id: s.sponsor_id, amount: Number(s.amount) || 0 })),
+        target_sex: values.target_sex || 'all',
+        target_age_min: values.target_age_min === '' || values.target_age_min === undefined ? null : Number(values.target_age_min),
+        target_age_max: values.target_age_max === '' || values.target_age_max === undefined ? null : Number(values.target_age_max),
         ...(proposalId && !campaignId ? { proposal_id: proposalId } : {}),
       };
       const res = await apiCall(campaignId ? `admin/campaigns/${campaignId}` : 'admin/campaigns', {
@@ -126,7 +148,7 @@ export default function CampaignForm({ campaignId, initial, proposalId }: { camp
         </div>
         <div>
           <label className={label} htmlFor="c-kits">Nombre de kits fournis *</label>
-          <input id="c-kits" type="number" min={0} step={1} className={input} value={values.objective_kits} onChange={(e) => set('objective_kits', e.target.value)} required />
+          <input id="c-kits" inputMode="numeric" className={input} value={values.objective_kits} onChange={(e) => set('objective_kits', intInput(e.target.value, 7))} required />
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -141,6 +163,36 @@ export default function CampaignForm({ campaignId, initial, proposalId }: { camp
         <p className="text-xs text-body md:col-span-2">
           Le statut est calculé automatiquement : à venir avant le début, en cours jusqu&apos;à la fin, terminée ensuite.
         </p>
+      </Card>
+
+      {/* Public ciblé : seules les personnes de ce sexe et de cet âge peuvent demander et retirer un kit */}
+      <Card>
+        <h3 className="mb-1 text-sm font-semibold text-heading">Public ciblé</h3>
+        <p className="mb-4 text-xs text-body">
+          Une personne hors de ce public ne peut ni demander ni retirer un kit. L&apos;âge est calculé à partir de sa date de naissance, le jour de la demande et le jour du retrait.
+        </p>
+        <div className="grid gap-2.5 sm:grid-cols-3" role="radiogroup" aria-label="Sexe ciblé">
+          {TARGET_SEX_OPTIONS.map((o) => {
+            const on = (values.target_sex || 'all') === o.value;
+            return (
+              <label key={o.value} className={`flex cursor-pointer flex-col rounded-xl border px-4 py-3 transition ${on ? 'border-[#C2185B] bg-[#FBEEF3]' : 'border-border-200 hover:border-border-400'}`}>
+                <input type="radio" name="target_sex" value={o.value} checked={on} onChange={() => set('target_sex', o.value)} className="sr-only" />
+                <span className={`text-sm font-medium ${on ? 'text-[#A0124A]' : 'text-heading'}`}>{o.label}</span>
+                <span className="text-xs text-body">{o.hint}</span>
+              </label>
+            );
+          })}
+        </div>
+        <div className="mt-4 grid grid-cols-2 gap-3 sm:max-w-sm">
+          <div>
+            <label className={label} htmlFor="c-age-min">Âge minimum</label>
+            <input id="c-age-min" inputMode="numeric" placeholder="Sans limite" className={input} value={values.target_age_min ?? ''} onChange={(e) => set('target_age_min', intInput(e.target.value, 3))} />
+          </div>
+          <div>
+            <label className={label} htmlFor="c-age-max">Âge maximum</label>
+            <input id="c-age-max" inputMode="numeric" placeholder="Sans limite" className={input} value={values.target_age_max ?? ''} onChange={(e) => set('target_age_max', intInput(e.target.value, 3))} />
+          </div>
+        </div>
       </Card>
 
       <Card>

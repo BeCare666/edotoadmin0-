@@ -3,6 +3,7 @@ import PasswordInput from '@/components/ui/password-input';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { passwordRule } from '@/utils/field-rules';
 import { useTranslation } from 'next-i18next';
 
 interface Props {
@@ -11,7 +12,7 @@ interface Props {
 }
 
 const schema = yup.object().shape({
-  password: yup.string().required('form:error-password-required'),
+  password: passwordRule(),
 });
 
 const EnterNewPasswordView = ({ onSubmit, loading }: Props) => {

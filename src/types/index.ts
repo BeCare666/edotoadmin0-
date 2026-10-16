@@ -1589,6 +1589,9 @@ export interface RegisterInput {
   password: string;
   name: string;
   shop_id?: number;
+  // Obligatoires depuis le 16/10/2026 (ciblage des campagnes)
+  birth_date?: string;
+  sex?: string;
   // permission: Permission;
 }
 

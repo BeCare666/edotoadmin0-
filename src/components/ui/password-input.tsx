@@ -7,6 +7,7 @@ import Link from './link';
 export interface Props extends InputHTMLAttributes<HTMLInputElement> {
   className?: string;
   inputClassName?: string;
+  labelClassName?: string;
   forgotPassHelpText?: string;
   label: string;
   name: string;
@@ -31,6 +32,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, Props>(
     {
       className,
       inputClassName,
+      labelClassName,
       forgotPassHelpText,
       label,
       name,
@@ -63,7 +65,7 @@ const PasswordInput = React.forwardRef<HTMLInputElement, Props>(
         <div className="mb-3 flex items-center justify-between">
           <label
             htmlFor={name}
-            className="text-sm font-semibold leading-none text-body-dark"
+            className={labelClassName ?? 'text-sm font-semibold leading-none text-body-dark'}
           >
             {label}
             {required ? <span className="ml-0.5 text-red-500">*</span> : ''}

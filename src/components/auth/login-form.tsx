@@ -20,7 +20,7 @@ import {
 import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-import logo from '../../../public/logo/edoto-emblem.png';
+import EdotoAuthShell, { authButtonClass, authInputClass, authLabelClass, authLinkClass } from '@/components/auth/edoto-auth-shell';
 
 const loginFormSchema = yup.object().shape({
   email: yup
@@ -87,31 +87,20 @@ const LoginForm = () => {
     );
   }
 
+  // Même cadre et même logo que le site (16/10/2026) ; textes inchangés
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#ffe4ef] via-[#fff0f5] to-[#fff5f8] px-4 py-12 relative overflow-hidden">
-      {/* Orbes décoratives */}
-      <div className="absolute top-[-120px] left-[-100px] w-72 h-72 bg-[#FF6EA9]/30 rounded-full blur-3xl animate-bounce-slow" />
-      <div className="absolute bottom-[-120px] right-[-100px] w-96 h-96 bg-[#FF6EA9]/40 rounded-full blur-3xl animate-bounce-slow-reverse" />
-
-      <div className="relative z-10 w-full max-w-md bg-white/70 backdrop-blur-2xl border border-white/40 rounded-2xl shadow-lg px-8 pt-20 pb-10">
-        {/* Logo flottant */}
-        <div className="absolute -top-14 left-1/2 -translate-x-1/2 bg-white p-3 rounded-full shadow-lg border border-white/40">
-          <Image
-            src={logo}
-            alt="E.doto family"
-            width={70}
-            height={70}
-            className="object-contain"
-          />
-        </div>
-
-        <h1 className="text-2xl font-bold text-[#0F172A] mt-2 text-center">
-          Administration<span className="text-[#FF6EA9]"> E.doto family</span>
-        </h1>
-        <p className="text-gray-500 mt-2 mb-8 text-sm text-center">
-          Connectez-vous à l'espace admin
+    <EdotoAuthShell
+      title="Administration E.doto family"
+      subtitle="Connectez-vous à l'espace admin"
+      footer={
+        <p>
+          Pas encore de compte ?{' '}
+          <a href="/register" className={authLinkClass}>
+            Créez-en un
+          </a>
         </p>
-
+      }
+    >
         {errorMessage && (
           <Alert
             message={t(errorMessage)}
@@ -135,7 +124,9 @@ const LoginForm = () => {
                 type="email"
                 autoComplete="email"
                 variant="outline"
-                className="mb-5 border-gray-200 transition-shadow focus:ring-2 focus:ring-[#FF6EA9]/30 focus:border-[#FF6EA9]"
+                className="mb-5"
+                labelClassName={authLabelClass}
+                inputClassName={authInputClass}
                 error={t(errors?.email?.message!)}
               />
 
@@ -147,7 +138,9 @@ const LoginForm = () => {
                 autoComplete="current-password"
                 error={t(errors?.password?.message!)}
                 variant="outline"
-                className="mb-5 border-gray-200"
+                className="mb-5"
+                labelClassName="text-sm font-medium leading-none text-[#3D3934]"
+                inputClassName={authInputClass}
               />
 
               <div className="mb-6 flex items-center">
@@ -161,7 +154,7 @@ const LoginForm = () => {
 
               <Button
                 type="submit"
-                className="h-12 w-full font-medium shadow-sm transition-all hover:shadow focus:outline-none focus:ring-2 focus:ring-[#FF6EA9] focus:ring-offset-2"
+                className={authButtonClass}
                 loading={isLoading}
                 disabled={isLoading}
               >
@@ -171,17 +164,7 @@ const LoginForm = () => {
           )}
         </Form>
 
-        <p className="text-gray-500 text-sm mt-6 text-center">
-          Pas encore de compte ?{' '}
-          <a
-            href="/register"
-            className="text-[#FF6EA9] font-medium hover:underline"
-          >
-            Créez-en un
-          </a>
-        </p>
-      </div>
-    </main>
+    </EdotoAuthShell>
   );
 };
 

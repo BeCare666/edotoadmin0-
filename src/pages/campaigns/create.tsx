@@ -36,6 +36,9 @@ export default function CreateCampaignPage() {
           image_url: '',
           cities: p.cities ?? [],
           sponsors: [{ sponsor_id: p.sponsor_id, amount: String(p.budget ?? 0) }],
+          target_sex: 'all',
+          target_age_min: '',
+          target_age_max: '',
         });
       })
       .catch((e) => setError(e.message));

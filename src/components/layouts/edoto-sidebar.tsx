@@ -90,7 +90,7 @@ export function EdotoSidebarPanel({
 
   return (
     <div className="flex h-full flex-col bg-white text-[#3D3934]">
-      <div className={cn('flex h-20 shrink-0 items-center justify-between', c ? 'justify-center px-0' : 'px-6')}>
+      <div className={cn('flex h-20 shrink-0 items-center', c ? 'justify-center px-0' : 'justify-between px-6')}>
         <EdotoBrand compact={c} subtitle={roleLabel(role)} />
         {onClose && (
           <button
