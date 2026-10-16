@@ -15,48 +15,48 @@
 
   :root,
   [data-theme='light'] {
-    /* Nouveau visuel E·Doto (25/09/2026) : ivoire, sable, brun profond, accent rose E·Doto */
-    /* Accent — rose E·Doto */
+    /* Refonte 16/10/2026 : papier clair, encre, filets fins, rose E.doto en touche (aucune ombre décorative) */
+    /* Accent : rose E.doto */
     --color-accent: 194, 24, 91;
     --color-accent-hover: 160, 18, 74;
-    --color-accent-300: 252, 232, 240;
-    --color-accent-400: 247, 190, 214;
-    --color-accent-500: 255, 110, 169;
+    --color-accent-300: 251, 238, 243;
+    --color-accent-400: 244, 196, 216;
+    --color-accent-500: 222, 76, 138;
     --color-accent-600: 194, 24, 91;
     --color-accent-700: 160, 18, 74;
 
     /* Surfaces */
     --color-light: 255, 255, 255;
-    --color-dark: 31, 27, 22;
-    --color-muted-black: 31, 27, 22;
+    --color-dark: 26, 24, 20;
+    --color-muted-black: 26, 24, 20;
 
-    /* Texte — brun profond */
-    --text-base: 92, 83, 74;
-    --text-base-dark: 59, 52, 45;
-    --text-muted: 154, 142, 128;
-    --text-muted-light: 216, 207, 195;
-    --text-sub-heading: 90, 80, 70;
-    --text-heading: 31, 27, 22;
-    --text-bolder: 20, 17, 14;
+    /* Texte : encre */
+    --text-base: 87, 82, 75;
+    --text-base-dark: 61, 57, 52;
+    --text-muted: 138, 131, 122;
+    --text-muted-light: 214, 210, 203;
+    --text-sub-heading: 87, 82, 75;
+    --text-heading: 26, 24, 20;
+    --text-bolder: 17, 16, 13;
 
-    /* Bordures — sable */
-    --color-border-50: 250, 247, 242;
-    --color-border-100: 243, 238, 231;
-    --color-border-200: 237, 230, 220;
-    --color-border-base: 228, 219, 206;
-    --color-border-400: 200, 188, 172;
+    /* Filets */
+    --color-border-50: 249, 248, 246;
+    --color-border-100: 241, 239, 235;
+    --color-border-200: 233, 229, 223;
+    --color-border-base: 224, 219, 212;
+    --color-border-400: 196, 190, 181;
 
-    /* Neutres chauds */
-    --color-gray-50: 250, 247, 242;
-    --color-gray-100: 243, 238, 231;
-    --color-gray-200: 237, 230, 220;
-    --color-gray-300: 216, 207, 195;
-    --color-gray-400: 184, 172, 158;
-    --color-gray-500: 154, 142, 128;
-    --color-gray-600: 122, 110, 98;
-    --color-gray-700: 92, 83, 74;
-    --color-gray-800: 59, 52, 45;
-    --color-gray-900: 31, 27, 22;
+    /* Neutres (pierre chaude, très légère) */
+    --color-gray-50: 249, 248, 246;
+    --color-gray-100: 243, 241, 238;
+    --color-gray-200: 233, 229, 223;
+    --color-gray-300: 214, 210, 203;
+    --color-gray-400: 168, 162, 154;
+    --color-gray-500: 138, 131, 122;
+    --color-gray-600: 107, 101, 93;
+    --color-gray-700: 87, 82, 75;
+    --color-gray-800: 61, 57, 52;
+    --color-gray-900: 26, 24, 20;
 
     /* Commerce orange — premium CTA alt */
     --color-orange-50: 255, 251, 235;
@@ -91,11 +91,12 @@
     /* Premium shadows */
     --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.03);
     --shadow-sm: 0 1px 3px rgb(0 0 0 / 0.05), 0 1px 2px rgb(0 0 0 / 0.04);
-    --shadow-card: 0 1px 2px rgb(60 40 20 / 0.04), 0 12px 32px -18px rgb(60 40 20 / 0.18);
-    --shadow-elevated: 0 18px 40px -16px rgb(60 40 20 / 0.25);
-    --shadow-soft: 0 1px 2px rgb(60 40 20 / 0.05);
+    /* Cartes : un filet, pas d'ombre ; seules les couches flottantes (menus, fenêtres) en gardent une */
+    --shadow-card: 0 0 0 0 transparent;
+    --shadow-elevated: 0 12px 32px -12px rgb(26 24 20 / 0.18);
+    --shadow-soft: 0 0 0 0 transparent;
 
-    --radius-card: 1.5rem;
+    --radius-card: 1rem;
     --radius-button: 0.5rem;
   }
 
@@ -136,7 +137,7 @@
 
   body {
     @apply font-body text-body transition-colors duration-200;
-    background: #faf7f2;
+    background: #f9f8f6;
     min-height: 100vh;
   }
 
@@ -163,7 +164,7 @@
    =============================== */
 
 .bg-gray-100 {
-  background: #f3eee7 !important;
+  background: #f3f1ee !important;
 }
 
 .text-main {
@@ -290,29 +291,58 @@
 }
 
 /* ===============================
-   NOUVEAU VISUEL E·DOTO — barre latérale sombre, titres en sérif
+   REFONTE 16/10/2026 : barre latérale claire, filets fins, tableaux soignés
    (habillage uniquement : aucune logique modifiée)
    =============================== */
 .edoto-sidebar {
-  background: #1f1b16 !important;
+  background: #ffffff !important;
+  border-inline-end: 1px solid #e9e5df;
 }
-/* Menu des vendeurs (layouts/owner/menu.tsx, pas encore utilisé) : textes lisibles sur fond sombre */
-.edoto-sidebar .text-body\/60 { color: #9a8e80 !important; letter-spacing: 0.18em; }
+/* Menu des vendeurs (layouts/owner/menu.tsx) : mêmes teintes que le menu admin */
+.edoto-sidebar .text-body\/60 { color: #8a837a !important; letter-spacing: 0.18em; }
 .edoto-sidebar .text-gray-600,
 .edoto-sidebar .text-gray-700,
-.edoto-sidebar .text-body-dark { color: #d8cfc3 !important; }
-.edoto-sidebar .hover\:bg-gray-100:hover { background: rgba(255, 255, 255, 0.06) !important; color: #ffffff !important; }
-/* Barre de défilement discrète sur fond sombre */
-.edoto-sidebar .os-scrollbar-handle { background: rgba(255, 255, 255, 0.14) !important; }
-.edoto-sidebar .os-scrollbar-handle:hover { background: rgba(255, 255, 255, 0.24) !important; }
+.edoto-sidebar .text-body-dark { color: #57524b !important; }
+.edoto-sidebar .hover\:bg-gray-100:hover { background: #f3f1ee !important; color: #1a1814 !important; }
+.edoto-sidebar .os-scrollbar-handle { background: rgba(26, 24, 20, 0.12) !important; }
+.edoto-sidebar .os-scrollbar-handle:hover { background: rgba(26, 24, 20, 0.22) !important; }
 
 .edoto-topbar {
-  background: rgba(250, 247, 242, 0.85) !important;
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border-bottom: 1px solid #ede6dc !important;
+  background: rgba(249, 248, 246, 0.86) !important;
+  backdrop-filter: saturate(160%) blur(20px);
+  -webkit-backdrop-filter: saturate(160%) blur(20px);
+  border-bottom: 1px solid #e9e5df !important;
   box-shadow: none !important;
 }
+
+/* Chiffres alignés dans les tableaux et les compteurs */
+.rc-table td,
+.edoto-num { font-variant-numeric: tabular-nums; }
+
+/* Tableaux : en-tête discret en petites capitales, lignes séparées par un filet plein, survol léger */
+.rc-table thead.rc-table-thead th {
+  background: #f9f8f6 !important;
+  color: #8a837a !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding-top: 0.8rem !important;
+  padding-bottom: 0.8rem !important;
+  border-bottom: 1px solid #e9e5df !important;
+  border-radius: 0 !important;
+}
+.rc-table tr.rc-table-row td {
+  border-bottom: 1px solid #f1efeb !important;
+  color: #3d3934;
+}
+.rc-table tr.rc-table-row:hover td,
+.rc-table tr.rc-table-row td.rc-table-cell-row-hover {
+  background: #fbfaf8 !important;
+}
+
+/* Fenêtres et menus déroulants : seule ombre conservée, courte et nette */
+.shadow-elevated { box-shadow: var(--shadow-elevated); }
 
 .edoto-serif,
 .edoto-heading h1,
@@ -337,3 +367,20 @@ h1.edoto-heading {
 @media (prefers-reduced-motion: reduce) {
   .edoto-page, .edoto-stagger > * { animation: none; }
 }
+
+/* Tableaux E.doto écrits à la main (commandes, kits, campagnes, sponsors, points de retrait…) :
+   même en-tête et même survol que les tableaux rc-table, sans toucher aux pages */
+.edoto-page table > thead[class*='uppercase'] {
+  background: #f9f8f6;
+  border-bottom: 1px solid #e9e5df;
+}
+.edoto-page table > thead[class*='uppercase'] th {
+  color: #8a837a;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+.edoto-page table > thead[class*='uppercase'] + tbody > tr { transition: background-color 0.15s ease; }
+.edoto-page table > thead[class*='uppercase'] + tbody > tr:hover { background: #fbfaf8; }
+.edoto-page table > thead[class*='uppercase'] + tbody td { font-variant-numeric: tabular-nums; }

@@ -76,13 +76,13 @@ const SideBarGroup = () => {
         <div
           className={cn(
             'flex flex-col',
-            miniSidebar && width >= RESPONSIVE_WIDTH ? 'px-3 py-2' : 'px-4 pt-5',
+            miniSidebar && width >= RESPONSIVE_WIDTH ? 'px-3 py-1.5' : 'px-3 pt-5',
           )}
           key={index}
         >
           <div
             className={cn(
-              'px-4 pb-2 text-[10px] font-medium uppercase tracking-[0.22em] text-[#9A8E80]',
+              'px-3 pb-1.5 text-[10.5px] font-semibold uppercase tracking-[0.16em] text-[#A8A29A]',
               miniSidebar && width >= RESPONSIVE_WIDTH ? 'hidden' : '',
             )}
           >
@@ -108,7 +108,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
 
   return (
     <div
-      className="flex min-h-screen flex-col bg-[#FAF7F2] transition-colors duration-200"
+      className="flex min-h-screen flex-col bg-[#F9F8F6] transition-colors duration-200"
       dir={dir}
     >
       <Navbar />
@@ -116,7 +116,7 @@ const AdminLayout: React.FC<{ children?: React.ReactNode }> = ({
         <SideBarGroup />
       </MobileNavigation>
 
-      {/* Barre latérale sombre sur toute la hauteur, logo compris (même cadre que le dashboard des points de retrait) */}
+      {/* Barre latérale claire sur toute la hauteur, logo compris (même cadre que le dashboard des points de retrait) */}
       <EdotoSidebar>
         <SideBarGroup />
       </EdotoSidebar>

@@ -14,7 +14,7 @@ const PageHeading = ({
       className={twMerge(
         classNames(
           // Visuel E.doto : titre en sérif, comme les dashboards point de retrait / sponsor
-          'edoto-serif text-xl font-normal tracking-tight text-[#1F1B16] sm:text-2xl',
+          'edoto-serif text-xl font-normal tracking-tight text-[#1A1814] sm:text-2xl',
           className
         )
       )}

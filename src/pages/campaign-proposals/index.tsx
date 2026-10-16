@@ -16,7 +16,7 @@ const BADGE: Record<Status, { label: string; className: string }> = {
   pending: { label: 'En attente', className: 'bg-amber-50 text-amber-800' },
   approved: { label: 'Validée, campagne à créer', className: 'bg-emerald-50 text-emerald-700' },
   rejected: { label: 'Refusée', className: 'bg-red-50 text-red-700' },
-  created: { label: 'Campagne créée', className: 'bg-[#FCE8F0] text-[#C2185B]' },
+  created: { label: 'Campagne créée', className: 'bg-[#FBEEF3] text-[#C2185B]' },
 };
 const SORTS = [
   { value: 'recent', label: 'Plus récentes' },
@@ -68,7 +68,7 @@ function Detail({ id, onClose, onChanged }: { id: number; onClose: () => void; o
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true" aria-label="Demande de campagne">
-      <button className="absolute inset-0 bg-[#1F1B16]/40" onClick={onClose} aria-label="Fermer" />
+      <button className="absolute inset-0 bg-[#1A1814]/40" onClick={onClose} aria-label="Fermer" />
       <aside className="relative flex h-full w-full max-w-xl flex-col overflow-y-auto bg-white shadow-2xl">
         <div className="sticky top-0 z-10 flex items-center justify-between border-b border-border-200 bg-white px-6 py-4">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">Demande n° {id}</p>

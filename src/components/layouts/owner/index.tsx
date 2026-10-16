@@ -31,7 +31,7 @@ const OwnerLayout: React.FC<{ children?: React.ReactNode }> = ({
 
   return (
     <div
-      className="flex min-h-screen flex-col bg-[#FAF7F2] transition-colors duration-150"
+      className="flex min-h-screen flex-col bg-[#F9F8F6] transition-colors duration-150"
       dir={dir}
     >
       <Navbar />

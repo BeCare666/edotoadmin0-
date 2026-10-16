@@ -124,7 +124,7 @@ export default function EdotoFilterBar({ search, quick, filters = [], values, on
   const hasAny = active.length > 0 || (quick && values[quick.key]) || (search && search.value);
 
   return (
-    <div className="mb-6 overflow-hidden rounded-3xl border border-border-200 bg-white shadow-[0_1px_2px_rgba(28,25,23,0.04),0_8px_24px_-12px_rgba(28,25,23,0.12)]">
+    <div className="mb-6 overflow-hidden rounded-2xl border border-border-200 bg-white">
       {/* Ligne principale : recherche, tri, bouton filtres */}
       <div className="flex flex-col gap-3 p-4 sm:p-5 lg:flex-row lg:items-center">
         {search && (

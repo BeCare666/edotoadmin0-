@@ -133,7 +133,7 @@ const SideBarGroup = () => {
         >
           <div
             className={cn(
-              'px-4 pb-2 text-[10px] font-medium uppercase tracking-[0.22em] text-[#9A8E80]',
+              'px-4 pb-2 text-[10px] font-medium uppercase tracking-[0.22em] text-[#8A837A]',
               miniSidebar && width >= RESPONSIVE_WIDTH ? 'hidden' : '',
             )}
           >
@@ -156,7 +156,7 @@ const ShopLayout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
 
   return (
     <div
-      className="flex min-h-screen flex-col bg-[#FAF7F2] transition-colors duration-150"
+      className="flex min-h-screen flex-col bg-[#F9F8F6] transition-colors duration-150"
       dir={dir}
     >
       <Navbar />

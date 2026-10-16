@@ -14,7 +14,7 @@ const Logo: React.FC<React.AnchorHTMLAttributes<{}>> = ({ className }) => {
       <span className="relative h-12 w-12 shrink-0">
         <Image src={emblem} alt="E.doto family" fill sizes="48px" className="object-contain" priority />
       </span>
-      <span className="edoto-serif text-2xl tracking-tight text-[#1F1B16]">
+      <span className="edoto-serif text-2xl tracking-tight text-[#1A1814]">
         E.doto <span className="text-[#C2185B]">family</span>
       </span>
     </Link>

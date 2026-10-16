@@ -90,13 +90,13 @@ const Footer: React.FC<IFooterProp> = ({ className }) => {
 
   return (
     <footer
-      className={`mt-auto border-t border-[#EDE6DC] bg-[#FAF7F2]/90 ${className ?? ''}`}
+      className={`mt-auto border-t border-[#E9E5DF] bg-[#F9F8F6]/90 ${className ?? ''}`}
     >
-      <div className="flex min-h-[3.5rem] flex-col items-center justify-between gap-2 px-4 py-3 text-xs text-[#9A8E80] sm:flex-row sm:px-8">
+      <div className="flex min-h-[3.5rem] flex-col items-center justify-between gap-2 px-4 py-3 text-xs text-[#8A837A] sm:flex-row sm:px-8">
         <span className="truncate text-center sm:text-left">
           © {date.getFullYear()}{' '}
           <Link
-            className="text-[#3B342D] transition-colors hover:text-[#C2185B]"
+            className="text-[#3D3934] transition-colors hover:text-[#C2185B]"
             href={siteLink ?? Routes.dashboard}
           >
             {siteTitle || 'E.doto family'}
@@ -104,7 +104,7 @@ const Footer: React.FC<IFooterProp> = ({ className }) => {
           {copyrightText ? `. ${copyrightText}` : ''}{' '}
           {externalText && (
             <Link
-              className="text-[#3B342D] transition-colors hover:text-[#C2185B]"
+              className="text-[#3D3934] transition-colors hover:text-[#C2185B]"
               href={externalLink ?? Routes.dashboard}
             >
               {externalText}
@@ -117,7 +117,7 @@ const Footer: React.FC<IFooterProp> = ({ className }) => {
             <Link
               key={icon.name}
               href={icon.href}
-              className="text-[#9A8E80] transition-colors hover:text-[#C2185B] [&>svg]:h-4 [&>svg]:w-4"
+              className="text-[#8A837A] transition-colors hover:text-[#C2185B] [&>svg]:h-4 [&>svg]:w-4"
               aria-label={icon.name}
             >
               {icon.svg}

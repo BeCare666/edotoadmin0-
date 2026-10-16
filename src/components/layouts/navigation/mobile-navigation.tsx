@@ -26,7 +26,7 @@ const MobileNavigation: React.FC<{ children?: React.ReactNode }> = ({
     <div className="lg:hidden">
       <div
         className={cn(
-          'fixed inset-0 z-[60] bg-[#1F1B16]/40 backdrop-blur-[2px] transition-opacity duration-300',
+          'fixed inset-0 z-[60] bg-[#1A1814]/40 backdrop-blur-[2px] transition-opacity duration-300',
           displaySidebar ? 'opacity-100' : 'pointer-events-none opacity-0',
         )}
         onClick={closeSidebar}

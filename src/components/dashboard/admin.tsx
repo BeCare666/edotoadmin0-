@@ -214,7 +214,7 @@ export default function Dashboard() {
         <StickerCard
           titleTransKey={t('common:total-revenue')}
           price={total_revenue}
-          color="#3B342D"
+          color="#3D3934"
           icon={<WalletIcon />}
         />
         <StickerCard

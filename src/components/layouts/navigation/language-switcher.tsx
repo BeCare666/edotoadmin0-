@@ -35,14 +35,14 @@ export default function LanguageSwitcher() {
       {({ open }) => (
         <div className="relative z-10">
           <Listbox.Button
-            className="flex h-11 cursor-pointer items-center gap-2 rounded-2xl bg-[#F6F1EA] px-3 text-sm text-[#3B342D] transition hover:bg-[#EFE7DC] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6EA9]/40"
+            className="flex h-11 cursor-pointer items-center gap-2 rounded-2xl bg-[#F3F1EE] px-3 text-sm text-[#3D3934] transition hover:bg-[#ECE9E4] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6EA9]/40"
             aria-label={t('common:text-language')}
           >
             <WorldIcon className="h-[18px] w-[18px]" />
             <span className="hidden truncate xl:block">
               {selectedItem ? t(selectedItem.name) : t('common:text-language')}
             </span>
-            <LangSwitcherIcon className="hidden h-3.5 w-3.5 text-[#9A8E80] xl:block" aria-hidden="true" />
+            <LangSwitcherIcon className="hidden h-3.5 w-3.5 text-[#8A837A] xl:block" aria-hidden="true" />
           </Listbox.Button>
 
           <Transition
@@ -54,13 +54,13 @@ export default function LanguageSwitcher() {
           >
             <Listbox.Options
               static
-              className="absolute right-0 mt-2 max-h-60 w-56 overflow-auto rounded-2xl border border-[#EDE6DC] bg-[#FFFDF9] px-2 py-1 text-sm shadow-2xl"
+              className="absolute right-0 mt-2 max-h-60 w-56 overflow-auto rounded-2xl border border-[#E9E5DF] bg-[#FFFFFF] px-2 py-1 text-sm shadow-2xl"
             >
               {filterItem?.map((option, index) => (
                 <Listbox.Option
                   key={index}
                   className={({ active }) =>
-                    `${active ? 'bg-[#F6F1EA] text-[#1F1B16]' : 'text-[#3B342D]'} relative cursor-pointer select-none rounded-xl px-3 py-2.5`
+                    `${active ? 'bg-[#F3F1EE] text-[#1A1814]' : 'text-[#3D3934]'} relative cursor-pointer select-none rounded-xl px-3 py-2.5`
                   }
                   value={option}
                 >

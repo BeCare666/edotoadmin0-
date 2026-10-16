@@ -46,14 +46,14 @@ const BarChart = ({
       },
       colors: colors,
       grid: {
-        borderColor: '#F1ECE4',
+        borderColor: '#EFECE7',
         strokeDashArray: 4,
       },
       xaxis: {
         labels: {
           show: true,
           style: {
-            colors: '#9A8E80',
+            colors: '#8A837A',
             fontSize: '12px',
             fontFamily: "'Poppins', Arial, sans-serif", // police unique (edoto-font.css)
           },
@@ -71,7 +71,7 @@ const BarChart = ({
         labels: {
           show: true,
           style: {
-            colors: '#9A8E80',
+            colors: '#8A837A',
             fontSize: '12px',
             fontFamily: "'Poppins', Arial, sans-serif", // police unique (edoto-font.css)
           },
@@ -111,9 +111,9 @@ const BarChart = ({
   };
 
   return (
-    <div className="h-full w-full overflow-hidden rounded-3xl border border-[#EDE6DC] bg-white/90 p-6 shadow-[0_1px_2px_rgba(60,40,20,0.04),0_12px_32px_-18px_rgba(60,40,20,0.18)]">
+    <div className="h-full w-full overflow-hidden rounded-2xl border border-[#E9E5DF] bg-white p-6">
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="edoto-serif text-lg text-[#1F1B16]">
+        <h3 className="edoto-serif text-lg text-[#1A1814]">
           {widgetTitle}
         </h3>
 

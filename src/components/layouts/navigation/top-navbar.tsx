@@ -226,7 +226,7 @@ const Navbar = () => {
         <motion.button
           whileTap={{ scale: 0.92 }}
           onClick={toggleSidebar}
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#F6F1EA] text-[#3B342D] transition hover:bg-[#EFE7DC] lg:hidden"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#F3F1EE] text-[#3D3934] transition hover:bg-[#ECE9E4] lg:hidden"
           aria-label="Ouvrir le menu"
         >
           <MenuNavIcon className="h-5 w-5" />
@@ -235,7 +235,7 @@ const Navbar = () => {
           <span className="relative h-8 w-8 shrink-0">
             <Image src={emblem} alt="E.doto family" fill sizes="32px" className="object-contain" priority />
           </span>
-          <span className="edoto-serif hidden truncate text-lg text-[#1F1B16] sm:block">
+          <span className="edoto-serif hidden truncate text-lg text-[#1A1814] sm:block">
             E.doto <span className="text-[#C2185B]">family</span>
           </span>
         </Link>
@@ -246,7 +246,7 @@ const Navbar = () => {
 
         <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
           <button
-            className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#F6F1EA] text-[#3B342D] transition hover:bg-[#EFE7DC] lg:hidden"
+            className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#F3F1EE] text-[#3D3934] transition hover:bg-[#ECE9E4] lg:hidden"
             onClick={handleClick}
             aria-label={t('common:text-search')}
           >

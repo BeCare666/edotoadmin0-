@@ -27,7 +27,7 @@ export default function AuthorizedMenu() {
       as="div"
       className="relative inline-block shrink-0 grow-0 basis-auto text-left"
     >
-      <Menu.Button className="flex max-w-[220px] items-center gap-3 rounded-2xl py-1 pl-1 pr-1 transition hover:bg-[#F6F1EA] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6EA9]/40 md:pr-3">
+      <Menu.Button className="flex max-w-[220px] items-center gap-3 rounded-2xl py-1 pl-1 pr-1 transition hover:bg-[#F3F1EE] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6EA9]/40 md:pr-3">
         {user?.profile?.avatar?.url ? (
           <img
             src={user.profile.avatar.url}
@@ -40,10 +40,10 @@ export default function AuthorizedMenu() {
           </span>
         )}
         <span className="hidden min-w-0 flex-col items-start text-sm ltr:text-left rtl:text-right md:flex">
-          <span className="block w-full max-w-[160px] truncate text-[#1F1B16]">
+          <span className="block w-full max-w-[160px] truncate text-[#1A1814]">
             {user?.name ?? t('guest')}
           </span>
-          <span className="block w-full truncate text-xs text-[#9A8E80]">
+          <span className="block w-full truncate text-xs text-[#8A837A]">
             {role === 'super_admin' ? 'Administrateur' : role ? role.replace(/_/g, ' ') : user?.email ?? ''}
           </span>
         </span>
@@ -60,21 +60,21 @@ export default function AuthorizedMenu() {
       >
         <Menu.Items
           as="ul"
-          className="authorized-menu absolute end-0 mt-2 w-64 origin-top-end overflow-hidden rounded-2xl border border-[#EDE6DC] bg-[#FFFDF9] py-1 shadow-2xl focus:outline-none"
+          className="authorized-menu absolute end-0 mt-2 w-64 origin-top-end overflow-hidden rounded-2xl border border-[#E9E5DF] bg-[#FFFFFF] py-1 shadow-2xl focus:outline-none"
         >
           <Menu.Item>
-            <li className="border-b border-[#F1ECE4] p-2 focus:outline-none">
-              <div className="flex items-center gap-3 rounded-xl bg-[#F6F1EA] px-3 py-2.5">
+            <li className="border-b border-[#EFECE7] p-2 focus:outline-none">
+              <div className="flex items-center gap-3 rounded-xl bg-[#F3F1EE] px-3 py-2.5">
                 <Avatar
                   src={user?.profile?.avatar?.url ?? ''}
                   name={user?.name ?? 'avatar'}
                   className="shrink-0 grow-0 basis-auto drop-shadow"
                 />
                 <div className="flex w-[calc(100%-40px)] flex-col items-start space-y-0.5 text-sm">
-                  <span className="w-full truncate font-medium text-[#1F1B16]">
+                  <span className="w-full truncate font-medium text-[#1A1814]">
                     {user?.name ?? t('guest')}
                   </span>
-                  <span className="break-all text-xs text-[#9A8E80]">
+                  <span className="break-all text-xs text-[#8A837A]">
                     {user?.email ?? ''}
                   </span>
                 </div>
@@ -91,15 +91,15 @@ export default function AuthorizedMenu() {
                   {({ active }) => (
                     <li
                       className={cn(
-                        'cursor-pointer border-[#F1ECE4] px-2 last:!mt-1.5 last:border-t last:pt-1.5',
-                        active ? 'text-[#1F1B16]' : 'text-[#3B342D]'
+                        'cursor-pointer border-[#EFECE7] px-2 last:!mt-1.5 last:border-t last:pt-1.5',
+                        active ? 'text-[#1A1814]' : 'text-[#3D3934]'
                       )}
                     >
                       <Link
                         href={href}
-                        className="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition duration-200 hover:bg-[#F6F1EA] hover:text-[#1F1B16]"
+                        className="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition duration-200 hover:bg-[#F3F1EE] hover:text-[#1A1814]"
                       >
-                        <span className="text-[#7A6E62] group-hover:text-[#C2185B]">
+                        <span className="text-[#6B655D] group-hover:text-[#C2185B]">
                           {getIcon({
                             iconList: sidebarIcons,
                             iconName: icon,

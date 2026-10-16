@@ -21,26 +21,26 @@ const StickerCard = ({
 }: StickerCardProps) => {
   const { t } = useTranslation('widgets');
 
-  const tint = color || '#1F1B16';
+  const tint = color || '#1A1814';
 
   // Carte statistique E.doto : même présentation que les dashboards point de retrait / sponsor
   return (
     <div
       className={twMerge(
-        'group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-[#EDE6DC] bg-white/90 p-5',
-        'shadow-[0_1px_2px_rgba(60,40,20,0.04),0_12px_32px_-18px_rgba(60,40,20,0.18)] transition duration-300 hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-16px_rgba(60,40,20,0.25)]',
+        'group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-[#E9E5DF] bg-white p-5',
+        'transition duration-300 hover:border-[#D6D2CB]',
       )}
     >
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
-          <p className="text-xs uppercase tracking-[0.12em] text-[#9A8E80]">
+          <p className="text-xs uppercase tracking-[0.12em] text-[#8A837A]">
             {t(titleTransKey)}
           </p>
-          <p className="mt-2 truncate text-2xl font-semibold tabular-nums text-[#1F1B16] sm:text-[28px]">
+          <p className="mt-2 truncate text-2xl font-semibold tabular-nums text-[#1A1814] sm:text-[28px]">
             {price ?? '…'}
           </p>
           {note && (
-            <p className="mt-1 text-xs text-[#7A6E62]">Comparé à {note}</p>
+            <p className="mt-1 text-xs text-[#6B655D]">Comparé à {note}</p>
           )}
         </div>
         {icon && (

@@ -48,18 +48,18 @@ export function useCollapsed() {
 export function EdotoBrand({ compact = false, subtitle }: { compact?: boolean; subtitle?: string }) {
   return (
     <Link href={Routes.dashboard} className="flex min-w-0 items-center gap-3">
-      <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#FFFDF9] shadow-[0_6px_18px_-8px_rgba(0,0,0,0.6)] ring-1 ring-white/10">
-        <span className="relative h-8 w-8">
+      <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#E9E5DF] bg-white">
+        <span className="relative h-7 w-7">
           <Image src={emblem} alt="E.doto family" fill sizes="32px" className="object-contain" priority />
         </span>
       </span>
       {!compact && (
         <span className="min-w-0">
-          <span className="edoto-serif block truncate text-xl leading-tight tracking-tight text-white">
-            E.doto <span className="text-[#FF6EA9]">family</span>
+          <span className="edoto-serif block truncate text-[17px] font-semibold leading-tight tracking-tight text-[#1A1814]">
+            E.doto <span className="text-[#C2185B]">family</span>
           </span>
           {subtitle && (
-            <span className="mt-1 block truncate text-[10px] uppercase tracking-[0.25em] text-[#B8AC9E]">
+            <span className="mt-1 block truncate text-[10px] font-medium uppercase tracking-[0.22em] text-[#A8A29A]">
               {subtitle}
             </span>
           )}
@@ -70,7 +70,7 @@ export function EdotoBrand({ compact = false, subtitle }: { compact?: boolean; s
 }
 
 /**
- * Contenu de la barre latérale sombre (ordinateur et tiroir mobile) :
+ * Contenu de la barre latérale claire (ordinateur et tiroir mobile) :
  * logo, carte d'identité, menus (children), lien vers le site et bouton « Réduire ».
  */
 export function EdotoSidebarPanel({
@@ -89,13 +89,13 @@ export function EdotoSidebarPanel({
   const shopUrl = process.env.NEXT_PUBLIC_SHOP_URL;
 
   return (
-    <div className="flex h-full flex-col bg-[#1F1B16] text-[#EDE6DC]">
-      <div className={cn('flex items-center justify-between pb-6 pt-7', c ? 'justify-center px-0' : 'px-6')}>
+    <div className="flex h-full flex-col bg-white text-[#3D3934]">
+      <div className={cn('flex h-20 shrink-0 items-center justify-between', c ? 'justify-center px-0' : 'px-6')}>
         <EdotoBrand compact={c} subtitle={roleLabel(role)} />
         {onClose && (
           <button
             onClick={onClose}
-            className="rounded-full p-2 text-[#D8CFC3] transition hover:bg-white/10 hover:text-white"
+            className="rounded-full p-2 text-[#8A837A] transition hover:bg-[#F3F1EE] hover:text-[#1A1814]"
             aria-label="Fermer le menu"
           >
             <CloseNavIcon className="h-[18px] w-[18px]" />
@@ -105,23 +105,28 @@ export function EdotoSidebarPanel({
 
       <div
         className={cn(
-          'mb-2',
+          'mb-1 mt-1',
           c
             ? 'mx-auto'
-            : 'mx-5 rounded-2xl border border-white/10 bg-white/[0.06] p-4',
+            : 'mx-4 flex items-center gap-3 rounded-xl border border-[#EFECE7] bg-[#F9F8F6] px-3 py-2.5',
         )}
       >
         {c ? (
           <span
-            className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-sm font-semibold text-white"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1A1814] text-[13px] font-semibold text-white"
             title={me?.name}
           >
             {initials(me?.name)}
           </span>
         ) : (
           <>
-            <p className="truncate text-sm text-white">{me?.name ?? 'Administrateur'}</p>
-            <p className="mt-0.5 truncate text-xs text-[#B8AC9E]">{me?.email}</p>
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#1A1814] text-xs font-semibold text-white">
+              {initials(me?.name)}
+            </span>
+            <span className="min-w-0">
+              <span className="block truncate text-[13px] font-medium text-[#1A1814]">{me?.name ?? 'Administrateur'}</span>
+              <span className="mt-0.5 block truncate text-[11.5px] text-[#8A837A]">{me?.email}</span>
+            </span>
           </>
         )}
       </div>
@@ -135,7 +140,7 @@ export function EdotoSidebarPanel({
         </Scrollbar>
       </div>
 
-      <div className={cn('space-y-1 border-t border-white/[0.06] p-4', c && 'px-3')}>
+      <div className={cn('space-y-0.5 border-t border-[#EFECE7] p-3', c && 'px-3')}>
         {shopUrl && (
           <a
             href={shopUrl}
@@ -143,7 +148,7 @@ export function EdotoSidebarPanel({
             rel="noreferrer"
             title={c ? 'Voir le site' : undefined}
             className={cn(
-              'flex items-center gap-3 rounded-2xl px-4 py-3 text-sm text-[#B8AC9E] transition-colors hover:bg-white/[0.06] hover:text-white',
+              'flex items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] text-[#6B655D] transition-colors hover:bg-[#F6F5F2] hover:text-[#1A1814]',
               c && 'justify-center px-0',
             )}
           >
@@ -157,7 +162,7 @@ export function EdotoSidebarPanel({
             aria-label={c ? 'Déplier la barre latérale' : 'Réduire la barre latérale'}
             title={c ? 'Déplier' : 'Réduire'}
             className={cn(
-              'hidden w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm text-[#B8AC9E] transition-colors hover:bg-white/[0.06] hover:text-white lg:flex',
+              'hidden w-full items-center gap-3 rounded-lg px-3 py-2.5 text-[13px] text-[#6B655D] transition-colors hover:bg-[#F6F5F2] hover:text-[#1A1814] lg:flex',
               c && 'justify-center px-0',
             )}
           >
