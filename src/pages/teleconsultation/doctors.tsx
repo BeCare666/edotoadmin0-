@@ -174,7 +174,10 @@ export default function TeleconsultationDoctors() {
             {house ? (
               <p className="mt-1 text-sm text-[#1A1814]">
                 <span className="font-semibold">{house.name}</span> prend en charge, du lundi au vendredi de 8 h à 18 h, toutes les heures où aucun autre médecin n’est libre.
-                {house.account_status !== 'active' && ' Son espace n’est pas encore actif : envoyez son invitation pour que ses créneaux soient proposés.'}
+                {' Ses créneaux sont proposés aux jeunes dès maintenant et ses rendez-vous s’affichent dans Rendez-vous.'}
+                {/\.invalid$/i.test(house.email)
+                  ? ' Renseignez la vraie adresse e-mail du médecin (Modifier sa fiche) puis envoyez l’invitation : il recevra les rendez-vous dans son espace médecin.'
+                  : house.account_status !== 'active' ? ' Envoyez l’invitation pour qu’il reçoive les rendez-vous dans son espace médecin.' : ''}
               </p>
             ) : (
               <p className="mt-1 text-sm text-[#1A1814]">Aucun médecin E.doto family : les heures sans médecin ne sont pas couvertes. Désignez-en un pour qu’un jeune trouve toujours un rendez-vous.</p>
@@ -254,9 +257,9 @@ export default function TeleconsultationDoctors() {
                     {d.account_status === 'invited' ? 'Renvoyer l’invitation' : 'Envoyer l’invitation'}
                   </button>
                 )}
-                <button disabled={busy === `act${d.id}`} onClick={() => run(`act${d.id}`, `admin/teleconsultation/doctors/${d.id}/active`, { method: 'PATCH', body: JSON.stringify({ active: !d.is_active }) })} className={`rounded-xl px-3.5 py-2 text-sm ${d.is_active ? 'text-[#9B2C2C] hover:bg-red-50' : 'text-emerald-700 hover:bg-emerald-50'}`}>
+                {!d.is_house && <button disabled={busy === `act${d.id}`} onClick={() => run(`act${d.id}`, `admin/teleconsultation/doctors/${d.id}/active`, { method: 'PATCH', body: JSON.stringify({ active: !d.is_active }) })} className={`rounded-xl px-3.5 py-2 text-sm ${d.is_active ? 'text-[#9B2C2C] hover:bg-red-50' : 'text-emerald-700 hover:bg-emerald-50'}`}>
                   {d.is_active ? 'Désactiver' : 'Réactiver'}
-                </button>
+                </button>}
               </div>
             </div>
           ))}
