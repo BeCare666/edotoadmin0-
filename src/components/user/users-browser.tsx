@@ -25,11 +25,12 @@ const SORTS = [
   { value: 'orders_count:desc', label: 'Plus de commandes' },
 ];
 
-const EMPTY: FilterValues = { role: '', is_active: '', is_verified: '', date_from: '', date_to: '' };
+const EMPTY: FilterValues = { role: '', is_active: '', is_verified: '', sex: '', has_orders: '', min_age: '', max_age: '', date_from: '', date_to: '' };
 
-type Props = { fixedRole?: string; eyebrow?: string; title?: string; subtitle?: string };
+// fixedFilters : filtres imposés par la page (ex. vendeurs actifs), masqués dans la barre (19/10/2026)
+type Props = { fixedRole?: string; fixedFilters?: FilterValues; eyebrow?: string; title?: string; subtitle?: string };
 
-export default function UsersBrowser({ fixedRole, eyebrow = 'Comptes', title = 'Utilisateurs', subtitle }: Props) {
+export default function UsersBrowser({ fixedRole, fixedFilters = {}, eyebrow = 'Comptes', title = 'Utilisateurs', subtitle }: Props) {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [sort, setSort] = useState('created_at:desc');
@@ -48,6 +49,7 @@ export default function UsersBrowser({ fixedRole, eyebrow = 'Comptes', title = '
     orderBy,
     sortedBy: sortedBy as SortOrder,
     ...(Object.fromEntries(Object.entries(values).filter(([, v]) => v !== '')) as any),
+    ...fixedFilters,
     ...(fixedRole ? { role: fixedRole } : {}),
   });
 
@@ -60,8 +62,18 @@ export default function UsersBrowser({ fixedRole, eyebrow = 'Comptes', title = '
       { value: '1', label: 'Confirmé', count: facets?.verified?.yes ?? 0 },
       { value: '0', label: 'Non confirmé', count: facets?.verified?.no ?? 0 },
     ] },
+    { type: 'chips', key: 'sex', label: 'Sexe', options: [
+      { value: 'female', label: 'Femme', count: facets?.sex?.female ?? 0 },
+      { value: 'male', label: 'Homme', count: facets?.sex?.male ?? 0 },
+      { value: 'none', label: 'Non renseigné', count: facets?.sex?.none ?? 0 },
+    ] },
+    { type: 'chips', key: 'has_orders', label: 'Commandes', options: [
+      { value: '1', label: 'A déjà commandé', count: facets?.orders?.yes ?? 0 },
+      { value: '0', label: 'Aucune commande', count: facets?.orders?.no ?? 0 },
+    ] },
+    { type: 'range', key: 'age', label: 'Âge (date de naissance renseignée)', minKey: 'min_age', maxKey: 'max_age', unit: 'ans', minHint: facets?.age?.min ?? null, maxHint: facets?.age?.max ?? null },
     { type: 'dates', key: 'period', label: "Date d'inscription", fromKey: 'date_from', toKey: 'date_to' },
-  ], [facets]);
+  ].filter((f: any) => !(f.key in fixedFilters)) as FilterDef[], [facets]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const total = paginatorInfo?.total ?? 0;
 

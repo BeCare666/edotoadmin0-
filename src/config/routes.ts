@@ -150,6 +150,11 @@ export const Routes = {
   sponsors: '/sponsors',
   sponsorExports: '/sponsor-exports',
   campaignProposals: '/campaign-proposals',
+  // Téléconsultation (19/10/2026)
+  teleconsultation: '/teleconsultation',
+  teleconsultationDoctors: '/teleconsultation/doctors',
+  teleconsultationCenters: '/teleconsultation/centers',
+  teleconsultationReferrals: '/teleconsultation/referrals',
   myStaffs: '/users/my-staffs',
   vendorStaffs: '/users/vendor-staffs',
   flashSale: {

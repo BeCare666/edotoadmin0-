@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import EdotoFilterBar, { FilterDef, FilterValues } from '@/components/filters/edoto-filter-bar';
 import ProductList from '@/components/product/product-list';
+import ProductInventoryList from '@/components/product/product-inventory-list';
 import ErrorMessage from '@/components/ui/error-message';
 import { useProductFacetsQuery, useProductsQuery } from '@/data/product';
 import { useCategoriesQuery } from '@/data/category';
@@ -26,9 +27,20 @@ const SORTS = [
 
 const EMPTY: FilterValues = { status: '', categories: '', tag: '', stock: '', on_sale: '', is_origin: '', min_price: '', max_price: '' };
 
-type Props = { shopId?: number; shopSlug?: string; createHref?: string };
+// Préréglages (19/10/2026) : les pages Brouillons, Stock faible et Inventaire réutilisent cette liste
+// (leurs anciennes listes envoyaient recherche, catégorie et tri, ignorés par l'API).
+type Props = {
+  shopId?: number;
+  shopSlug?: string;
+  createHref?: string;
+  fixedFilters?: FilterValues;
+  eyebrow?: string;
+  title?: string;
+  subtitle?: string;
+  variant?: 'list' | 'inventory';
+};
 
-export default function ProductsBrowser({ shopId, createHref }: Props) {
+export default function ProductsBrowser({ shopId, createHref, fixedFilters = {}, eyebrow = 'Catalogue', title = 'Produits', subtitle, variant = 'list' }: Props) {
   const router = useRouter();
   const { locale } = router;
   const [search, setSearch] = useState('');
@@ -55,6 +67,7 @@ export default function ProductsBrowser({ shopId, createHref }: Props) {
       orderBy,
       sortedBy: sortedBy as SortOrder,
       ...(Object.fromEntries(Object.entries(values).filter(([, v]) => v !== '')) as any),
+      ...fixedFilters,
     },
     { enabled: shopId === undefined || Boolean(shopId) },
   );
@@ -118,8 +131,8 @@ export default function ProductsBrowser({ shopId, createHref }: Props) {
         minHint: facets?.price?.min ?? null,
         maxHint: facets?.price?.max ?? null,
       },
-    ];
-  }, [facets, categories]);
+    ].filter((f: any) => !(f.key in fixedFilters)) as FilterDef[];
+  }, [facets, categories]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const total = paginatorInfo?.total ?? 0;
 
@@ -127,12 +140,16 @@ export default function ProductsBrowser({ shopId, createHref }: Props) {
     <>
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">Catalogue</p>
-          <h1 className="mt-1 font-serif text-3xl font-semibold text-heading">Produits</h1>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">{eyebrow}</p>
+          <h1 className="mt-1 font-serif text-3xl font-semibold text-heading">{title}</h1>
           <p className="mt-1 text-sm text-body">
-            {facets ? `${facets.total.toLocaleString('fr-FR')} produit${facets.total > 1 ? 's' : ''} au catalogue` : 'Chargement du catalogue…'}
-            {facets?.stock?.out ? ` · ${facets.stock.out} en rupture` : ''}
-            {facets?.stock?.low ? ` · ${facets.stock.low} en stock faible` : ''}
+            {subtitle ?? (
+              <>
+                {facets ? `${facets.total.toLocaleString('fr-FR')} produit${facets.total > 1 ? 's' : ''} au catalogue` : 'Chargement du catalogue…'}
+                {facets?.stock?.out ? ` · ${facets.stock.out} en rupture` : ''}
+                {facets?.stock?.low ? ` · ${facets.stock.low} en stock faible` : ''}
+              </>
+            )}
           </p>
         </div>
         {createHref && (
@@ -147,7 +164,7 @@ export default function ProductsBrowser({ shopId, createHref }: Props) {
 
       <EdotoFilterBar
         search={{ value: search, onChange: (v) => { setSearch(v); setPage(1); }, placeholder: 'Rechercher par nom ou SKU…' }}
-        quick={{
+        quick={'status' in fixedFilters ? undefined : {
           key: 'status',
           allLabel: 'Tous',
           allCount: facets?.total,
@@ -163,6 +180,20 @@ export default function ProductsBrowser({ shopId, createHref }: Props) {
 
       {error ? (
         <ErrorMessage message={error.message} />
+      ) : variant === 'inventory' ? (
+        <ProductInventoryList
+          products={products}
+          paginatorInfo={paginatorInfo}
+          onPagination={setPage}
+          onOrder={(col: string) => {
+            setSort((prev) => {
+              const [c, d] = prev.split(':');
+              return `${col}:${c === col && d === 'desc' ? 'asc' : 'desc'}`;
+            });
+            setPage(1);
+          }}
+          onSort={() => {}}
+        />
       ) : (
         <ProductList
           products={products}

@@ -115,6 +115,34 @@ export const siteSettings = {
           },
         ],
       },
+      // Téléconsultation (19/10/2026) : rendez-vous visio ou appel, médecins, centres, orientations par code QR
+      teleconsultation: {
+        href: '#',
+        label: 'text-teleconsultation',
+        icon: 'StethoscopeIcon',
+        childMenu: [
+          {
+            href: Routes.teleconsultation || '#',
+            label: 'text-tc-appointments',
+            icon: 'VideoCallIcon',
+          },
+          {
+            href: Routes.teleconsultationDoctors || '#',
+            label: 'text-tc-doctors',
+            icon: 'StethoscopeIcon',
+          },
+          {
+            href: Routes.teleconsultationCenters || '#',
+            label: 'text-tc-centers',
+            icon: 'HospitalIcon',
+          },
+          {
+            href: Routes.teleconsultationReferrals || '#',
+            label: 'text-tc-referrals',
+            icon: 'QrNavIcon',
+          },
+        ],
+      },
       shop: {
         href: '#',
         label: 'text-shop-management',

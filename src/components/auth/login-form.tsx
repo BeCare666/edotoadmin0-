@@ -38,6 +38,7 @@ const defaultValues = {
 const LoginForm = () => {
   const { t } = useTranslation();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [siteSpace, setSiteSpace] = useState<{ path: string; label: string } | null>(null);
   const { mutate: login, isLoading } = useLogin();
   const searchParams = useSearchParams();
   const becomeSeller = searchParams.get('become_seller');
@@ -55,6 +56,29 @@ const LoginForm = () => {
             return;
           }
 
+          // Comptes dont l'espace est sur le site (sponsor, point de retrait, médecin, centre) : la session
+          // n'est plus enregistrée dans l'admin (19/10/2026), le compte est orienté vers son espace.
+          const allowed = hasAccess(allowedRoles, data?.permissions ?? []);
+          if (!allowed) {
+            const perms: string[] = data?.permissions ?? [];
+            const siteSpace = perms.includes('sponsor')
+              ? { path: '/sponsor', label: 'votre espace sponsor' }
+              : perms.includes('super_pickuppoint')
+                ? { path: '/pickup-dashboard', label: 'votre dashboard point de retrait' }
+                : perms.includes('doctor')
+                  ? { path: '/medecin', label: 'votre espace médecin' }
+                  : perms.includes('health_center')
+                    ? { path: '/centre', label: 'votre espace centre' }
+                    : null;
+            setSiteSpace(siteSpace);
+            setErrorMessage(
+              siteSpace
+                ? `Ce compte se connecte sur le site E.doto family, dans ${siteSpace.label}.`
+                : 'form:error-enough-permission',
+            );
+            return;
+          }
+
           if (becomeSeller === '1') {
             toast.success(t('common:successfully-connexion-auth'));
           } else {
@@ -66,11 +90,6 @@ const LoginForm = () => {
           if (data?.redirect) {
             router.push('/');
             return;
-          }
-
-          const allowed = hasAccess(allowedRoles, data?.permissions ?? []);
-          if (!allowed) {
-            setErrorMessage('form:error-enough-permission');
           }
         },
         onError: (error: any) => {
@@ -109,6 +128,14 @@ const LoginForm = () => {
             className="mb-5"
             onClose={() => setErrorMessage(null)}
           />
+        )}
+        {errorMessage && siteSpace && (
+          <a
+            href={`${process.env.NEXT_PUBLIC_SHOP_URL || 'https://edotofamily.com'}/login`}
+            className={`mb-5 -mt-2 block text-sm ${authLinkClass}`}
+          >
+            Se connecter sur le site E.doto family
+          </a>
         )}
 
         <Form<LoginInput>

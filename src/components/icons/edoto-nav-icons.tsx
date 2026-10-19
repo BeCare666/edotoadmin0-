@@ -205,7 +205,30 @@ export const RefundIcon = make('RefundIcon', <><path d="M3 12a9 9 0 1 0 9-9 9.75
 export const SunIcon = make('SunIcon', <><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" /></>);
 export const MoonIcon = make('MoonIcon', <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />);
 
+// Téléconsultation (19/10/2026)
+export const StethoscopeIcon = make('StethoscopeIcon', <>
+  <path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6 6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3" />
+  <path d="M8 15v1a6 6 0 0 0 6 6 6 6 0 0 0 6-6v-4" />
+  <circle cx="20" cy="10" r="2" />
+</>);
+export const HospitalIcon = make('HospitalIcon', <>
+  <path d="M12 6v4M14 14h-4M14 18h-4M14 8h-4" />
+  <path d="M18 12h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h2" />
+  <path d="M18 22V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v18" />
+</>);
+export const VideoCallIcon = make('VideoCallIcon', <>
+  <path d="m16 13 5.22 3.48a.5.5 0 0 0 .78-.42V7.87a.5.5 0 0 0-.75-.43L16 10.5" />
+  <rect x="2" y="6" width="14" height="12" rx="2" />
+</>);
+export const QrNavIcon = make('QrNavIcon', <>
+  <rect x="3" y="3" width="7" height="7" rx="1" />
+  <rect x="14" y="3" width="7" height="7" rx="1" />
+  <rect x="3" y="14" width="7" height="7" rx="1" />
+  <path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3" />
+</>);
+
 const navIcons: Record<string, React.ComponentType<IconProps>> = {
+  StethoscopeIcon, HospitalIcon, VideoCallIcon, QrNavIcon,
   DashboardIcon, CalendarScheduleIcon, CalendarPlusIcon, SponsorIcon, DownloadIcon,
   ShopIcon, MyShopIcon, MyShopOwnerIcon, ProductsIcon, InventoryIcon, TagIcon,
   OrdersIcon, TruckIcon, TransactionsIcon, SettingsIcon, UsersIcon, UserIcon,
