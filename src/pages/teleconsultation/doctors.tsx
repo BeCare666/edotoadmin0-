@@ -126,8 +126,8 @@ export default function TeleconsultationDoctors() {
       const id = form.id ?? res.id;
       // Fiche créée : un nouvel essai la met à jour au lieu d'en créer une seconde
       if (!form.id && id) setForm((f) => (f ? { ...f, id } : f));
-      // Heures disponibles enregistrées avec la fiche
-      if (id && form.rules) {
+      // Heures disponibles enregistrées avec la fiche (médecin E.doto family : heures fixes, rien à enregistrer)
+      if (id && form.rules && !form.data.is_house) {
         await apiCall(`admin/teleconsultation/doctors/${id}/schedule`, {
           method: 'PUT',
           body: JSON.stringify({ rules: form.rules, slot_minutes: Number(form.data.slot_minutes) }),
@@ -173,16 +173,15 @@ export default function TeleconsultationDoctors() {
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#A0124A]">Médecin E.doto family</p>
             {house ? (
               <p className="mt-1 text-sm text-[#1A1814]">
-                <span className="font-semibold">{house.name}</span> prend en charge toutes les heures où aucun autre médecin n’est libre, dans ses heures disponibles.
+                <span className="font-semibold">{house.name}</span> prend en charge, du lundi au vendredi de 8 h à 18 h, toutes les heures où aucun autre médecin n’est libre.
                 {house.account_status !== 'active' && ' Son espace n’est pas encore actif : envoyez son invitation pour que ses créneaux soient proposés.'}
-                {house.account_status === 'active' && !house.has_schedule && ' Ajoutez ses heures disponibles pour que ses créneaux soient proposés.'}
               </p>
             ) : (
               <p className="mt-1 text-sm text-[#1A1814]">Aucun médecin E.doto family : les heures sans médecin ne sont pas couvertes. Désignez-en un pour qu’un jeune trouve toujours un rendez-vous.</p>
             )}
           </div>
           {house ? (
-            <button onClick={() => openEdit(house)} className="shrink-0 rounded-xl border border-[#A0124A] px-4 py-2.5 text-sm font-semibold text-[#A0124A] hover:bg-white">Modifier ses heures</button>
+            <button onClick={() => openEdit(house)} className="shrink-0 rounded-xl border border-[#A0124A] px-4 py-2.5 text-sm font-semibold text-[#A0124A] hover:bg-white">Modifier sa fiche</button>
           ) : (
             <button onClick={() => openNew(true)} className="shrink-0 rounded-xl bg-[#A0124A] px-4 py-2.5 text-sm font-semibold text-white">Ajouter le médecin E.doto family</button>
           )}
@@ -287,13 +286,18 @@ export default function TeleconsultationDoctors() {
               <span>
                 <span className="block text-sm font-medium text-[#1A1814]">Médecin E.doto family</span>
                 <span className="block text-xs text-[#8A837A]">
-                  Prend en charge toutes les heures où aucun autre médecin n’est libre, dans ses heures disponibles. Un seul médecin E.doto family à la fois.
+                  Prend en charge, du lundi au vendredi de 8 h à 18 h, toutes les heures où aucun autre médecin n’est libre. Un seul médecin E.doto family à la fois.
                   {house && house.id !== form.id ? ` Actuellement : ${house.name}.` : ''}
                 </span>
               </span>
             </label>
             <div className="sm:col-span-2">
-              {form.rules ? (
+              {form.data.is_house ? (
+                <div className="rounded-2xl border border-[#F3CADB] bg-[#FBEEF3] p-4">
+                  <p className="text-sm font-medium text-[#1A1814]">Heures fixes du médecin E.doto family</p>
+                  <p className="mt-1 text-sm text-[#57524B]">Lundi à vendredi, 8 h à 18 h, consultations de 30 minutes, visio et appel. Toutes les heures où aucun autre médecin n’est libre lui reviennent.</p>
+                </div>
+              ) : form.rules ? (
                 <ScheduleEditor rules={form.rules} onChange={(r) => setForm((f) => (f ? { ...f, rules: r } : f))} />
               ) : (
                 <div className="h-40 animate-pulse rounded-2xl bg-[#EFECE7]" />
