@@ -27,6 +27,9 @@ module.exports = {
         light: withOpacity('--color-light'),
         dark: withOpacity('--color-dark'),
         accent: withOpacity('--color-accent'),
+        // Encre des titres (#1A1814) aussi en fond et en bordure : bg-heading et border-heading n'existaient pas,
+        // d'où des boutons « texte blanc sur fond blanc » invisibles (21/10/2026)
+        heading: withOpacity('--text-heading'),
         'muted-black': withOpacity('--color-muted-black'),
         'base-dark': withOpacity('--text-base-dark'),
         'accent-hover': withOpacity('--color-accent-hover'),
