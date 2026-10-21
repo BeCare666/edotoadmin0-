@@ -30,6 +30,7 @@ export default function ContraceptionMethods() {
   const [values, setValues] = useState<FilterValues>({ doctor: '', state: '' });
   const [form, setForm] = useState<{ id?: number; data: Form } | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
+  const [dragging, setDragging] = useState(false);
 
   const load = useCallback(async () => {
     try {
@@ -73,14 +74,15 @@ export default function ContraceptionMethods() {
 
   const upload = async (file?: File | null) => {
     if (!file) return;
-    if (!/^image\//.test(file.type)) { toast.error('Choisissez une image.'); return; }
+    if (!/^image\/(jpeg|png|webp)$/.test(file.type)) { toast.error('Choisissez une image JPG, PNG ou WebP.'); return; }
+    if (file.size > 5 * 1024 * 1024) { toast.error("L'image dépasse 5 Mo : choisissez une image plus légère."); return; }
     setBusy('upload');
     try {
       const res: any = await uploadClient.upload([file as any]);
       const url = Array.isArray(res) ? res[0]?.url : res?.[0]?.url;
       if (!url) throw new Error("L'image n'a pas pu être envoyée.");
       setForm((f) => (f ? { ...f, data: { ...f.data, image_url: url, image_credit: '' } } : f));
-      toast.success('Image envoyée : enregistrez la fiche pour la publier.');
+      toast.success('Image importée sur Cloudinary : enregistrez la fiche pour la publier.');
     } catch (e: any) {
       toast.error(e?.message || "L'image n'a pas pu être envoyée.");
     } finally {
@@ -222,14 +224,41 @@ export default function ContraceptionMethods() {
             <Field label="Durée"><input value={form.data.duration} onChange={set('duration')} maxLength={120} className={inputClass} /></Field>
             <div className="rounded-2xl border border-[#E9E5DF] p-4 sm:col-span-2">
               <p className="text-sm font-medium text-heading">Image du dispositif</p>
-              <div className="mt-3 flex flex-col gap-4 sm:flex-row">
-                {preview ? <img src={preview} alt="" className="h-28 w-40 shrink-0 rounded-xl object-cover" /> : <div className="grid h-28 w-40 shrink-0 place-items-center rounded-xl bg-[#F3EEE7] text-xs text-[#8A837A]">Aucune image</div>}
-                <div className="flex-1 space-y-3">
-                  <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-heading px-4 py-2.5 text-sm font-semibold text-white">
-                    {busy === 'upload' ? 'Envoi…' : 'Envoyer une image'}
-                    <input type="file" accept="image/*" className="hidden" onChange={(e) => upload(e.target.files?.[0])} />
-                  </label>
-                  <Field label="Adresse de l'image" hint="(remplie après l'envoi)"><input value={form.data.image_url} onChange={set('image_url')} maxLength={500} className={inputClass} /></Field>
+              <p className="text-xs text-[#8A837A]">Importée depuis votre ordinateur et stockée sur Cloudinary ; son lien est utilisé sur le site.</p>
+              <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-[200px_minmax(0,1fr)]">
+                {/* Zone d'import : glisser-déposer ou cliquer pour choisir un fichier */}
+                <label
+                  onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
+                  onDragLeave={() => setDragging(false)}
+                  onDrop={(e) => { e.preventDefault(); setDragging(false); upload(e.dataTransfer.files?.[0]); }}
+                  className={`relative grid aspect-[4/3] cursor-pointer place-items-center overflow-hidden rounded-xl border-2 border-dashed transition ${dragging ? 'border-[#C2185B] bg-[#FBEEF3]' : 'border-[#D9D3CA] bg-[#F9F8F6] hover:border-heading'}`}
+                >
+                  {preview ? (
+                    <img src={preview} alt="" className="absolute inset-0 h-full w-full object-cover" />
+                  ) : (
+                    <span className="px-3 text-center text-xs text-[#8A837A]">Glissez une image ici<br />ou cliquez pour choisir</span>
+                  )}
+                  {busy === 'upload' && <span className="absolute inset-0 grid place-items-center bg-white/80 text-sm font-medium text-heading">Import en cours…</span>}
+                  <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => { upload(e.target.files?.[0]); e.target.value = ''; }} />
+                </label>
+                <div className="min-w-0 space-y-3">
+                  <div className="flex flex-wrap gap-2">
+                    <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-heading px-4 py-2.5 text-sm font-semibold text-white">
+                      {preview ? "Remplacer l'image" : 'Importer une image'}
+                      <input type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={(e) => { upload(e.target.files?.[0]); e.target.value = ''; }} />
+                    </label>
+                    {preview && (
+                      <button type="button" onClick={() => setForm((f) => (f ? { ...f, data: { ...f.data, image_url: '', image_credit: '' } } : f))} className="rounded-xl px-4 py-2.5 text-sm text-[#9B2C2C] hover:bg-red-50">
+                        Retirer l'image
+                      </button>
+                    )}
+                  </div>
+                  <p className="text-xs text-[#8A837A]">JPG, PNG ou WebP, 5 Mo au maximum.</p>
+                  {form.data.image_url && (
+                    <p className="truncate text-xs text-[#8A837A]" title={form.data.image_url}>
+                      {/cloudinary\.com/.test(form.data.image_url) ? 'Stockée sur Cloudinary : ' : 'Image actuelle : '}{form.data.image_url}
+                    </p>
+                  )}
                   <Field label="Crédit de l'image" hint="(auteur et licence, si besoin)"><input value={form.data.image_credit} onChange={set('image_credit')} maxLength={300} className={inputClass} /></Field>
                 </div>
               </div>
