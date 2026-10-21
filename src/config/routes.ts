@@ -155,6 +155,9 @@ export const Routes = {
   teleconsultationDoctors: '/teleconsultation/doctors',
   teleconsultationCenters: '/teleconsultation/centers',
   teleconsultationReferrals: '/teleconsultation/referrals',
+  // Contraception (21/10/2026)
+  contraception: '/contraception',
+  contraceptionMethods: '/contraception/methods',
   myStaffs: '/users/my-staffs',
   vendorStaffs: '/users/vendor-staffs',
   flashSale: {

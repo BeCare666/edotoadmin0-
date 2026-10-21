@@ -143,6 +143,24 @@ export const siteSettings = {
           },
         ],
       },
+      // Contraception (21/10/2026) : demandes d'adoption en 7 étapes et fiches des contraceptifs
+      contraception: {
+        href: '#',
+        label: 'text-contraception',
+        icon: 'ContraceptionIcon',
+        childMenu: [
+          {
+            href: Routes.contraception || '#',
+            label: 'text-contra-requests',
+            icon: 'ContraceptionIcon',
+          },
+          {
+            href: Routes.contraceptionMethods || '#',
+            label: 'text-contra-methods',
+            icon: 'ProductsIcon',
+          },
+        ],
+      },
       shop: {
         href: '#',
         label: 'text-shop-management',
