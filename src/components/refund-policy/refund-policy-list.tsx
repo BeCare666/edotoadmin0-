@@ -1,4 +1,5 @@
 import ActionButtons from '@/components/common/action-buttons';
+import { safeHtmlExcerpt } from '@/utils/safe-html';
 import Badge from '@/components/ui/badge/badge';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
 import Pagination from '@/components/ui/pagination';
@@ -102,7 +103,7 @@ const RefundPolicyList = ({
       render: (text: string) => (
         <span
           dangerouslySetInnerHTML={{
-            __html: text?.length < 130 ? text : text?.substring(0, 130) + '...',
+            __html: safeHtmlExcerpt(text, 130),
           }}
         />
       ),

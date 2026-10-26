@@ -1,4 +1,5 @@
 import ActionButtons from '@/components/common/action-buttons';
+import { safeHtmlExcerpt } from '@/utils/safe-html';
 import { NoShop } from '@/components/icons/no-shop';
 import PriorityColor from '@/components/store-notice/priority-color';
 import Badge from '@/components/ui/badge/badge';
@@ -147,7 +148,7 @@ const TermsAndConditionsLists = ({
       render: (text: string) => (
         <span
           dangerouslySetInnerHTML={{
-            __html: text?.length < 100 ? text : text?.substring(0, 100) + '...',
+            __html: safeHtmlExcerpt(text, 100),
           }}
         />
       ),

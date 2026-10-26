@@ -1,4 +1,5 @@
 import { useModalState } from '@/components/ui/modal/modal.context';
+import { safeHtml } from '@/utils/safe-html';
 
 const DescriptionView = () => {
   const {
@@ -9,7 +10,7 @@ const DescriptionView = () => {
       <h2 className="mb-4 text-xl font-semibold text-muted-black">{title}</h2>
       <div
         className="flex-1 overflow-auto leading-8 text-[#666]"
-        dangerouslySetInnerHTML={{ __html: content }}
+        dangerouslySetInnerHTML={{ __html: safeHtml(content) }}
       ></div>
     </div>
   );

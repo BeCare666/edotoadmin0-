@@ -1,4 +1,5 @@
 import ActionButtons from '@/components/common/action-buttons';
+import { safeHtmlExcerpt } from '@/utils/safe-html';
 import { NoDataFound } from '@/components/icons/no-data-found';
 import LanguageSwitcher from '@/components/ui/lang-action/action';
 import Pagination from '@/components/ui/pagination';
@@ -129,8 +130,7 @@ const OwnershipTransferLists = ({
         text ? (
           <span
             dangerouslySetInnerHTML={{
-              __html:
-                text?.length < 130 ? text : text?.substring(0, 130) + '...',
+              __html: safeHtmlExcerpt(text, 130),
             }}
           />
         ) : (
