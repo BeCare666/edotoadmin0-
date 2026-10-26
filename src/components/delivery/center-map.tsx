@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import maplibregl from 'maplibre-gl';
+import * as maplibregl from 'maplibre-gl'; // maplibre-gl 6 : exports nommés seulement (audit 2.1)
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 // Même fond de carte que le site client (OpenFreeMap : gratuit, usage commercial autorisé, sans clé).
