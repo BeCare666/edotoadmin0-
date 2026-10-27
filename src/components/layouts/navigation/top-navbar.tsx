@@ -1,10 +1,6 @@
-import { useState } from 'react';
 import { SearchIcon } from '@/components/icons/search-icon';
 import LanguageSwitcher from '@/components/layouts/navigation/language-switcher';
-import MessageBar from '@/components/layouts/topbar/message-bar';
-import RecentOrderBar from '@/components/layouts/topbar/recent-order-bar';
 import SearchBar from '@/components/layouts/topbar/search-bar';
-import StoreNoticeBar from '@/components/layouts/topbar/store-notice-bar';
 import VisitStore from '@/components/layouts/topbar/visit-store';
 import Alert from '@/components/ui/alert';
 import CountdownTimer from '@/components/ui/countdown-timer';
@@ -22,8 +18,6 @@ import { useUI } from '@/contexts/ui.context';
 import { useSettingsQuery } from '@/data/settings';
 import { useShopQuery } from '@/data/shop';
 import { useMeQuery } from '@/data/user';
-import { getNotifications } from "@/lib/fetcher";
-import Notifications from "@/components/notifications/notifications";
 import {
   adminAndOwnerOnly,
   adminOnly,
@@ -73,17 +67,6 @@ const Navbar = () => {
   const { width } = useWindowSize();
   const { left: shellLeft } = useShellOffsets();
   const { settings, loading } = useSettingsQuery({ language: locale! });
-  const [notifications, setNotifications] = useState({
-    data: [],
-    total: 0,
-    current_page: 1,
-    per_page: 20,
-  });
-
-  useEffect(() => {
-    getNotifications().then(setNotifications);
-  }, []);
-
   const {
     data: shop,
     isLoading: shopLoading,
@@ -253,14 +236,9 @@ const Navbar = () => {
             <SearchNavIcon className="h-[18px] w-[18px]" />
           </button>
           {hasAccess(adminAndOwnerOnly, permissions) && (
-            <>
-              <div className="hidden 2xl:block">
-                <VisitStore />
-              </div>
-              <div className="hidden">
-                <Notifications />
-              </div>
-            </>
+            <div className="hidden 2xl:block">
+              <VisitStore />
+            </div>
           )}
 
           {/* Notifications calculées à partir des données réelles (super admin) */}
