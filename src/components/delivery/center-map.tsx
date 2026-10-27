@@ -2,6 +2,12 @@ import { useEffect, useRef } from 'react';
 import * as maplibregl from 'maplibre-gl'; // maplibre-gl 6 : exports nommés seulement (audit 2.1)
 import 'maplibre-gl/dist/maplibre-gl.css';
 
+// maplibre-gl 6 cherche son worker via import.meta.url, qui devient file:/// une fois bundlé
+// (« Worker failed to load ») : webpack émet le worker (même origine) et on donne son adresse.
+maplibregl.setWorkerUrl(
+  new URL('../../../node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs', import.meta.url).href,
+);
+
 // Même fond de carte que le site client (OpenFreeMap : gratuit, usage commercial autorisé, sans clé).
 const MAP_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
 const COTONOU: [number, number] = [2.4183, 6.3654];
