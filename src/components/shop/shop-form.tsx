@@ -243,19 +243,20 @@ const ShopForm = ({ initialValues }: { initialValues?: Shop }) => {
       }
       : undefined;
 
-    const logo_image = values.logo_image
-      ? {
-        thumbnail: values.logo_image.thumbnail,
-        original: values.logo_image.original,
-      }
-      : undefined;
-
-    const cover_image = values.cover_image
-      ? {
-        thumbnail: values.cover_image.thumbnail,
-        original: values.cover_image.original,
-      }
-      : undefined;
+    // L'envoi d'image renvoie { url, key, mimeType, size, originalName } : l'API lit ces champs
+    // (28/10/2026). Avant, seuls thumbnail et original (vides) partaient : l'image était perdue.
+    const toImage = (img: any): any =>
+      img
+        ? {
+          url: img.url ?? img.original,
+          key: img.key,
+          mimeType: img.mimeType,
+          size: img.size,
+          originalName: img.originalName,
+        }
+        : undefined;
+    const logo_image = toImage(values.logo_image);
+    const cover_image = toImage(values.cover_image);
 
     const address = {
       country: values.address.country,
