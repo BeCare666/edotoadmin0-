@@ -21,6 +21,7 @@ import { useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import EdotoAuthShell, { authButtonClass, authInputClass, authLabelClass, authLinkClass } from '@/components/auth/edoto-auth-shell';
+import TotpStep from '@/components/auth/totp-step';
 
 const loginFormSchema = yup.object().shape({
   email: yup
@@ -43,6 +44,8 @@ const LoginForm = () => {
   const searchParams = useSearchParams();
   const becomeSeller = searchParams.get('become_seller');
   const router = useRouter();
+  // Double authentification (audit 3.1) : défi renvoyé par POST /token à la place de la session
+  const [totp, setTotp] = useState<{ challenge: string; setup_required: boolean } | null>(null);
 
   function onSubmit(data: LoginInput, event?: React.BaseSyntheticEvent) {
     event?.preventDefault();
@@ -50,7 +53,30 @@ const LoginForm = () => {
     login(
       { email: data.email, password: data.password },
       {
-        onSuccess: (data) => {
+        onSuccess: (data: any) => {
+          if (data?.totp_required && data?.challenge) {
+            setErrorMessage(null);
+            setTotp({ challenge: data.challenge, setup_required: !!data.setup_required });
+            return;
+          }
+          finishLogin(data);
+        },
+        onError: (error: any) => {
+          console.error('Erreur pendant la connexion:', error);
+          if (error?.response?.data?.message) {
+            setErrorMessage(error.response.data.message);
+          } else if (error?.message) {
+            setErrorMessage(error.message);
+          } else {
+            setErrorMessage('form:error-something-wrong');
+          }
+        },
+      }
+    );
+  }
+
+  // Session reçue (directement ou après le code de double authentification)
+  function finishLogin(data: any) {
           if (!data?.token) {
             setErrorMessage('form:error-credential-wrong');
             return;
@@ -91,19 +117,6 @@ const LoginForm = () => {
             router.push('/');
             return;
           }
-        },
-        onError: (error: any) => {
-          console.error('Erreur pendant la connexion:', error);
-          if (error?.response?.data?.message) {
-            setErrorMessage(error.response.data.message);
-          } else if (error?.message) {
-            setErrorMessage(error.message);
-          } else {
-            setErrorMessage('form:error-something-wrong');
-          }
-        },
-      }
-    );
   }
 
   // Même cadre et même logo que le site (16/10/2026) ; textes inchangés
@@ -138,6 +151,16 @@ const LoginForm = () => {
           </a>
         )}
 
+        {totp ? (
+          <TotpStep
+            challenge={totp}
+            onSession={(session) => {
+              setTotp(null);
+              finishLogin(session);
+            }}
+            onCancel={() => setTotp(null)}
+          />
+        ) : (
         <Form<LoginInput>
           validationSchema={loginFormSchema}
           onSubmit={onSubmit}
@@ -190,6 +213,7 @@ const LoginForm = () => {
             </>
           )}
         </Form>
+        )}
 
     </EdotoAuthShell>
   );
