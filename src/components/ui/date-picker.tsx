@@ -2,7 +2,10 @@ import ValidationError from '@/components/ui/form-validation-error';
 import TooltipLabel from '@/components/ui/tooltip-label';
 import classNames from 'classnames';
 import { format } from 'date-fns';
-import DatePicker from 'react-datepicker';
+import ReactDatePicker from 'react-datepicker';
+
+// Types de react-datepicker incompatibles avec la version de React : composant inchangé
+const DatePicker = ReactDatePicker as any;
 import 'react-datepicker/dist/react-datepicker.css';
 import { Controller } from 'react-hook-form';
 import { twMerge } from 'tailwind-merge';

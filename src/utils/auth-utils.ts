@@ -39,7 +39,9 @@ export function removeLegacyToken() {
   }
 }
 export function setEmailVerified(emailVerified: boolean) {
-  Cookie.set(EMAIL_VERIFIED, JSON.stringify({ emailVerified }));
+  // Audit 2.9 (M6) : mêmes protections que le cookie de session (ce cookie ne commande qu'une redirection ;
+  // la vérification réelle est faite par l'API, qui répond 409 sur /me)
+  Cookie.set(EMAIL_VERIFIED, JSON.stringify({ emailVerified }), AUTH_COOKIE_OPTIONS);
 }
 export function getEmailVerified(): {
   emailVerified: boolean;

@@ -138,10 +138,10 @@ export default function ShopsAdvancedFilter({
             </Label>
             <Select
               options={statusOptions}
-              getOptionLabel={(opt: { label: string }) => opt.label}
-              getOptionValue={(opt: { value: string }) => opt.value}
+              getOptionLabel={(opt: any) => opt.label}
+              getOptionValue={(opt: any) => opt.value}
               value={selectedStatus}
-              onChange={(opt: { value: string } | null) => {
+              onChange={(opt: any) => {
                 const v =
                   opt?.value === ''
                     ? undefined
@@ -161,10 +161,10 @@ export default function ShopsAdvancedFilter({
             </Label>
             <Select
               options={sortOptions}
-              getOptionLabel={(opt: { label: string }) => opt.label}
-              getOptionValue={(opt: { value: string }) => opt.value}
+              getOptionLabel={(opt: any) => opt.label}
+              getOptionValue={(opt: any) => opt.value}
               value={selectedSort}
-              onChange={(opt: { value: string } | null) => {
+              onChange={(opt: any) => {
                 if (opt?.value != null)
                   onChange({ ...values, orderBy: opt.value });
               }}
@@ -180,10 +180,10 @@ export default function ShopsAdvancedFilter({
             </Label>
             <Select
               options={orderOptions}
-              getOptionLabel={(opt: { label: string }) => opt.label}
-              getOptionValue={(opt: { value: SortOrder }) => opt.value}
+              getOptionLabel={(opt: any) => opt.label}
+              getOptionValue={(opt: any) => opt.value}
               value={selectedOrder}
-              onChange={(opt: { value: SortOrder } | null) => {
+              onChange={(opt: any) => {
                 if (opt?.value != null)
                   onChange({ ...values, sortedBy: opt.value });
               }}
@@ -199,10 +199,10 @@ export default function ShopsAdvancedFilter({
             </Label>
             <Select
               options={perPageOptions}
-              getOptionLabel={(opt: { label: string }) => opt.label}
-              getOptionValue={(opt: { value: number }) => String(opt.value)}
+              getOptionLabel={(opt: any) => opt.label}
+              getOptionValue={(opt: any) => String(opt.value)}
               value={selectedPerPage}
-              onChange={(opt: { value: number } | null) => {
+              onChange={(opt: any) => {
                 if (opt?.value != null) onChange({ ...values, limit: opt.value });
               }}
               isClearable={false}

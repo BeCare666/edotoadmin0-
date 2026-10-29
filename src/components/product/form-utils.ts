@@ -439,7 +439,7 @@ export function getProductInputValues(
               return initialVariationOption?.id;
             }
           })
-          .filter((item?: number) => item !== undefined),
+          .filter((item: any) => item !== undefined),
       },
     }),
 

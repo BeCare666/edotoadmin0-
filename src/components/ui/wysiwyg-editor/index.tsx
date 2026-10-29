@@ -71,7 +71,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
         formData.append('file', file);
         formData.append('resource_type', 'raw');
         setLoading(true);
-        const responseUpload = await uploadClient?.upload(formData);
+        const responseUpload = await uploadClient?.upload(formData as any);
         setLoading(false);
         const reader = new FileReader();
         // Read the selected file as a data URL

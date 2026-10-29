@@ -91,7 +91,7 @@ const SidebarItemMap = ({ menuItems }: any) => {
           const resolvedHref =
             typeof href === 'function'
               ? shop != null && String(shop).trim() !== ''
-                ? href(String(shop))
+                ? (href as (slug: string) => string)(String(shop))
                 : '#'
               : href;
           return (
@@ -115,7 +115,7 @@ const SideBarGroup = () => {
   const { role } = getAuthCredentials();
   const menuItems: MenuItemsProps =
     role === 'staff'
-      ? siteSettings?.sidebarLinks?.staff
+      ? (siteSettings?.sidebarLinks as any)?.staff
       : siteSettings?.sidebarLinks?.shop;
   const menuKeys = Object.keys(menuItems);
   const { width } = useWindowSize();

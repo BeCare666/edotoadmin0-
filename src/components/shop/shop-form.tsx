@@ -220,7 +220,7 @@ const ShopForm = ({ initialValues }: { initialValues?: Shop }) => {
     console.log('🔥 Form submitted', values);
 
     const socials = values.settings.socials?.map((s) => ({
-      icon: s.icon?.value ?? s.icon,
+      icon: (s.icon as any)?.value ?? s.icon,
       url: s.url,
     })) ?? [];
 
@@ -270,11 +270,12 @@ const ShopForm = ({ initialValues }: { initialValues?: Shop }) => {
       ? {
         lat: values.settings.location.lat,
         lng: values.settings.location.lng,
-        formatted_address: values.settings.location?.formatted_address ?? undefined,
+        formatted_address: (values.settings.location as any)?.formatted_address ?? undefined,
       }
       : undefined;
 
-    const payload: Partial<ShopInput> = {
+    // Corps lu champ par champ par l'API (CreateShopDto / UpdateShopDto)
+    const payload: any = {
       name: values.name,
       slug: values.slug,
       description: values.description,

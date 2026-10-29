@@ -54,10 +54,11 @@ export default function PromoPopUpSettingsForm({ settings }: IProps) {
   async function onSubmit(values: PromoPopupFormValues) {
     updateSettingsMutation({
       language: locale,
+      // Réglages du site : type plus large que celui du formulaire
       options: {
         ...options,
         ...values,
-      },
+      } as any,
     });
     reset(values, { keepValues: true });
   }

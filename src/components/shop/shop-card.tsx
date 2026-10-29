@@ -15,6 +15,7 @@ import { useTranslation } from 'next-i18next';
 
 type ShopCardProps = {
   shop: Shop;
+  className?: string;
 };
 
 export const ListItem = ({ title, info }: { title: string; info: number }) => {

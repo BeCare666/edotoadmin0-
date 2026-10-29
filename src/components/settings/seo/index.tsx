@@ -56,7 +56,7 @@ export default function SeoSettingsForm({ settings }: IProps) {
     //@ts-ignore
     resolver: yupResolver(seoValidationSchema),
     defaultValues: {
-      ...options,
+      ...(options as any),
     },
   });
 

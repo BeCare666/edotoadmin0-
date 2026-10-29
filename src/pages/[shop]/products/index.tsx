@@ -40,7 +40,7 @@ export default function ProductsPage() {
 
   if (fetchingShop || !shopId) return <Loader text={t('common:text-loading')} />;
 
-  return <ProductsBrowser shopId={shopId} createHref={`/${shop}/products/create`} />;
+  return <ProductsBrowser shopId={shopId as any} createHref={`/${shop}/products/create`} />;
 }
 ProductsPage.authenticate = {
   permissions: adminOwnerAndStaffOnly,

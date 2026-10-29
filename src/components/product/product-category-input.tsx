@@ -242,7 +242,7 @@ const ProductCategoryInput = ({ control, setValue, initialProduct }: Props) => {
 
   const selectedCategoryName =
     selectedCategory != null
-      ? categories.find((c) => Number(c.id) === selectedCategory || c.id === selectedCategory)?.name
+      ? categories.find((c) => Number(c.id) === selectedCategory || (c.id as unknown) === selectedCategory)?.name
       : null;
 
   return (
@@ -270,7 +270,7 @@ const ProductCategoryInput = ({ control, setValue, initialProduct }: Props) => {
             <h4 className="mb-2 text-sm font-medium text-heading">{t('form:categories')}</h4>
             <ul className="space-y-0.5">
               {categories.map((c) => {
-                const isSelected = selectedCategory !== null && (Number(c.id) === selectedCategory || c.id === selectedCategory);
+                const isSelected = selectedCategory !== null && (Number(c.id) === selectedCategory || (c.id as unknown) === selectedCategory);
                 return (
                   <li
                     key={c.id}

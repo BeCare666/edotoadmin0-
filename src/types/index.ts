@@ -230,6 +230,7 @@ export interface Category {
   translated_languages: string[];
   parent?: number;
   children: Category[];
+  has_children?: boolean;
   details?: string;
   image?: Attachment;
   icon?: string;
@@ -326,6 +327,8 @@ export type Attachment = {
   url: string;
   id?: string | number;
   thumbnail?: string;
+  // Anciennes images (avatars, logos) : { original, thumbnail }
+  original?: string;
 };
 export interface AttachmentInput {
   thumbnail: string;
@@ -382,6 +385,8 @@ export interface Shop {
 
   cover_image_url?: string;
   logo_image_url?: string;
+  // Ancien champ encore lu par la messagerie et les tableaux
+  logo?: Attachment & { logo_image_url?: string };
 
   // 🔥 ADDRESS
   address?: UserAddress;
@@ -720,6 +725,8 @@ export interface WalletPoint {
 
 export interface Order {
   id: string;
+  // Commandes filles (multi-boutiques)
+  children?: Order[];
   tracking_number: string;
   customer_contact: string;
   customer_name: string;

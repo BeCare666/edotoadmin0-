@@ -64,10 +64,8 @@ const nextConfig = {
     ],
     unoptimized: true,
   },
+  // Audit sécurité 2.9 (M7, 29/10/2026) : les erreurs de type font de nouveau échouer le build (0 erreur ce jour)
   ...(process.env.APPLICATION_MODE === 'production' && {
-    typescript: {
-      ignoreBuildErrors: true,
-    },
     eslint: {
       ignoreDuringBuilds: true,
     },
