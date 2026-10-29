@@ -17,8 +17,26 @@ export const adminOnly = [SUPER_ADMIN];
 export const ownerOnly = [STORE_OWNER];
 export const ownerAndStaffOnly = [STORE_OWNER, STAFF];
 
+// Audit sécurité 2.6 (29/10/2026) : cookie de session envoyé seulement en HTTPS (sauf poste local en http),
+// jamais depuis un autre site, et 12 h au plus ; plus aucune copie du jeton dans localStorage.
+export const AUTH_COOKIE_OPTIONS: Cookie.CookieAttributes = {
+  secure: typeof window === 'undefined' || window.location.protocol === 'https:',
+  sameSite: 'strict',
+  expires: 0.5,
+};
+
 export function setAuthCredentials(token: string, permissions: any, role: any) {
-  Cookie.set(AUTH_CRED, JSON.stringify({ token, permissions, role }));
+  Cookie.set(AUTH_CRED, JSON.stringify({ token, permissions, role }), AUTH_COOKIE_OPTIONS);
+  removeLegacyToken();
+}
+
+/** Ancienne copie du jeton (avant le 29/10/2026) : effacée */
+export function removeLegacyToken() {
+  try {
+    if (typeof window !== 'undefined') localStorage.removeItem('token');
+  } catch {
+    /* stockage indisponible */
+  }
 }
 export function setEmailVerified(emailVerified: boolean) {
   Cookie.set(EMAIL_VERIFIED, JSON.stringify({ emailVerified }));

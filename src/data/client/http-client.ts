@@ -2,6 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 import Router from 'next/router';
 import invariant from 'tiny-invariant';
+import { removeLegacyToken } from '@/utils/auth-utils';
 
 invariant(
   process.env.NEXT_PUBLIC_REST_API_ENDPOINT,
@@ -32,10 +33,8 @@ Axios.interceptors.request.use((config) => {
         token = '';
       }
     }
-    // On stocke dans localStorage pour utilisation directe
-    if (typeof window !== 'undefined' && token) {
-      localStorage.setItem('token', token);
-    }
+    // Audit sécurité 2.6 : plus de copie du jeton dans localStorage
+    removeLegacyToken();
     // @ts-ignore
     config.headers = {
       ...config.headers,

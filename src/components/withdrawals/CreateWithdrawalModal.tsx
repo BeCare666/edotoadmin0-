@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
+import { getAuthCredentials } from '@/utils/auth-utils';
 
 type Props = {
     open: boolean;
@@ -23,7 +24,7 @@ export default function CreateWithdrawalModal({ open, onClose, onCreated }: Prop
     // Fetch wallet balance
     useEffect(() => {
         if (!open) return;
-        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        const token = getAuthCredentials().token;
         if (!token) return;
 
         (async () => {
@@ -71,7 +72,7 @@ export default function CreateWithdrawalModal({ open, onClose, onCreated }: Prop
         setLoading(true);
 
         try {
-            const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+            const token = getAuthCredentials().token;
             if (!token) throw new Error('Token missing');
 
             const res = await fetch(`${process.env.NEXT_PUBLIC_REST_API_ENDPOINT}/withdrawals`, {

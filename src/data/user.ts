@@ -17,7 +17,7 @@ import {
 } from '@/types';
 import { mapPaginatorData } from '@/utils/data-mappers';
 import axios from 'axios';
-import { setEmailVerified } from '@/utils/auth-utils';
+import { removeLegacyToken, setEmailVerified } from '@/utils/auth-utils';
 import { type } from 'os';
 
 export const useMeQuery = () => {
@@ -67,6 +67,7 @@ export const useLogoutMutation = () => {
   return useMutation(userClient.logout, {
     onSuccess: () => {
       Cookies.remove(AUTH_CRED);
+      removeLegacyToken();
       router.replace(Routes.login);
       toast.success(t('common:successfully-logout'), {
         toastId: 'logoutSuccess',

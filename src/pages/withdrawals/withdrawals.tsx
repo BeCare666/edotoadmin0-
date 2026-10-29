@@ -119,7 +119,7 @@ export default function WithdrawalsPage() {
         setLoading(true);
         setError(null);
         try {
-            const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+            const token = getAuthCredentials().token;
             if (!token) {
                 setError('Token missing');
                 setLoading(false);
@@ -160,7 +160,7 @@ export default function WithdrawalsPage() {
 
     const performAction = async () => {
         if (!targetWithdrawal || !modalAction) return;
-        const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+        const token = getAuthCredentials().token;
         if (!token) return alert('Token missing');
 
         try {
