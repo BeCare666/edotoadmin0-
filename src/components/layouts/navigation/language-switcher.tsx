@@ -24,7 +24,8 @@ export default function LanguageSwitcher() {
   const [selectedItem, setSelectedItem] = useState(currentSelectedItem);
 
   function handleItemClick(values: any) {
-    Cookies.set('NEXT_LOCALE', values?.value, { expires: 365 });
+    // Autorisation APDP (point e) : cookies limités à 60 jours
+    Cookies.set('NEXT_LOCALE', values?.value, { expires: 60 });
     setSelectedItem(values);
     resetCart();
     router.push(asPath, undefined, { locale: values?.value });
