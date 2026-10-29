@@ -1,4 +1,5 @@
 import { getAuthCredentials } from '@/utils/auth-utils';
+import { askStepUp, STEP_UP_REQUIRED, stepUpToken } from '@/utils/step-up-store';
 
 export const API = process.env.NEXT_PUBLIC_REST_API_ENDPOINT;
 
@@ -22,15 +23,30 @@ export const BENIN_CITIES = [
   'Zogbodomey',
 ];
 
+// Action sensible (audit 3.1, 29/10/2026) : si l'API redemande le code (403 STEP_UP_REQUIRED),
+// la fenêtre de saisie s'ouvre puis la même requête est rejouée une fois avec l'en-tête X-Step-Up.
+async function sendWithStepUp(path: string, init: RequestInit, json: boolean): Promise<Response> {
+  const send = () => {
+    const { token } = getAuthCredentials();
+    const stepUp = stepUpToken();
+    return fetch(`${API}/${path}`, {
+      ...init,
+      headers: {
+        ...(json ? { 'Content-Type': 'application/json' } : {}),
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...(stepUp ? { 'X-Step-Up': stepUp } : {}),
+      },
+    });
+  };
+  const res = await send();
+  if (res.status !== 403) return res;
+  const data = await res.clone().json().catch(() => ({}));
+  if (data?.error !== STEP_UP_REQUIRED || !(await askStepUp())) return res;
+  return send();
+}
+
 export async function apiCall(path: string, init: RequestInit = {}) {
-  const { token } = getAuthCredentials();
-  const res = await fetch(`${API}/${path}`, {
-    ...init,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-  });
+  const res = await sendWithStepUp(path, init, true);
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     throw new Error(
@@ -42,10 +58,7 @@ export async function apiCall(path: string, init: RequestInit = {}) {
 
 // Téléchargement d'un fichier Excel (route protégée : le jeton passe dans l'en-tête)
 export async function downloadFile(path: string, fallbackName: string) {
-  const { token } = getAuthCredentials();
-  const res = await fetch(`${API}/${path}`, {
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
-  });
+  const res = await sendWithStepUp(path, {}, false);
   if (!res.ok) {
     const data = await res.json().catch(() => ({}));
     throw new Error(data?.message || 'Téléchargement impossible.');

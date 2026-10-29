@@ -24,6 +24,7 @@ import PrivateRoute from '@/utils/private-route';
 import { Config } from '@/config';
 import { Routes } from '@/config/routes';
 import { startSessionKeeper } from '@/utils/session-keeper';
+import StepUpPrompt from '@/components/auth/step-up-prompt';
 const Noop: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
   <>{children}</>
 );
@@ -83,6 +84,8 @@ const CustomApp = ({ Component, pageProps }: AppPropsWithLayout) => {
                     )}
                     <ToastContainer autoClose={2000} theme="colored" />
                     <ManagedModal />
+                    {/* Audit 3.1 : code redemandé pour les actions sensibles */}
+                    <StepUpPrompt />
                   </CartProvider>
                 </>
               </ModalProvider>

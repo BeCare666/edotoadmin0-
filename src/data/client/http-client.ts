@@ -3,6 +3,7 @@ import Cookies from 'js-cookie';
 import Router from 'next/router';
 import invariant from 'tiny-invariant';
 import { removeLegacyToken } from '@/utils/auth-utils';
+import { askStepUp, STEP_UP_REQUIRED, stepUpToken } from '@/utils/step-up-store';
 
 invariant(
   process.env.NEXT_PUBLIC_REST_API_ENDPOINT,
@@ -36,10 +37,13 @@ Axios.interceptors.request.use((config) => {
     }
     // Audit sécurité 2.6 : plus de copie du jeton dans localStorage
     removeLegacyToken();
+    const stepUp = stepUpToken();
     // @ts-ignore
     config.headers = {
       ...config.headers,
       Authorization: token ? `Bearer ${token}` : undefined,
+      // Audit 3.1 : autorisation de 5 min pour les actions sensibles (après le code)
+      ...(stepUp ? { 'X-Step-Up': stepUp } : {}),
     };
   }
   return config;
@@ -48,7 +52,18 @@ Axios.interceptors.request.use((config) => {
 // Change response data/error here
 Axios.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
+    // Action sensible (audit 3.1) : l'API redemande le code → saisie, puis la même requête est rejouée.
+    // Ce 403 ne déconnecte pas.
+    const config: any = error?.config;
+    if (error?.response?.status === 403 && error.response.data?.error === STEP_UP_REQUIRED && config && !config._stepUpRetried) {
+      if (await askStepUp()) {
+        config._stepUpRetried = true;
+        config.headers = { ...config.headers, 'X-Step-Up': stepUpToken() };
+        return Axios(config);
+      }
+      return Promise.reject(error);
+    }
     if (
       (error.response && error.response.status === 401) ||
       (error.response && error.response.status === 403) ||
