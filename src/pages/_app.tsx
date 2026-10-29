@@ -22,6 +22,8 @@ import type { NextPageWithLayout } from '@/types';
 import { useRouter } from 'next/router';
 import PrivateRoute from '@/utils/private-route';
 import { Config } from '@/config';
+import { Routes } from '@/config/routes';
+import { startSessionKeeper } from '@/utils/session-keeper';
 const Noop: React.FC<{ children?: React.ReactNode }> = ({ children }) => (
   <>{children}</>
 );
@@ -46,6 +48,14 @@ const CustomApp = ({ Component, pageProps }: AppPropsWithLayout) => {
   useEffect(() => {
     syncSiteFont(process.env.NEXT_PUBLIC_REST_API_ENDPOINT);
   }, []);
+  // Session fermée après 5 min d'inactivité (29/10/2026) : renouvelée tant que la personne agit
+  useEffect(
+    () =>
+      startSessionKeeper(() => {
+        if (!window.location.pathname.endsWith(Routes.login)) window.location.href = Routes.login;
+      }),
+    [],
+  );
   const getLayout = Component.getLayout ?? ((page) => page);
   console.log()
   const { locale } = useRouter();

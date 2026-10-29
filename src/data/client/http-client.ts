@@ -20,7 +20,8 @@ const PUBLIC_ENDPOINTS = ['token', 'register', 'forget-password', 'reset-passwor
 
 Axios.interceptors.request.use((config) => {
   const url = config.url ?? '';
-  const isPublic = PUBLIC_ENDPOINTS.some((endpoint) => url.startsWith(endpoint) || url.endsWith(endpoint));
+  // token/refresh renouvelle la session en cours : il garde le jeton (29/10/2026)
+  const isPublic = url !== 'token/refresh' && PUBLIC_ENDPOINTS.some((endpoint) => url.startsWith(endpoint) || url.endsWith(endpoint));
 
   if (!isPublic) {
     const cookies = Cookies.get(AUTH_TOKEN_KEY);
