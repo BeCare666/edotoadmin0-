@@ -289,7 +289,7 @@ export default function PickupPointsPage() {
                               disabled={busyId === p.id}
                               className="rounded-md border border-border-200 px-3 py-1.5 text-xs font-semibold text-heading hover:border-accent disabled:opacity-50"
                             >
-                              Renvoyer l'e-mail
+                              Renvoyer l&apos;e-mail
                             </button>
                           )}
                           <button

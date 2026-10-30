@@ -249,7 +249,7 @@ export default function ContraceptionMethods() {
                     </label>
                     {preview && (
                       <button type="button" onClick={() => setForm((f) => (f ? { ...f, data: { ...f.data, image_url: '', image_credit: '' } } : f))} className="rounded-xl px-4 py-2.5 text-sm text-[#9B2C2C] hover:bg-red-50">
-                        Retirer l'image
+                        Retirer l&apos;image
                       </button>
                     )}
                   </div>

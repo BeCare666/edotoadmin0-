@@ -21,6 +21,12 @@ import { getAuthCredentials } from '@/utils/auth-utils';
 import Avatar from '../common/avatar';
 import { useCreateConversations } from '@/data/conversations';
 
+// usePrice est un hook : appelé dans un composant, jamais dans la fonction render d'une colonne (ESLint, 30/10/2026)
+function Price({ amount }: { amount: number }) {
+  const { price } = usePrice({ amount });
+  return <span className="whitespace-nowrap">{price}</span>;
+}
+
 type IProps = {
   orders: Order[] | undefined;
   paginatorInfo: MappedPaginatorInfo | null;
@@ -171,12 +177,7 @@ const OrderList = ({
       align: 'center',
       className:
         'text-[13px] md:text-sm font-semibold text-gray-700 dark:text-gray-300',
-      render: (value: any) => {
-        const { price } = usePrice({ amount: value || 0 });
-        return (
-          <span className="whitespace-nowrap">{price}</span>
-        );
-      },
+      render: (value: any) => <Price amount={value || 0} />,
     },
     {
       title: (

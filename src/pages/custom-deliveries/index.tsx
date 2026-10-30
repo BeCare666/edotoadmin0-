@@ -126,7 +126,7 @@ function DeliverySettingsCard() {
       </h2>
       <p className="mb-4 text-sm text-body">
         Prix payé par le client = distance par la route depuis le centre de
-        traitement × prix au kilomètre. Un changement s'applique aux nouvelles
+        traitement × prix au kilomètre. Un changement s&apos;applique aux nouvelles
         commandes.
       </p>
       {!loaded ? (
@@ -335,8 +335,8 @@ export default function CustomDeliveriesPage() {
             Lien créé pour la commande {result.tracking}
           </h2>
           <p className="mt-1 text-sm text-body">
-            Le lien et le PIN ne sont affichés qu'une seule fois. Le lien ne
-            fonctionnera que sur le premier téléphone qui l'ouvre.
+            Le lien et le PIN ne sont affichés qu&apos;une seule fois. Le lien ne
+            fonctionnera que sur le premier téléphone qui l&apos;ouvre.
           </p>
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             <div>
@@ -365,7 +365,7 @@ export default function CustomDeliveriesPage() {
             </div>
           </div>
           <button onClick={() => setResult(null)} className="mt-4 text-sm text-body underline">
-            J'ai transmis le lien et le PIN : fermer
+            J&apos;ai transmis le lien et le PIN : fermer
           </button>
         </Card>
       )}
