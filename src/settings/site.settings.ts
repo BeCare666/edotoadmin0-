@@ -348,21 +348,11 @@ export const siteSettings = {
             label: 'text-site-font',
             icon: 'SettingsIcon',
           },
-          {
-            href: Routes.settings || '#',
-            label: 'sidebar-nav-item-settings',
-            icon: 'SettingsIcon',
-            childMenu: [
-              { href: Routes.settings || '#', label: 'text-general-settings', icon: 'SettingsIcon' },
-              { href: Routes.companyInformation || '#', label: 'text-company-information', icon: 'SettingsIcon' },
-              { href: Routes.paymentSettings || '#', label: 'text-payment-settings', icon: 'SettingsIcon' },
-              { href: Routes.shopSettings || '#', label: 'text-shop-settings', icon: 'SettingsIcon' },
-              { href: Routes.seoSettings || '#', label: 'text-seo-settings', icon: 'SettingsIcon' },
-              { href: Routes.eventSettings || '#', label: 'text-events-settings', icon: 'SettingsIcon' },
-              { href: Routes.maintenance || '#', label: 'text-maintenance-settings', icon: 'SettingsIcon' },
-              { href: Routes.promotionPopup || '#', label: 'text-promotion-popup', icon: 'SettingsIcon' },
-            ],
-          },
+          // B5 (30/10/2026) : seuls les réglages qui ont un effet. Les pages du modèle d'origine (entreprise, paiement,
+          // boutique, SEO, événements, maintenance, popup) écrivent dans la ligne settings que ni le site ni l'API ne
+          // lisent ; elles sortent du menu (fichiers gardés). La maintenance réelle = variable MAINTENANCE_MODE sur Render.
+          // Général : la devise sert à l'affichage des prix dans l'admin (use-price.ts).
+          { href: Routes.settings || '#', label: 'text-general-settings', icon: 'SettingsIcon' },
         ],
       },
     },
