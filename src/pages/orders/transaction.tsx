@@ -8,7 +8,7 @@ import { apiCall, fcfa } from '@/components/campaign/campaign-api';
 
 // Transactions (B6, 30/10/2026) : journal de l'argent réel (API GET /admin/transactions, lecture seule).
 // Remplace la page du modèle d'origine, qui relisait la liste des commandes (taxe, remise : inexistants ici).
-type Kind = 'payment' | 'attempt' | 'payout';
+type Kind = 'payment' | 'attempt' | 'payout' | 'refund';
 
 interface Tx {
   kind: Kind;
@@ -25,7 +25,7 @@ interface Tx {
 
 interface Result {
   data: Tx[];
-  totals: { received: number; received_count: number; paid_out: number; paid_out_count: number; attempts_count: number };
+  totals: { received: number; received_count: number; paid_out: number; paid_out_count: number; attempts_count: number; refunded?: number; refunded_count?: number };
   payouts_available: boolean;
   page: number;
   last_page: number;
@@ -36,6 +36,7 @@ const KIND: Record<Kind, { label: string; tone: string; sign: string }> = {
   payment: { label: 'Paiement reçu', tone: 'bg-green-100 text-green-800', sign: '+' },
   attempt: { label: 'Paiement non abouti', tone: 'bg-amber-100 text-amber-800', sign: '' },
   payout: { label: 'Versement à un point', tone: 'bg-blue-100 text-blue-800', sign: '' },
+  refund: { label: 'Remboursement', tone: 'bg-red-100 text-red-800', sign: '' },
 };
 
 const STATUS: Record<string, string> = {
@@ -43,6 +44,7 @@ const STATUS: Record<string, string> = {
   processing: 'En cours',
   failed: 'En échec',
   paid: 'Versé',
+  refunded: 'Remboursé',
 };
 
 const input = 'rounded-md border border-border-200 px-3 py-2 text-sm focus:border-accent focus:outline-none';
@@ -90,10 +92,10 @@ export default function TransactionsPage() {
       <Card className="mb-8">
         <PageHeading title="Transactions" />
         <p className="mt-1 text-sm text-body">
-          L&apos;argent réel : paiements FeexPay reçus, paiements arrivés mais pas aboutis (à vérifier), versements aux points de retrait.
+          L&apos;argent réel : paiements FeexPay reçus, paiements arrivés mais pas aboutis (à vérifier), versements aux points de retrait, remboursements.
         </p>
         {t && (
-          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <div className="rounded-md border border-border-200 p-4">
               <p className="text-xs uppercase tracking-wider text-body">Reçu</p>
               <p className="mt-1 text-lg font-semibold text-heading">{fcfa(t.received)}</p>
@@ -109,6 +111,11 @@ export default function TransactionsPage() {
               <p className="mt-1 text-lg font-semibold text-heading">{t.attempts_count}</p>
               <p className="text-xs text-body">À vérifier dans FeexPay</p>
             </div>
+            <div className="rounded-md border border-border-200 p-4">
+              <p className="text-xs uppercase tracking-wider text-body">Remboursé</p>
+              <p className="mt-1 text-lg font-semibold text-heading">{fcfa(t.refunded || 0)}</p>
+              <p className="text-xs text-body">{t.refunded_count || 0} remboursement(s)</p>
+            </div>
           </div>
         )}
         <div className="mt-5 flex flex-wrap items-end gap-3">
@@ -118,6 +125,7 @@ export default function TransactionsPage() {
               <option value="payment">Paiements reçus</option>
               <option value="attempt">Paiements non aboutis</option>
               <option value="payout">Versements aux points</option>
+              <option value="refund">Remboursements</option>
             </select>
           </label>
           <label className="text-sm text-body">Du

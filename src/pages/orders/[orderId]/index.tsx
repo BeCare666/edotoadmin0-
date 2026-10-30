@@ -31,6 +31,7 @@ import { ORDER_STAGE_LABELS, ORDER_STAGE_LINKS } from '@/components/order/orders
 import { DELIVERY_TYPE_LABEL, ORDER_STATUS_LABEL, PAYMENT_STATUS_LABEL } from '@/components/order/order-labels';
 import { printPickupLabel } from '@/components/order/print-pickup-label';
 import { adminOnly } from '@/utils/auth-utils';
+import RefundCard from '@/components/order/refund-card';
 
 type FormValues = {
   order_status: any;
@@ -337,6 +338,9 @@ export default function OrderDetailsPage() {
           <OrderStatusProgressBox orderStatus={order?.order_status as OrderStatus} paymentStatus={order?.payment_status as PaymentStatus} />
         </div>
       </Card>
+
+      {/* Remboursement (B7) : commande payée et pas encore retirée */}
+      <RefundCard order={o} onDone={() => window.location.reload()} />
 
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
         <div className="space-y-6 xl:col-span-2">

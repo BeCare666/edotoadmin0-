@@ -149,6 +149,8 @@ export const Routes = {
   campaignRequestsProcessed: '/campaign-requests/processed',
   campaignRequestsWithdrawn: '/campaign-requests/withdrawn',
   commissions: '/commissions',
+  // Demandes de retrait des points de retrait (B7, 30/10/2026)
+  pickupWithdrawals: '/pickup-withdrawals',
   sponsors: '/sponsors',
   sponsorExports: '/sponsor-exports',
   campaignProposals: '/campaign-proposals',

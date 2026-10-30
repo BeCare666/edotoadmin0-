@@ -303,6 +303,11 @@ export const siteSettings = {
             label: 'text-pickup-commissions',
             icon: 'WalletIcon',
           },
+          {
+            href: Routes.pickupWithdrawals || '#',
+            label: 'text-pickup-withdrawals',
+            icon: 'WalletIcon',
+          },
         ],
       },
 
