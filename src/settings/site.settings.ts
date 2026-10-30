@@ -339,11 +339,10 @@ export const siteSettings = {
             label: 'text-site-font',
             icon: 'SettingsIcon',
           },
-          // B5 (30/10/2026) : seuls les réglages qui ont un effet. Les pages du modèle d'origine (entreprise, paiement,
-          // boutique, SEO, événements, maintenance, popup) écrivent dans la ligne settings que ni le site ni l'API ne
-          // lisent ; elles sortent du menu (fichiers gardés). La maintenance réelle = variable MAINTENANCE_MODE sur Render.
-          // Général : la devise sert à l'affichage des prix dans l'admin (use-price.ts).
-          { href: Routes.settings || '#', label: 'text-general-settings', icon: 'SettingsIcon' },
+          // B5 (30/10/2026) : seuls des réglages réels, branchés au site. Les 8 pages de paramètres du modèle d'origine
+          // (écrites dans une ligne que ni le site ni l'API ne lisent) sont supprimées. La maintenance réelle est la
+          // variable MAINTENANCE_MODE sur Render ; la devise des prix de l'admin reste XOF (ligne settings inchangée).
+          { href: Routes.settings || '#', label: 'text-site-info', icon: 'SettingsIcon' },
         ],
       },
     },
