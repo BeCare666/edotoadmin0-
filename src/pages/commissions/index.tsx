@@ -23,9 +23,131 @@ interface Point {
   orders_commission: number;
   kits_withdrawn: number;
   kits_commission: number;
+  paid_total: number;
+  balance: number;
+}
+
+// Versements aux points de retrait (B7, 30/10/2026) : mêmes moyens que l'API (src/commissions/payouts.ts)
+const PAYOUT_METHODS: Record<string, string> = { mobile_money: 'Mobile Money', cash: 'Espèces', bank: 'Virement bancaire' };
+
+interface Payout {
+  id: number;
+  amount: number;
+  method_label: string;
+  reference: string | null;
+  note: string | null;
+  paid_at: string;
 }
 
 const input = 'w-full rounded-md border border-border-200 px-3 py-2 text-sm focus:border-accent focus:outline-none';
+
+function PayoutModal({ point, onClose, onSaved }: { point: Point; onClose: () => void; onSaved: () => Promise<void> }) {
+  const [info, setInfo] = useState<{ earned: number; paid: number; balance: number; payouts: Payout[] } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [form, setForm] = useState({ amount: '', method: 'mobile_money', reference: '', paid_at: new Date().toISOString().slice(0, 10), note: '' });
+  const [busy, setBusy] = useState(false);
+
+  const load = useCallback(async () => {
+    try {
+      const res = await apiCall(`admin/commissions/payouts/${point.id}`);
+      setInfo(res);
+      setForm((f) => ({ ...f, amount: f.amount || String(res.balance || '') }));
+    } catch (e: any) {
+      setError(e.message);
+    }
+  }, [point.id]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!window.confirm(`Noter un versement de ${fcfa(Number(form.amount))} à ${point.name} ?`)) return;
+    setBusy(true);
+    try {
+      const res = await apiCall('admin/commissions/payouts', {
+        method: 'POST',
+        body: JSON.stringify({ pickup_point_id: point.id, amount: Number(form.amount), method: form.method, reference: form.reference, note: form.note, paid_at: form.paid_at }),
+      });
+      toast.success(res.message);
+      setInfo(res);
+      setForm((f) => ({ ...f, amount: String(res.balance || ''), reference: '', note: '' }));
+      await onSaved();
+    } catch (err: any) {
+      toast.error(err.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
+      <div className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-lg bg-light p-6" onClick={(e) => e.stopPropagation()}>
+        <h2 className="text-base font-semibold text-heading">Versements : {point.name}</h2>
+        {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+        {!info && !error && <p className="mt-3 text-sm text-body">Chargement…</p>}
+        {info && (
+          <>
+            <div className="mt-4 grid grid-cols-3 gap-3 text-sm">
+              <div><p className="text-body">Gagné</p><p className="font-semibold text-heading">{fcfa(info.earned)}</p></div>
+              <div><p className="text-body">Versé</p><p className="font-semibold text-heading">{fcfa(info.paid)}</p></div>
+              <div><p className="text-body">Reste à verser</p><p className="font-semibold text-accent">{fcfa(info.balance)}</p></div>
+            </div>
+            {info.balance > 0 ? (
+              <form onSubmit={submit} className="mt-5 space-y-3">
+                <div className="grid grid-cols-2 gap-3">
+                  <label className="text-sm text-body">Montant (FCFA)
+                    <input type="number" min={1} max={info.balance} step="1" required className={input} value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} />
+                  </label>
+                  <label className="text-sm text-body">Date du versement
+                    <input type="date" required max={new Date().toISOString().slice(0, 10)} className={input} value={form.paid_at} onChange={(e) => setForm({ ...form, paid_at: e.target.value })} />
+                  </label>
+                  <label className="text-sm text-body">Moyen
+                    <select className={input} value={form.method} onChange={(e) => setForm({ ...form, method: e.target.value })}>
+                      {Object.entries(PAYOUT_METHODS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
+                    </select>
+                  </label>
+                  <label className="text-sm text-body">Référence (facultatif)
+                    <input type="text" maxLength={100} className={input} value={form.reference} onChange={(e) => setForm({ ...form, reference: e.target.value })} placeholder="N° de transaction" />
+                  </label>
+                </div>
+                <label className="block text-sm text-body">Note (facultatif)
+                  <input type="text" maxLength={255} className={input} value={form.note} onChange={(e) => setForm({ ...form, note: e.target.value })} />
+                </label>
+                <button type="submit" disabled={busy || !form.amount} className="rounded-md bg-accent px-4 py-2 text-sm font-semibold text-white hover:bg-accent-hover disabled:opacity-50">
+                  {busy ? 'Enregistrement…' : 'Noter le versement'}
+                </button>
+              </form>
+            ) : (
+              <p className="mt-5 text-sm text-body">Rien à verser pour le moment.</p>
+            )}
+            <h3 className="mt-6 text-sm font-semibold text-heading">Versements déjà faits</h3>
+            {info.payouts.length === 0 ? (
+              <p className="mt-2 text-sm text-body">Aucun versement noté.</p>
+            ) : (
+              <ul className="mt-2 divide-y divide-border-200 text-sm">
+                {info.payouts.map((v) => (
+                  <li key={v.id} className="flex justify-between gap-3 py-2">
+                    <span>
+                      {new Date(`${v.paid_at}T00:00:00`).toLocaleDateString('fr-FR')} · {v.method_label}
+                      {v.reference && <span className="text-body"> · {v.reference}</span>}
+                      {v.note && <span className="block text-xs text-body">{v.note}</span>}
+                    </span>
+                    <span className="font-semibold text-heading">{fcfa(v.amount)}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </>
+        )}
+        <div className="mt-6 text-right">
+          <button type="button" onClick={onClose} className="rounded-md px-4 py-2 text-sm text-body hover:bg-gray-100">Fermer</button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function ApplyCard({
   type, title, unit, help, defaultValue, selectedCount, onApply,
@@ -84,6 +206,7 @@ export default function CommissionsPage() {
   const [data, setData] = useState<{ settings: { order_rate_percent: number; kit_amount: number }; points: Point[] } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [checked, setChecked] = useState<Set<number>>(new Set());
+  const [paying, setPaying] = useState<Point | null>(null);
 
   useEffect(() => {
     const t = setTimeout(() => setDebounced(q.trim()), 300);
@@ -130,7 +253,8 @@ export default function CommissionsPage() {
   };
 
   const totals = useMemo(() => (data?.points ?? []).reduce(
-    (t, p) => ({ orders: t.orders + p.orders_commission, kits: t.kits + p.kits_commission }), { orders: 0, kits: 0 },
+    (t, p) => ({ orders: t.orders + p.orders_commission, kits: t.kits + p.kits_commission, paid: t.paid + (p.paid_total || 0), balance: t.balance + (p.balance || 0) }),
+    { orders: 0, kits: 0, paid: 0, balance: 0 },
   ), [data]);
 
   return (
@@ -177,7 +301,10 @@ export default function CommissionsPage() {
                 <th className="px-4 py-3 font-semibold">Prix par kit</th>
                 <th className="px-4 py-3 font-semibold">Commandes retirées</th>
                 <th className="px-4 py-3 font-semibold">Kits retirés</th>
-                <th className="px-4 py-3 text-right font-semibold">Commissions</th>
+                <th className="px-4 py-3 text-right font-semibold">Gagné</th>
+                <th className="px-4 py-3 text-right font-semibold">Versé</th>
+                <th className="px-4 py-3 text-right font-semibold">Reste à verser</th>
+                <th className="px-4 py-3" />
               </tr>
             </thead>
             <tbody>
@@ -197,6 +324,13 @@ export default function CommissionsPage() {
                   <td className="px-4 py-3">{p.orders_withdrawn} · <span className="text-body">{fcfa(p.orders_commission)}</span></td>
                   <td className="px-4 py-3">{p.kits_withdrawn} · <span className="text-body">{fcfa(p.kits_commission)}</span></td>
                   <td className="px-4 py-3 text-right font-semibold text-heading">{fcfa(p.orders_commission + p.kits_commission)}</td>
+                  <td className="px-4 py-3 text-right">{fcfa(p.paid_total || 0)}</td>
+                  <td className="px-4 py-3 text-right font-semibold text-accent">{fcfa(p.balance || 0)}</td>
+                  <td className="px-4 py-3 text-right">
+                    <button type="button" onClick={() => setPaying(p)} className="rounded-md border border-accent px-3 py-1 text-xs font-semibold text-accent hover:bg-accent/10">
+                      Versements
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -206,11 +340,15 @@ export default function CommissionsPage() {
                 <td className="px-4 py-3">{fcfa(totals.orders)}</td>
                 <td className="px-4 py-3">{fcfa(totals.kits)}</td>
                 <td className="px-4 py-3 text-right font-semibold">{fcfa(totals.orders + totals.kits)}</td>
+                <td className="px-4 py-3 text-right">{fcfa(totals.paid)}</td>
+                <td className="px-4 py-3 text-right font-semibold">{fcfa(totals.balance)}</td>
+                <td className="px-4 py-3" />
               </tr>
             </tfoot>
           </table>
         )}
       </Card>
+      {paying && <PayoutModal point={paying} onClose={() => setPaying(null)} onSaved={load} />}
     </>
   );
 }
