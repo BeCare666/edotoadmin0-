@@ -21,8 +21,8 @@ export default function SettingsPageHeader({
     scrollToTheRight,
     scrollToTheLeft,
   } = useScrollableSlider();
-  const menuItems: any =
-    siteSettings?.sidebarLinks?.admin?.settings?.childMenu[0]?.childMenu;
+  // Onglets des sous-pages ; aucun depuis B5 (30/10/2026), le menu Paramètres n'a plus de sous-menu
+  const menuItems: any = (siteSettings?.sidebarLinks?.admin?.settings?.childMenu?.[0] as any)?.childMenu;
   const sanitizedPath = router.asPath.split('#')[0].split('?')[0];
   return (
     <>
