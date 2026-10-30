@@ -285,23 +285,8 @@ export const siteSettings = {
             label: 'text-admin-list',
             icon: 'AdminListIcon',
           },
-          {
-            href: '#',
-            label: 'text-vendors',
-            icon: 'VendorsIcon',
-            childMenu: [
-              {
-                href: Routes.vendorList || '#',
-                label: 'text-all-vendors',
-                icon: 'UsersIcon',
-              },
-              {
-                href: Routes.pendingVendorList || '#',
-                label: 'text-pending-vendors',
-                icon: 'UsersIcon',
-              },
-            ],
-          },
+          // B8 (30/10/2026) : « Vendeurs » retiré du menu : aucun compte vendeur et inscription des vendeurs fermée
+          // (SELLER_SIGNUP_OPEN côté API). Pages gardées (users/vendors) ; remettre ce bloc à la réouverture.
           {
             href: Routes.customerList || '#',
             label: 'text-customers',

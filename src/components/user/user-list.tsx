@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Table } from '@/components/ui/table';
 import ActionButtons from '@/components/common/action-buttons';
 import { siteSettings } from '@/settings/site.settings';
+import { roleName } from '@/utils/role-labels';
 import {
   Category,
   MappedPaginatorInfo,
@@ -144,16 +145,16 @@ const UserList = ({
                 ? p
                 : p?.name ?? p?.title ?? ''
             )
-            .filter(Boolean)
+            // Le rôle est déjà affiché au-dessus : pas de doublon (B8)
+            .filter((name: string) => name && name !== role)
+            .map((name: string) => roleName(name))
           : [];
 
         return (
           <div className="flex flex-col gap-2">
             {role != null && String(role).trim() !== '' && (
               <span className="inline-block w-fit rounded-full bg-indigo-100 border border-indigo-200 px-3 py-1 text-xs font-semibold text-indigo-700">
-                {typeof role === 'string'
-                  ? role
-                  : (role as any)?.name ?? String(role)}
+                {roleName(typeof role === 'string' ? role : (role as any)?.name ?? String(role))}
               </span>
             )}
 

@@ -7,16 +7,9 @@ import { Routes } from '@/config/routes';
 import { SortOrder } from '@/types';
 import EdotoFilterBar, { FilterDef, FilterValues } from '@/components/filters/edoto-filter-bar';
 import { apiCall } from '@/components/campaign/campaign-api';
+import { rolePlural } from '@/utils/role-labels';
 
 // Tous les comptes, avec filtres réels (rôles présents en base, compte actif, e-mail confirmé, période)
-const ROLE_LABEL: Record<string, string> = {
-  customer: 'Clients',
-  super_pickuppoint: 'Points de retrait',
-  super_admin: 'Administrateurs',
-  sponsor: 'Sponsors',
-  store_owner: 'Vendeurs',
-  staff: 'Personnel',
-};
 
 const SORTS = [
   { value: 'created_at:desc', label: 'Inscrits récemment' },
@@ -98,7 +91,7 @@ export default function UsersBrowser({ fixedRole, fixedFilters = {}, eyebrow = '
           key: 'role',
           allLabel: 'Tous',
           allCount: facets?.total,
-          options: (facets?.roles ?? []).map((r: any) => ({ value: r.value, label: ROLE_LABEL[r.value] ?? r.value, count: r.count })),
+          options: (facets?.roles ?? []).map((r: any) => ({ value: r.value, label: rolePlural(r.value), count: r.count })),
         }}
         filters={filters}
         values={values}
