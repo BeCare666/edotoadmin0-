@@ -1,157 +1,195 @@
-import Card from '@/components/common/card';
-import Layout from '@/components/layouts/admin';
-import Search from '@/components/common/search';
-import { Fragment, useState } from 'react';
-import ErrorMessage from '@/components/ui/error-message';
-import Loader from '@/components/ui/loader/loader';
-import { useOrdersQuery } from '@/data/order';
-import { useTranslation } from 'next-i18next';
+import { useCallback, useEffect, useState } from 'react';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { SortOrder } from '@/types';
-import { adminOnly } from '@/utils/auth-utils';
-import { MoreIcon } from '@/components/icons/more-icon';
-import { useExportOrderQuery } from '@/data/export';
-import { useRouter } from 'next/router';
-import { useShopQuery } from '@/data/shop';
-import { Menu, Transition } from '@headlessui/react';
-import classNames from 'classnames';
-import { DownloadIcon } from '@/components/icons/download-icon';
-import OrderTransactionList from '@/components/order/order-transaction-lists';
+import Layout from '@/components/layouts/admin';
+import Card from '@/components/common/card';
 import PageHeading from '@/components/common/page-heading';
+import { adminOnly } from '@/utils/auth-utils';
+import { apiCall, fcfa } from '@/components/campaign/campaign-api';
+
+// Transactions (B6, 30/10/2026) : journal de l'argent réel (API GET /admin/transactions, lecture seule).
+// Remplace la page du modèle d'origine, qui relisait la liste des commandes (taxe, remise : inexistants ici).
+type Kind = 'payment' | 'attempt' | 'payout';
+
+interface Tx {
+  kind: Kind;
+  id: number;
+  at: string;
+  amount: number | null;
+  order_ref: string | null;
+  reference: string | null;
+  party: string | null;
+  status: string;
+  method_label: string;
+  detail: string | null;
+}
+
+interface Result {
+  data: Tx[];
+  totals: { received: number; received_count: number; paid_out: number; paid_out_count: number; attempts_count: number };
+  payouts_available: boolean;
+  page: number;
+  last_page: number;
+  total: number;
+}
+
+const KIND: Record<Kind, { label: string; tone: string; sign: string }> = {
+  payment: { label: 'Paiement reçu', tone: 'bg-green-100 text-green-800', sign: '+' },
+  attempt: { label: 'Paiement non abouti', tone: 'bg-amber-100 text-amber-800', sign: '' },
+  payout: { label: 'Versement à un point', tone: 'bg-blue-100 text-blue-800', sign: '' },
+};
+
+const STATUS: Record<string, string> = {
+  'payment-success': 'Réussi',
+  processing: 'En cours',
+  failed: 'En échec',
+  paid: 'Versé',
+};
+
+const input = 'rounded-md border border-border-200 px-3 py-2 text-sm focus:border-accent focus:outline-none';
+const when = (at: string) => new Date(at).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 
 export default function TransactionsPage() {
-  const router = useRouter();
-  const { locale } = useRouter();
-  const {
-    query: { shop },
-  } = router;
-  const [searchTerm, setSearchTerm] = useState('');
+  const [kind, setKind] = useState<'all' | Kind>('all');
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
+  const [q, setQ] = useState('');
+  const [debounced, setDebounced] = useState('');
   const [page, setPage] = useState(1);
-  const { t } = useTranslation();
-  const [orderBy, setOrder] = useState('created_at');
-  const [sortedBy, setColumn] = useState<SortOrder>(SortOrder.Desc);
+  const [data, setData] = useState<Result | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  function handleSearch({ searchText }: { searchText: string }) {
-    setSearchTerm(searchText);
+  useEffect(() => {
+    const t = setTimeout(() => setDebounced(q.trim()), 300);
+    return () => clearTimeout(t);
+  }, [q]);
+
+  useEffect(() => {
     setPage(1);
-  }
+  }, [kind, from, to, debounced]);
 
-  function handlePagination(current: any) {
-    setPage(current);
-  }
-
-  const { data: shopData, isLoading: fetchingShop } = useShopQuery(
-    {
-      slug: shop as string,
-    },
-    {
-      enabled: !!shop,
+  const load = useCallback(async () => {
+    setError(null);
+    const params = new URLSearchParams({ kind, page: String(page) });
+    if (from) params.set('from', from);
+    if (to) params.set('to', to);
+    if (debounced) params.set('q', debounced);
+    try {
+      setData(await apiCall(`admin/transactions?${params.toString()}`));
+    } catch (e: any) {
+      setError(e.message);
     }
-  );
-  const shopId = shopData?.id!;
-  const { orders, loading, paginatorInfo, error } = useOrdersQuery({
-    language: locale,
-    limit: 20,
-    page,
-    tracking_number: searchTerm,
-    orderBy,
-    sortedBy,
-  });
-  const { refetch } = useExportOrderQuery(
-    {
-      ...(shopId && { shop_id: shopId }),
-    },
-    { enabled: false }
-  );
+  }, [kind, from, to, debounced, page]);
 
-  if (loading) return <Loader text={t('common:text-loading')} />;
-  if (error) return <ErrorMessage message={error.message} />;
+  useEffect(() => {
+    load();
+  }, [load]);
 
-  async function handleExportOrder() {
-    const { data } = await refetch();
-
-    if (data) {
-      const a = document.createElement('a');
-      a.href = data;
-      a.setAttribute('download', 'export-order');
-      a.click();
-    }
-  }
-
+  const t = data?.totals;
   return (
     <>
-      <Card className="mb-8 flex flex-col items-center justify-between md:flex-row">
-        <div className="mb-4 md:mb-0 md:w-1/4">
-          <PageHeading title={t('form:form-title-transactions')} />
-        </div>
-
-        <div className="flex w-full items-center md:w-1/2">
-          <Search
-            onSearch={handleSearch}
-            placeholderText={t('form:input-placeholder-search-tracking-number')}
-          />
-          <Menu
-            as="div"
-            className="relative inline-block ltr:text-left rtl:text-right"
-          >
-            <Menu.Button className="group p-2">
-              <MoreIcon className="w-3.5 text-body" />
-            </Menu.Button>
-            <Transition
-              as={Fragment}
-              enter="transition ease-out duration-100"
-              enterFrom="transform opacity-0 scale-95"
-              enterTo="transform opacity-100 scale-100"
-              leave="transition ease-in duration-75"
-              leaveFrom="transform opacity-100 scale-100"
-              leaveTo="transform opacity-0 scale-95"
-            >
-              <Menu.Items
-                as="ul"
-                className={classNames(
-                  'shadow-700 absolute z-50 mt-2 w-52 overflow-hidden rounded border border-border-200 bg-light py-2 focus:outline-none ltr:right-0 ltr:origin-top-right rtl:left-0 rtl:origin-top-left'
-                )}
-              >
-                <Menu.Item>
-                  {({ active }) => (
-                    <button
-                      onClick={handleExportOrder}
-                      className={classNames(
-                        'flex w-full items-center space-x-3 px-5 py-2.5 text-sm font-semibold capitalize transition duration-200 hover:text-accent focus:outline-none rtl:space-x-reverse',
-                        active ? 'text-accent' : 'text-body'
-                      )}
-                    >
-                      <DownloadIcon className="w-5 shrink-0" />
-                      <span className="whitespace-nowrap">
-                        {t('common:text-export-orders')}
-                      </span>
-                    </button>
-                  )}
-                </Menu.Item>
-              </Menu.Items>
-            </Transition>
-          </Menu>
+      <Card className="mb-8">
+        <PageHeading title="Transactions" />
+        <p className="mt-1 text-sm text-body">
+          L&apos;argent réel : paiements FeexPay reçus, paiements arrivés mais pas aboutis (à vérifier), versements aux points de retrait.
+        </p>
+        {t && (
+          <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div className="rounded-md border border-border-200 p-4">
+              <p className="text-xs uppercase tracking-wider text-body">Reçu</p>
+              <p className="mt-1 text-lg font-semibold text-heading">{fcfa(t.received)}</p>
+              <p className="text-xs text-body">{t.received_count} paiement(s)</p>
+            </div>
+            <div className="rounded-md border border-border-200 p-4">
+              <p className="text-xs uppercase tracking-wider text-body">Versé aux points de retrait</p>
+              <p className="mt-1 text-lg font-semibold text-heading">{fcfa(t.paid_out)}</p>
+              <p className="text-xs text-body">{data?.payouts_available ? `${t.paid_out_count} versement(s)` : 'Migration 024 pas encore lancée'}</p>
+            </div>
+            <div className="rounded-md border border-border-200 p-4">
+              <p className="text-xs uppercase tracking-wider text-body">Paiements non aboutis</p>
+              <p className="mt-1 text-lg font-semibold text-heading">{t.attempts_count}</p>
+              <p className="text-xs text-body">À vérifier dans FeexPay</p>
+            </div>
+          </div>
+        )}
+        <div className="mt-5 flex flex-wrap items-end gap-3">
+          <label className="text-sm text-body">Type
+            <select className={`${input} block`} value={kind} onChange={(e) => setKind(e.target.value as any)}>
+              <option value="all">Tout</option>
+              <option value="payment">Paiements reçus</option>
+              <option value="attempt">Paiements non aboutis</option>
+              <option value="payout">Versements aux points</option>
+            </select>
+          </label>
+          <label className="text-sm text-body">Du
+            <input type="date" className={`${input} block`} value={from} max={to || undefined} onChange={(e) => setFrom(e.target.value)} />
+          </label>
+          <label className="text-sm text-body">Au
+            <input type="date" className={`${input} block`} value={to} min={from || undefined} onChange={(e) => setTo(e.target.value)} />
+          </label>
+          <label className="min-w-[220px] flex-1 text-sm text-body">Recherche
+            <input type="search" className={`${input} block w-full`} value={q} onChange={(e) => setQ(e.target.value)} placeholder="N° de commande, référence, nom" />
+          </label>
         </div>
       </Card>
 
-      <OrderTransactionList
-        orders={orders}
-        paginatorInfo={paginatorInfo}
-        onPagination={handlePagination}
-        onOrder={setOrder}
-        onSort={setColumn}
-      />
+      <Card>
+        {error ? (
+          <p className="text-sm text-red-600">{error}</p>
+        ) : !data ? (
+          <p className="text-sm text-body">Chargement…</p>
+        ) : data.data.length === 0 ? (
+          <p className="text-sm text-body">Aucune transaction pour ces filtres.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm">
+              <thead className="border-y border-border-200 text-xs uppercase tracking-wider text-body">
+                <tr>
+                  <th className="px-4 py-3 font-semibold">Date</th>
+                  <th className="px-4 py-3 font-semibold">Type</th>
+                  <th className="px-4 py-3 font-semibold">Qui</th>
+                  <th className="px-4 py-3 font-semibold">Commande</th>
+                  <th className="px-4 py-3 font-semibold">Moyen et référence</th>
+                  <th className="px-4 py-3 font-semibold">Statut</th>
+                  <th className="px-4 py-3 text-right font-semibold">Montant</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.data.map((x) => (
+                  <tr key={`${x.kind}-${x.id}`} className="border-b border-border-200 last:border-0">
+                    <td className="whitespace-nowrap px-4 py-3">{when(x.at)}</td>
+                    <td className="px-4 py-3"><span className={`rounded-full px-2 py-0.5 text-xs ${KIND[x.kind].tone}`}>{KIND[x.kind].label}</span></td>
+                    <td className="px-4 py-3">{x.party || ''}</td>
+                    <td className="px-4 py-3">{x.order_ref || ''}</td>
+                    <td className="px-4 py-3">
+                      {x.method_label}
+                      {x.reference && <span className="block text-xs text-body">{x.reference}</span>}
+                      {x.detail && <span className="block text-xs text-body">{x.detail}</span>}
+                    </td>
+                    <td className="px-4 py-3">{STATUS[x.status] ?? x.status}</td>
+                    <td className="whitespace-nowrap px-4 py-3 text-right font-semibold text-heading">
+                      {x.amount === null ? '' : `${KIND[x.kind].sign}${fcfa(x.amount)}`}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+        {data && data.last_page > 1 && (
+          <div className="mt-4 flex items-center justify-end gap-3 text-sm">
+            <button type="button" disabled={page <= 1} onClick={() => setPage(page - 1)} className="rounded-md border border-border-200 px-3 py-1 disabled:opacity-50">Précédent</button>
+            <span className="text-body">Page {data.page} sur {data.last_page} ({data.total})</span>
+            <button type="button" disabled={page >= data.last_page} onClick={() => setPage(page + 1)} className="rounded-md border border-border-200 px-3 py-1 disabled:opacity-50">Suivant</button>
+          </div>
+        )}
+      </Card>
     </>
   );
 }
 
-TransactionsPage.authenticate = {
-  permissions: adminOnly,
-};
+TransactionsPage.authenticate = { permissions: adminOnly };
 TransactionsPage.Layout = Layout;
 
 export const getStaticProps = async ({ locale }: any) => ({
-  props: {
-    ...(await serverSideTranslations(locale, ['table', 'common', 'form'])),
-  },
+  props: { ...(await serverSideTranslations(locale, ['table', 'common', 'form'])) },
 });
