@@ -263,7 +263,8 @@ export const siteSettings = {
             icon: 'TruckIcon',
           },
           {
-            href: Routes.transaction || '#',
+            // B6 : le journal de l'argent réel (avant : ancienne page des retraits du modèle d'origine)
+            href: Routes.transactions || '#',
             label: 'text-transactions',
             icon: 'TransactionsIcon',
           },

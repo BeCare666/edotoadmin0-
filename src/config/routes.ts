@@ -131,6 +131,8 @@ export const Routes = {
   outOfStockOrLowProducts: '/products/product-stock',
   productInventory: '/products/inventory',
   transaction: '/withdrawals/withdrawals',
+  // Journal de l'argent réel du super admin (B6, 30/10/2026)
+  transactions: '/orders/transaction',
   termsAndCondition: {
     ...routesFactory('/terms-and-conditions'),
   },
