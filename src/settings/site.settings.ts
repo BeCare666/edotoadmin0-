@@ -334,15 +334,9 @@ export const siteSettings = {
         label: 'text-site-management',
         icon: 'SettingsIcon',
         childMenu: [
-          {
-            href: Routes.siteFont || '#',
-            label: 'text-site-font',
-            icon: 'SettingsIcon',
-          },
-          // B5 (30/10/2026) : seuls des réglages réels, branchés au site. Les 8 pages de paramètres du modèle d'origine
-          // (écrites dans une ligne que ni le site ni l'API ne lisent) sont supprimées. La maintenance réelle est la
-          // variable MAINTENANCE_MODE sur Render ; la devise des prix de l'admin reste XOF (ligne settings inchangée).
-          { href: Routes.settings || '#', label: 'text-site-info', icon: 'SettingsIcon' },
+          // 02/11/2026 : une seule entrée « Paramètres » (onglets Simples et Avancés) ; la police, la livraison et les
+          // commissions s'ouvrent depuis l'onglet Simples. B5 (30/10/2026) : pages de paramètres du modèle d'origine supprimées.
+          { href: Routes.settings || '#', label: 'text-platform-settings', icon: 'SettingsIcon' },
         ],
       },
     },
