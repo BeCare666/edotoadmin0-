@@ -19,6 +19,11 @@ export default class CustomDocument extends Document {
     return (
       <Html>
         <Head>
+          {/* Application installable (02/11/2026) : public/manifest.json, icônes existantes dans public/icons */}
+          <link rel="manifest" href="/manifest.json" />
+          <link rel="apple-touch-icon" href="/icons/apple-icon-180.png" />
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta name="apple-mobile-web-app-title" content="E.doto Admin" />
           {/* Police choisie par le super admin : appliquée avant l'affichage (utils/site-font.ts) */}
           <script dangerouslySetInnerHTML={{ __html: fontBootScript() }} />
           {/* <link
