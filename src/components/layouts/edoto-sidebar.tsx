@@ -15,18 +15,11 @@ import {
   PanelOpenIcon,
 } from '@/components/icons/edoto-nav-icons';
 import emblem from '../../../public/logo/edoto-emblem.png';
+import UserAvatar from '@/components/common/user-avatar';
 
 // Largeurs communes (barre latérale, en-tête, contenu) — même cadre que le dashboard des points de retrait
 export const SIDEBAR_WIDE = 'lg:w-72';
 export const SIDEBAR_MINI = 'lg:w-[88px]';
-
-export const initials = (n?: string | null) =>
-  String(n || '?')
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0].toUpperCase())
-    .join('') || '?';
 
 const roleLabel = (role?: string | null) => {
   if (!role) return 'Administration';
@@ -112,17 +105,10 @@ export function EdotoSidebarPanel({
         )}
       >
         {c ? (
-          <span
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-[#1A1814] text-[13px] font-semibold text-white"
-            title={me?.name}
-          >
-            {initials(me?.name)}
-          </span>
+          <UserAvatar user={me} size={40} />
         ) : (
           <>
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#1A1814] text-xs font-semibold text-white">
-              {initials(me?.name)}
-            </span>
+            <UserAvatar user={me} size={36} />
             <span className="min-w-0">
               <span className="block truncate text-[13px] font-medium text-[#1A1814]">{me?.name ?? 'Administrateur'}</span>
               <span className="mt-0.5 block truncate text-[11.5px] text-[#8A837A]">{me?.email}</span>

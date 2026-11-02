@@ -1,7 +1,7 @@
 import cn from 'classnames';
 import { Fragment } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-import Avatar from '@/components/common/avatar';
+import UserAvatar from '@/components/common/user-avatar';
 import Link from '@/components/ui/link';
 import { siteSettings } from '@/settings/site.settings';
 import { useTranslation } from 'next-i18next';
@@ -10,7 +10,6 @@ import { getIcon } from '@/utils/get-icon';
 import { edotoNavIcons as sidebarIcons } from '@/components/icons/edoto-nav-icons';
 import { useRouter } from 'next/router';
 import { getAuthCredentials } from '@/utils/auth-utils';
-import { initials } from '@/components/layouts/edoto-sidebar';
 
 export default function AuthorizedMenu() {
   const { data } = useMeQuery(); // data peut être User ou null
@@ -18,7 +17,6 @@ export default function AuthorizedMenu() {
   const { pathname, query } = useRouter();
   const slug = pathname === '/[shop]' ? (query?.shop as string) || '' : '';
   const { role, permissions } = getAuthCredentials();
-  console.log("me", data)
   // Pour éviter les erreurs TS, on déclare `user` en type any ici
   const user: any = data;
 
@@ -28,17 +26,7 @@ export default function AuthorizedMenu() {
       className="relative inline-block shrink-0 grow-0 basis-auto text-left"
     >
       <Menu.Button className="flex max-w-[220px] items-center gap-3 rounded-2xl py-1 pl-1 pr-1 transition hover:bg-[#F3F1EE] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6EA9]/40 md:pr-3">
-        {user?.profile?.avatar?.url ? (
-          <img
-            src={user.profile.avatar.url}
-            alt=""
-            className="h-10 w-10 shrink-0 rounded-xl object-cover"
-          />
-        ) : (
-          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#FF6EA9] to-[#C2185B] text-sm font-semibold text-white">
-            {initials(user?.name)}
-          </span>
-        )}
+        <UserAvatar user={user} size={40} />
         <span className="hidden min-w-0 flex-col items-start text-sm ltr:text-left rtl:text-right md:flex">
           <span className="block w-full max-w-[160px] truncate text-[#1A1814]">
             {user?.name ?? t('guest')}
@@ -60,16 +48,12 @@ export default function AuthorizedMenu() {
       >
         <Menu.Items
           as="ul"
-          className="authorized-menu absolute end-0 mt-2 w-64 origin-top-end overflow-hidden rounded-2xl border border-[#E9E5DF] bg-[#FFFFFF] py-1 shadow-2xl focus:outline-none"
+          className="authorized-menu absolute end-0 mt-2 w-64 max-w-[calc(100vw-2rem)] origin-top-end overflow-hidden rounded-2xl border border-[#E9E5DF] bg-[#FFFFFF] py-1 shadow-2xl focus:outline-none"
         >
           <Menu.Item>
             <li className="border-b border-[#EFECE7] p-2 focus:outline-none">
               <div className="flex items-center gap-3 rounded-xl bg-[#F3F1EE] px-3 py-2.5">
-                <Avatar
-                  src={user?.profile?.avatar?.url ?? ''}
-                  name={user?.name ?? 'avatar'}
-                  className="shrink-0 grow-0 basis-auto drop-shadow"
-                />
+                <UserAvatar user={user} size={40} />
                 <div className="flex w-[calc(100%-40px)] flex-col items-start space-y-0.5 text-sm">
                   <span className="w-full truncate font-medium text-[#1A1814]">
                     {user?.name ?? t('guest')}
