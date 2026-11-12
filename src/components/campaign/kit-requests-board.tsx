@@ -6,6 +6,7 @@ import Card from '@/components/common/card';
 import { apiCall } from '@/components/campaign/campaign-api';
 import EdotoFilterBar, { FilterDef, FilterValues } from '@/components/filters/edoto-filter-bar';
 import StageTabs, { Stage } from '@/components/order/stage-tabs';
+import PickupRoundCell from '@/components/order/pickup-round';
 
 // Demandes de kit traitées comme des commandes (06/10/2026) :
 //  /campaign-requests            → à traiter
@@ -155,6 +156,7 @@ export default function KitRequestsBoard({ stage }: { stage: Stage }) {
                 <th className="px-6 py-4 font-medium">Campagne</th>
                 <th className="px-6 py-4 font-medium">Ville</th>
                 <th className="px-6 py-4 font-medium">Point de retrait</th>
+                {stage !== 'withdrawn' && <th className="px-6 py-4 font-medium">Tournée</th>}
                 <th className="px-6 py-4 font-medium">Demandé le</th>
                 <th className="px-6 py-4 font-medium">Code</th>
                 <th className="px-6 py-4 font-medium">{stage === 'withdrawn' ? 'Retiré le' : stage === 'processed' ? 'Traité le' : 'Traitement'}</th>
@@ -172,6 +174,7 @@ export default function KitRequestsBoard({ stage }: { stage: Stage }) {
                   </td>
                   <td className="px-6 py-4 text-body">{r.city || 'Non renseignée'}</td>
                   <td className="px-6 py-4 text-heading">{r.pickup_center_name || `Point ${r.pickup_center}`}</td>
+                  {stage !== 'withdrawn' && <td className="whitespace-nowrap px-6 py-4"><PickupRoundCell item={r} /></td>}
                   <td className="whitespace-nowrap px-6 py-4 text-body">{dt(r.created_at)}</td>
                   <td className="px-6 py-4">
                     <span className={`rounded-full px-2.5 py-1 text-xs font-medium ${r.picked_up ? 'bg-emerald-50 text-emerald-700' : r.otp_used ? 'bg-sky-50 text-sky-700' : 'bg-gray-100 text-gray-600'}`}>

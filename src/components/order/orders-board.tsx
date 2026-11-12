@@ -9,6 +9,7 @@ import OtpReveal, { otpState } from '@/components/order/otp-reveal';
 import EdotoFilterBar, { FilterDef, FilterValues } from '@/components/filters/edoto-filter-bar';
 import { DELIVERY_TYPE_LABEL, ORDER_STATUS_LABEL, PAYMENT_STATUS_LABEL } from '@/components/order/order-labels';
 import StageTabs, { Stage } from '@/components/order/stage-tabs';
+import PickupRoundCell from '@/components/order/pickup-round';
 
 // Liste des commandes par étape de suivi (06/10/2026) :
 //  /orders            → à traiter (la liste générale : ce qu'il reste à préparer)
@@ -202,13 +203,14 @@ export default function OrdersBoard({ stage }: { stage: Stage }) {
         ) : data.data.length === 0 ? (
           <p className="p-10 text-center text-sm text-body">{filtered ? 'Aucune commande ne correspond à ces filtres.' : head.empty}</p>
         ) : (
-          <table className="w-full min-w-[1200px] text-left text-sm">
+          <table className="w-full min-w-[1320px] text-left text-sm">
             <thead className="border-b border-border-200 text-xs uppercase tracking-wider text-body">
               <tr>
                 <th className="px-6 py-4 font-medium">N° de suivi</th>
                 <th className="px-6 py-4 font-medium">Client</th>
                 <th className="cursor-pointer px-6 py-4 font-medium" onClick={() => sortBy('created_at')}>Date{arrow('created_at')}</th>
                 <th className="px-6 py-4 font-medium">Retrait</th>
+                {stage !== 'withdrawn' && <th className="px-6 py-4 font-medium">Tournée</th>}
                 <th className="px-6 py-4 font-medium">Code de retrait</th>
                 <th className="cursor-pointer px-6 py-4 text-right font-medium" onClick={() => sortBy('total')}>Total{arrow('total')}</th>
                 <th className="px-6 py-4 font-medium">Paiement</th>
@@ -234,6 +236,9 @@ export default function OrdersBoard({ stage }: { stage: Stage }) {
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-body">{new Date(o.created_at).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}</td>
                     <td className={`px-6 py-4 ${w.tone}`}>{w.label}</td>
+                    {stage !== 'withdrawn' && (
+                      <td className="whitespace-nowrap px-6 py-4">{paid && !stopped ? <PickupRoundCell item={o} /> : <span className="text-xs text-body">Après paiement</span>}</td>
+                    )}
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
                         <OtpReveal code={o.otp_code} compact />
