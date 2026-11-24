@@ -151,7 +151,14 @@ export default function TeleconsultationAppointments() {
                           <p className="text-heading">{a.patient_name}</p>
                           <p className="text-xs text-[#8A837A]">{a.patient_phone || a.patient_email}</p>
                         </td>
-                        <td className="px-5 py-3.5">{a.mode_label}</td>
+                        <td className="px-5 py-3.5">
+                          {a.mode_label}
+                          {/* Téléconsultation payante (23/11/2026) */}
+                          <p className="text-xs text-[#8A837A]">
+                            {Number(a.price) > 0 && a.paid_at ? `Payée ${Number(a.price).toLocaleString('fr-FR')} FCFA` : 'Gratuite'}
+                          </p>
+                          {a.payment_reference && <p className="text-[11px] text-[#8A837A]">FeexPay {a.payment_reference}</p>}
+                        </td>
                         <td className="px-5 py-3.5">{a.doctor_name}</td>
                         <td className="px-5 py-3.5">
                           <Pill tone={STATUS_TONE[a.status]}>{a.status_label}</Pill>
