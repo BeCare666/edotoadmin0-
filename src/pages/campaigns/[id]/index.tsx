@@ -100,6 +100,16 @@ export default function CampaignDetailPage() {
         <Stat label="Budget (sponsors)" value={fcfa(c.budget)} />
       </div>
 
+      {/* Produit et téléconsultations financés (26/11/2026) : nombres attribués sur nombres financés */}
+      {(c.funded_product_id || c.funded_tc_qty > 0) && (
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          {c.funded_product_id && <Stat label="Produit financé" value={c.funded_product_name || `Produit ${c.funded_product_id}`} />}
+          {c.funded_product_id && <Stat label="Unités offertes attribuées" value={`${c.funded_product_used} sur ${c.funded_product_qty}`} />}
+          {c.funded_tc_qty > 0 && <Stat label="Téléconsultations offertes" value={`${c.funded_tc_used} sur ${c.funded_tc_qty}`} />}
+          {c.funded_tc_qty > 0 && <Stat label="Téléconsultations : villes" value={c.funded_tc_city_only ? (c.cities ?? []).join(', ') : 'Toutes les villes'} />}
+        </div>
+      )}
+
       {c.description && <Card><p className="whitespace-pre-line text-sm text-heading">{c.description}</p></Card>}
 
       <Card className="overflow-x-auto p-0">

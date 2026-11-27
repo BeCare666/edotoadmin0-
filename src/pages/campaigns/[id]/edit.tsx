@@ -31,6 +31,11 @@ export default function EditCampaignPage() {
           target_sex: c.target_sex ?? 'all',
           target_age_min: c.target_age_min === null || c.target_age_min === undefined ? '' : String(c.target_age_min),
           target_age_max: c.target_age_max === null || c.target_age_max === undefined ? '' : String(c.target_age_max),
+          // Produit et téléconsultations financés (26/11/2026)
+          funded_product_id: c.funded_product_id ? String(c.funded_product_id) : '',
+          funded_product_qty: c.funded_product_qty ? String(c.funded_product_qty) : '',
+          funded_tc_qty: c.funded_tc_qty ? String(c.funded_tc_qty) : '',
+          funded_tc_city_only: Boolean(c.funded_tc_city_only),
         }),
       )
       .catch((e) => setError(e.message));

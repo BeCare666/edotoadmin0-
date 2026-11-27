@@ -24,6 +24,11 @@ export interface CampaignFormValues {
   target_sex?: string;
   target_age_min?: string;
   target_age_max?: string;
+  // Financement d'un produit existant et de téléconsultations (26/11/2026) : vide = rien de financé
+  funded_product_id?: string;
+  funded_product_qty?: string;
+  funded_tc_qty?: string;
+  funded_tc_city_only?: boolean;
 }
 
 export const EMPTY_FORM: CampaignFormValues = {
@@ -38,6 +43,10 @@ export const EMPTY_FORM: CampaignFormValues = {
   target_sex: 'all',
   target_age_min: '',
   target_age_max: '',
+  funded_product_id: '',
+  funded_product_qty: '',
+  funded_tc_qty: '',
+  funded_tc_city_only: false,
 };
 
 const input = 'w-full rounded-md border border-border-200 px-3 py-2 text-sm focus:border-accent focus:outline-none';
@@ -60,6 +69,16 @@ export default function CampaignForm({ campaignId, initial, proposalId }: { camp
   useEffect(() => {
     apiCall('admin/sponsors').then(setSponsors).catch((e) => toast.error(e.message));
   }, []);
+
+  // Produits de la boutique (catalogue réel) pour l'option « financer un produit existant »
+  const [products, setProducts] = useState<{ id: number; name: string; price: number; sale_price: number | null }[]>([]);
+  useEffect(() => {
+    apiCall('products?limit=200')
+      .then((r: any) => setProducts((Array.isArray(r) ? r : r?.data ?? []).map((p: any) => ({ id: Number(p.id), name: p.name, price: Number(p.price), sale_price: p.sale_price === null || p.sale_price === undefined ? null : Number(p.sale_price) }))))
+      .catch(() => setProducts([]));
+  }, []);
+  const fundedProduct = products.find((p) => String(p.id) === String(values.funded_product_id));
+  const unitPrice = fundedProduct ? (fundedProduct.sale_price ?? fundedProduct.price) : 0;
 
   const set = (k: keyof CampaignFormValues, v: any) => setValues((prev) => ({ ...prev, [k]: v }));
   const budget = useMemo(() => values.sponsors.reduce((s, x) => s + (Number(x.amount) || 0), 0), [values.sponsors]);
@@ -124,6 +143,10 @@ export default function CampaignForm({ campaignId, initial, proposalId }: { camp
         target_sex: values.target_sex || 'all',
         target_age_min: values.target_age_min === '' || values.target_age_min === undefined ? null : Number(values.target_age_min),
         target_age_max: values.target_age_max === '' || values.target_age_max === undefined ? null : Number(values.target_age_max),
+        funded_product_id: values.funded_product_id ? Number(values.funded_product_id) : null,
+        funded_product_qty: values.funded_product_id ? Number(values.funded_product_qty) || 0 : 0,
+        funded_tc_qty: Number(values.funded_tc_qty) || 0,
+        funded_tc_city_only: Number(values.funded_tc_qty) > 0 && Boolean(values.funded_tc_city_only),
         ...(proposalId && !campaignId ? { proposal_id: proposalId } : {}),
       };
       const res = await apiCall(campaignId ? `admin/campaigns/${campaignId}` : 'admin/campaigns', {
@@ -192,6 +215,54 @@ export default function CampaignForm({ campaignId, initial, proposalId }: { camp
             <label className={label} htmlFor="c-age-max">Âge maximum</label>
             <input id="c-age-max" inputMode="numeric" placeholder="Sans limite" className={input} value={values.target_age_max ?? ''} onChange={(e) => set('target_age_max', intInput(e.target.value, 3))} />
           </div>
+        </div>
+      </Card>
+
+      {/* Financement d'un produit existant et de téléconsultations (26/11/2026) : facultatif.
+          Une personne du public ciblé obtient le produit (retrait en point, dans une ville de la campagne)
+          ou une consultation à 0 FCFA, une fois par campagne, jusqu'à épuisement du nombre financé. */}
+      <Card>
+        <h3 className="mb-1 text-sm font-semibold text-heading">Financer aussi un produit ou des téléconsultations</h3>
+        <p className="mb-4 text-xs text-body">
+          Facultatif. Pendant la campagne, une personne du public ciblé voit ce produit à 0 FCFA dans la boutique et réserve ses téléconsultations à 0 FCFA, une fois par campagne, jusqu&apos;à épuisement du nombre financé. Le produit se retire dans un point de retrait d&apos;une ville de la campagne ; le pourcentage du point de retrait s&apos;applique à son prix.
+        </p>
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="md:col-span-2">
+            <label className={label} htmlFor="c-fprod">Produit financé</label>
+            <select id="c-fprod" className={input} value={values.funded_product_id ?? ''} onChange={(e) => set('funded_product_id', e.target.value)}>
+              <option value="">Aucun produit</option>
+              {products.map((p) => (
+                <option key={p.id} value={p.id}>{p.name} ({fcfa(p.sale_price ?? p.price)})</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className={label} htmlFor="c-fqty">Nombre d&apos;unités</label>
+            <input id="c-fqty" inputMode="numeric" disabled={!values.funded_product_id} placeholder={values.funded_product_id ? 'Ex. : 300' : 'Choisissez un produit'}
+              className={`${input} disabled:bg-gray-50`} value={values.funded_product_qty ?? ''} onChange={(e) => set('funded_product_qty', intInput(e.target.value, 7))}
+              required={Boolean(values.funded_product_id)} />
+          </div>
+          <div>
+            <label className={label} htmlFor="c-ftc">Téléconsultations financées</label>
+            <input id="c-ftc" inputMode="numeric" placeholder="0" className={input} value={values.funded_tc_qty ?? ''} onChange={(e) => set('funded_tc_qty', intInput(e.target.value, 7))} />
+          </div>
+          {Number(values.funded_tc_qty) > 0 && (
+            <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border-200 px-4 py-3 md:col-span-2">
+              <input type="checkbox" className="mt-0.5" checked={Boolean(values.funded_tc_city_only)} onChange={(e) => set('funded_tc_city_only', e.target.checked)} />
+              <span>
+                <span className="block text-sm font-medium text-heading">Réserver les téléconsultations offertes aux villes de la campagne</span>
+                <span className="block text-xs text-body">
+                  {values.cities.length ? `Seulement pour les personnes situées à ${values.cities.join(', ')} (position partagée au moment de réserver).` : 'Ajoutez les villes de la campagne plus bas.'} Sinon, ouvertes au public ciblé de toutes les villes.
+                </span>
+              </span>
+            </label>
+          )}
+          {fundedProduct && Number(values.funded_product_qty) > 0 && (
+            <p className="text-sm text-heading md:col-span-2 md:self-end">
+              Valeur des produits financés : <strong>{fcfa(unitPrice * Number(values.funded_product_qty))}</strong>
+              <span className="text-body"> ({values.funded_product_qty} × {fcfa(unitPrice)})</span>
+            </p>
+          )}
         </div>
       </Card>
 
